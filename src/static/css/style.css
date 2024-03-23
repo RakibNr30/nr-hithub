@@ -1,0 +1,934 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap");
+
+:root {
+    --color-primary: #2647d6;
+    --color-secondary: #dddee2;
+    --color-danger: #ff0000;
+    --color-light: #ffffff;
+    --color-orange: #fd7e14;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    color: #777;
+}
+
+a {
+    -webkit-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+}
+
+a:hover {
+    color: #2647d6;
+}
+
+a:hover, a:focus {
+    text-decoration: none;
+    outline: 0px;
+}
+
+h5 {
+    font-weight: 600;
+}
+
+img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+figure {
+    margin: 0;
+}
+
+section {
+    display: block;
+    position: relative;
+    padding: 5rem 0;
+    width: 100%;
+}
+
+a {
+    outline: 0;
+    text-decoration: none;
+}
+
+a:focus {
+    outline: 0;
+}
+
+.mb-15 {
+    margin-bottom: 15px !important;
+}
+
+.ml-10 {
+    margin-left: 10px !important;
+}
+
+.px-20 {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+
+.py-20 {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+}
+
+.text-muted {
+    font-size: 12px;
+    color: #777 !important;
+    margin: 0;
+    line-height: 17px;
+}
+
+.text-red {
+    color: #ff0000 !important;
+}
+
+.bg-primary {
+    background-color: #2647d6 !important;
+    color: #fff !important;
+}
+
+.bg-success {
+    background-color: #32cf8a !important;
+    color: #fff !important;
+}
+
+.bg-danger {
+    background-color: #ff0000 !important;
+    color: #fff !important;
+}
+
+/**********************************
+* Override BS5
+*********************************/
+
+.container-2 {
+    max-width: unset;
+    width: 90%;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #fff !important;
+}
+
+.modal .modal-title {
+    font-size: 3.5rem;
+    color: #000000;
+}
+
+.modal .modal-body {
+    color: #000000;
+}
+
+.modal .modal-body h4 {
+    font-size: 2rem;
+}
+
+/**********************************
+* Widget Block Style start
+*********************************/
+.widget {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+/**********************************
+* Card Style start
+*********************************/
+.card {
+    position: relative;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.card-shadow {
+    -webkit-box-shadow: 0 5px 10px rgba(58, 90, 229, 0.15);
+    box-shadow: 0 5px 10px rgba(58, 90, 229, 0.15);
+}
+
+.card .nav {
+    border: none;
+    margin-bottom: 15px;
+}
+
+.card .nav li {
+    display: inline-block;
+}
+
+.card .nav li:not(:last-child) {
+    margin-right: 10px;
+}
+
+.card .nav li a {
+    background-color: #eff0f5;
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 17px;
+    color: #111;
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+
+.card .nav li a.active {
+    background-color: #000000;
+    color: #fff;
+}
+
+.card .score-card {
+    background: #f6f7fb;
+}
+
+/**********************************
+* Score card
+*********************************/
+.score-card {
+    position: relative;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.score-card-inner {
+    padding: 10px;
+}
+
+.score-card-header {
+    position: relative;
+}
+
+.score-card-header strong {
+    display: block;
+    color: #000;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.score-card-header span {
+    display: block;
+    font-size: 12px;
+    line-height: 17px;
+}
+
+.score-card-body {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.score-card-body > .score-update {
+    margin: 0 10px;
+}
+
+.country-info {
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+.score-update {
+    margin-left: 6px;
+    margin-top: 4px;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.score-update h5 {
+    font-size: 13px;
+    line-height: 18px;
+    margin: 0;
+    color: #000000;
+}
+
+.score-update p {
+    font-size: 12px;
+    color: #777;
+    margin: 0;
+    line-height: 17px;
+}
+
+.flag-avatar {
+    position: relative;
+    text-align: center;
+}
+
+.flag-avatar figure {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: #eff0f5;
+    border: 1px solid rgba(58, 90, 229, 0.1);
+}
+
+.flag-avatar figure img {
+    max-width: 30px;
+    border-radius: 50%;
+}
+
+.flag-avatar span {
+    color: #000;
+    font-size: 10px;
+    text-transform: uppercase;
+    display: block;
+    font-weight: 600;
+}
+
+.country-name {
+    color: inherit;
+    font-size: 10px;
+    text-transform: uppercase;
+    display: block;
+    font-weight: 600;
+}
+
+.score-card-lg {
+    padding: 20px;
+}
+
+.score-card-lg .score-card-header strong {
+    font-size: 15px;
+    line-height: 21px;
+}
+
+.score-card-lg .score-card-header span {
+    font-size: 14px;
+    line-height: 20px;
+}
+
+@media screen and (max-width: 575px) {
+    .score-card-lg .score-card-body > .score-update {
+        -webkit-box-ordinal-group: 3;
+        -ms-flex-order: 2;
+        order: 2;
+        flex-basis: 100%;
+    }
+}
+
+.score-card-lg .score-update h5 {
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.score-card-lg .score-update p {
+    font-size: 14px;
+    line-height: 20px;
+    color: #000;
+}
+
+.score-card-lg .flag-avatar figure {
+    margin-bottom: 2px;
+}
+
+.score-card-lg .flag-avatar span {
+    font-size: 12px;
+    line-height: 17px;
+}
+
+.card-aside {
+    max-width: 180px;
+    flex-basis: 100%;
+    width: 100%;
+    border-left: 1px solid #eff0f5;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 767px) {
+    .card-aside {
+        border-left: none;
+        border-top: 1px solid #eff0f5;
+        max-width: 100%;
+    }
+}
+
+.card-aside p span {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 25px;
+    color: #000;
+}
+
+/**********************************
+* Main header start
+*********************************/
+
+.table {
+    position: relative;
+    color: #000;
+}
+
+@media screen and (max-width: 767px) {
+    .table th,
+    .table td {
+        white-space: nowrap;
+    }
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table td strong {
+    font-weight: 600;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f6f7fb;
+}
+
+.table.no-border th,
+.table.no-border td {
+    border: none;
+}
+
+.table.widget-table {
+    margin-bottom: 0;
+}
+
+.table.widget-table th {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 15px;
+}
+
+.table.widget-table th:first-of-type {
+    padding-left: 20px;
+}
+
+.table.widget-table th:last-of-type {
+    padding-right: 20px;
+    text-align: center;
+}
+
+.table.widget-table td {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.table.widget-table td:first-of-type {
+    padding-left: 20px;
+}
+
+.table.widget-table td:last-of-type {
+    padding-right: 20px;
+    text-align: center;
+}
+
+.table.widget-table td a {
+    color: #2647d6;
+}
+
+.table-medium th,
+.table-medium td {
+    padding: 15px 7.5px !important;
+}
+
+.table-medium th:first-of-type,
+.table-medium td:first-of-type {
+    padding-left: 30px !important;
+}
+
+.table-medium th:last-of-type,
+.table-medium td:last-of-type {
+    padding-right: 30px !important;
+}
+
+.table-medium th {
+    font-size: 12px !important;
+    line-height: 17px !important;
+}
+
+.table-medium td {
+    font-size: 14px !important;
+    font-weight: 400;
+    line-height: 20px !important;
+}
+
+.table-medium strong {
+    font-weight: 600;
+}
+
+.main-container {
+    padding: 30px 0 20px;
+    position: relative;
+    background: #eff0f5;
+}
+
+.live-matches .score-card {
+    background-color: #fff;
+    -webkit-box-shadow: 0 10px 10px rgba(58, 90, 229, 0.15);
+    box-shadow: 0 10px 10px rgba(58, 90, 229, 0.15);
+}
+
+@media screen and (max-width: 767px) {
+    .live-matches .nav li {
+        margin-bottom: 10px;
+    }
+    .container-2 {
+        width: 100% !important;
+    }
+    .main-container {
+        padding: 15px 0 20px !important;
+    }
+}
+
+.live-matches .nav li a {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 21px;
+    padding: 9px 20px;
+    text-transform: uppercase;
+}
+
+@media screen and (max-width: 1199px) {
+    .live-matches .nav li a {
+        font-size: 12px;
+        padding: 9px 18px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .live-matches .card-aside {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: start;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .live-matches .card-aside p:nth-of-type(1) {
+        margin-right: 20px;
+    }
+}
+
+/**********************************
+* Full Commentary style start
+*********************************/
+.commentary-box {
+    position: relative;
+}
+
+.commentary-header {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    background: #32313f;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 20px;
+}
+
+.commentary-header h5 {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 21px;
+    margin-bottom: 0;
+}
+
+.commentary-header p {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 0;
+}
+
+.commentary-body {
+    position: relative;
+    padding: 15px 20px;
+    background: #f6f7fb;
+    border-radius: 0 0 10px 10px;
+}
+
+.commentary-list li {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding: 10px 0;
+}
+
+.commentary-list li:not(:last-child) {
+    border-bottom: 1px solid #dddfe8;
+}
+
+.commentary-list li > div {
+    margin-right: 20px;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+@media screen and (max-width: 767px) {
+    .commentary-list li > div {
+        display: block;
+        text-align: center;
+    }
+}
+
+.commentary-list li h5 {
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 0;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+@media screen and (max-width: 767px) {
+    .commentary-list li h5 {
+        margin-right: 0;
+    }
+}
+
+.commentary-list li span {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    background: #e5e5e5;
+    color: #000;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+}
+
+.commentary-list li p {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.spell-sum-box h5 {
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 13px;
+}
+
+.spell-sum-box h5 span {
+    color: #777;
+    font-weight: 400;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.spell-sum-box .recent-spell {
+    position: relative;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    row-gap: 0.45rem;
+}
+
+.spell-sum-box .recent-spell label {
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    text-transform: uppercase;
+    margin-right: 15px;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width: 767px) {
+    .spell-sum-box .recent-spell label {
+        margin-bottom: 10px;
+    }
+}
+
+.spell-sum-box .recent-spell ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: inline-block;
+}
+
+.spell-sum-box .recent-spell ul:not(:last-of-type) {
+    margin-right: 20px;
+}
+
+.spell-sum-box .recent-spell ul li {
+    display: inline-block;
+}
+
+.spell-sum-box .recent-spell ul li:not(:last-child) {
+    margin-right: 2px;
+}
+
+@media screen and (max-width: 767px) {
+    .spell-sum-box .recent-spell ul li {
+        margin-bottom: 10px;
+    }
+}
+
+.spell-sum-box .recent-spell ul li span {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    background: #e5e5e5;
+    color: #000;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+}
+
+@media screen and (max-width: 767px) {
+    .spell-sum-box .recent-spell ul li span {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+}
+
+/**********************************
+* Widget scorer wicket and extras style start
+*********************************/
+.widget-scorer .scorer-wicket-and-extras {
+    position: relative;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.widget-scorer .scorer-wicket-and-extras ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    column-gap: 0.5rem;
+    row-gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+}
+.widget-scorer .scorer-wicket-and-extras ul li {
+    display: inline-block;
+    flex-grow: 1;
+}
+.widget-scorer .scorer-wicket-and-extras ul li {
+    display: inline-block;
+}
+.widget-scorer .scorer-wicket-and-extras ul li:not(:last-child) {
+    margin-right: 2px;
+}
+.widget-scorer .scorer-wicket-and-extras ul li span {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 40px;
+    border-radius: 5px;
+    padding: 0 1rem;
+    cursor: pointer;
+    background: var(--color-secondary);
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 21px;
+    transition: 0.3s;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.wicket span {
+    background-color: transparent;
+    border: var(--color-danger) solid 1px;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.extra span {
+    background-color: transparent;
+    border: var(--color-orange) solid 1px;
+}
+
+/**********************************
+* Widget scorer buttons style start
+*********************************/
+
+.widget-scorer .scorer-control-buttons {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+.widget-scorer .scorer-control-buttons .control {
+    flex-grow: 1;
+}
+.widget-scorer .scorer-control-buttons .runs {
+    flex-grow: 3;
+}
+.widget-scorer .scorer-control-buttons .control .card,
+.widget-scorer .scorer-control-buttons .runs .card {
+    padding: 10px;
+}
+.widget-scorer .scorer-control-buttons .control ul {
+    position: relative;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    row-gap: 0.75rem;
+}
+.widget-scorer .scorer-control-buttons .control ul li:hover span {
+    opacity: 0.8;
+}
+.widget-scorer .scorer-control-buttons .runs .first-second {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 0.75rem;
+}
+.widget-scorer .scorer-control-buttons .runs ul.first,
+.widget-scorer .scorer-control-buttons .runs ul.second  {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+.widget-scorer .scorer-control-buttons .runs ul.first li,
+.widget-scorer .scorer-control-buttons .runs ul.second li  {
+    flex-grow: 1;
+}
+.widget-scorer .scorer-control-buttons .control ul li {
+    width: 100%;
+}
+.widget-scorer .scorer-control-buttons ul li {
+    display: inline-block;
+}
+.widget-scorer .scorer-control-buttons ul li span {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 40px;
+    border-radius: 5px;
+    padding: 0 1rem;
+    cursor: pointer;
+    background: var(--color-secondary);
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 21px;
+    transition: 0.3s;
+}
+.widget-scorer .scorer-control-buttons .runs ul li span {
+    background-color: var(--color-light);
+    height: 60px;
+    border: 2px solid var(--color-primary);
+}
+.widget-scorer .scorer-control-buttons .runs ul li:hover span {
+    background-color: var(--color-primary);
+    color: var(--color-light);
+}
