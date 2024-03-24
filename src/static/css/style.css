@@ -475,7 +475,7 @@ a:focus {
 
 .table-medium th,
 .table-medium td {
-    padding: 15px 7.5px !important;
+    padding: 15px 8px !important;
 }
 
 .table-medium th:first-of-type,
@@ -528,10 +528,10 @@ a:focus {
 }
 
 .live-matches .nav li a {
-    font-size: 15px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 21px;
-    padding: 9px 20px;
+    padding: 5px 12px;
     text-transform: uppercase;
 }
 

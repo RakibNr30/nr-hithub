@@ -1,19 +1,11 @@
 import AppLayout from "../../layouts/AppLayout";
-import DefaultModal from "../../components/common/DefaultModal";
-import {useState} from "react";
 
 const HomeIndex = () => {
-
-    const [showModal, setShowModal] = useState(false);
-
-    const handleClick = () => {
-        setShowModal(true);
-    }
 
     return (
         <AppLayout>
             <>
-                <div className="main-container" onClick={handleClick}>
+                <div className="main-container">
                     <div className="container container-2">
                         <div className="row">
                             <div className="col-lg-4">
@@ -38,9 +30,6 @@ const HomeIndex = () => {
                                                         <span>Leg Byes</span>
                                                     </li>
                                                 </ul>
-                                            </div>
-                                            <div className="scorer-batting">
-
                                             </div>
                                         </div>
                                     </div>
@@ -385,15 +374,6 @@ const HomeIndex = () => {
                         </div>
                     </div>
                 </div>
-
-                <DefaultModal
-                    title="থামেন ভাই"
-                    show={showModal}
-                    handleClose={() => setShowModal(false)}>
-                    <h4>
-                        থামেন ভাই। চাপাচাপি করে লাভ নাই। ইহাতে এখনো জীবন প্রবেশ করেনি।
-                    </h4>
-                </DefaultModal>
             </>
         </AppLayout>
     )
