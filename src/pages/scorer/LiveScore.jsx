@@ -1,11 +1,27 @@
 import AppLayout from "../../layouts/AppLayout";
+import {useParams} from "react-router-dom";
+import MatchService from "../../services/MatchService";
+import {useEffect, useState} from "react";
 
 const HomeIndex = () => {
+
+    const matchService = MatchService();
+    const {id} = useParams();
+
+    const [match, setMatch] = useState({});
+
+    useEffect(() => {
+        setMatch(matchService.findById(parseInt(id)));
+    }, [])
+
+    if (!match) {
+        return <h1>NOT FOUND</h1>
+    }
 
     return (
         <AppLayout>
             <>
-                <div className="main-container">
+                <div className="main-container main-container-2">
                     <div className="container container-2">
                         <div className="row">
                             <div className="col-lg-4">

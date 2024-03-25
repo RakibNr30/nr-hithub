@@ -192,7 +192,7 @@ export const commentaries = [
         },
         miniScore: {
             innings: 1,
-            batTeamId: 1,
+            batTeamId: 6,
             scores: 54,
             wickets: 3,
             overs: 6.2,
@@ -256,15 +256,17 @@ export const commentaries = [
             },
             matchScoreDetails: {
                 firstInnings: {
-                    batTeamId: 223,
-                    batTeamName: "AFGU19",
-                    score: 194,
-                    wickets: 9,
-                    overs: 49.6,
+                    batTeamId: 1,
+                    batTeamName: "Bangladesh",
+                    batTeamCode: "ban",
+                    score: 147,
+                    wickets: 7,
+                    overs: 19.3,
                 },
                 secondInnings: {
                     batTeamId: 283,
-                    batTeamName: "UAEU19",
+                    batTeamName: "India",
+                    batTeamCode: "ind",
                     score: 54,
                     wickets: 10,
                     overs: 14.4

@@ -37,7 +37,7 @@ a:hover {
 
 a:hover, a:focus {
     text-decoration: none;
-    outline: 0px;
+    outline: 0;
 }
 
 h5 {
@@ -129,12 +129,16 @@ a:focus {
     width: 90%;
 }
 
+.main-container-3 {
+    min-height: 100vh;
+}
+
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #fff !important;
 }
 
 .modal .modal-title {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     color: #000000;
 }
 
@@ -144,6 +148,10 @@ a:focus {
 
 .modal .modal-body h4 {
     font-size: 2rem;
+}
+
+.form-control {
+    font-size: 1rem !important;
 }
 
 /**********************************
