@@ -341,8 +341,8 @@ const HomeIndex = () => {
                                                         {match.stage == STAGE.IN_PROGRESS && <>
                                                             {match.runningInnings == commentary.miniScore.innings && match.team1Id == commentary.miniScore.batTeamId &&
                                                                 <div className="score-update ml-10">
-                                                                    <h5>{`${commentary.miniScore.matchScoreDetails.firstInnings.score}/${commentary.miniScore.matchScoreDetails.firstInnings.wickets}`}</h5>
-                                                                    <p className="text-muted">{commentary.miniScore.matchScoreDetails.firstInnings.overs} ov.</p>
+                                                                    <h5>{`${commentary.miniScore.scores}/${commentary.miniScore.wickets}`}</h5>
+                                                                    <p className="text-muted">{commentary.miniScore.overs} ov.</p>
                                                                 </div>}
                                                         </>}
                                                     </div>
