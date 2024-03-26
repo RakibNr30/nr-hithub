@@ -18,7 +18,6 @@ const SelectField = ({fieldName, fieldLabel = "", options = [], defaultValue, ha
                 name={fieldName}
                 onChange={handler}
             >
-                <option>Select {fieldLabel}</option>
                 {options.map((item, index) => {
                     return <option value={item.value} key={index}>{item.label}</option>
                 })}

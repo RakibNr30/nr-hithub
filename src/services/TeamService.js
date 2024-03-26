@@ -7,7 +7,7 @@ const TeamService = () => {
     }
 
     const findById = (id) => {
-        return findAll().find(team => team.id === id);
+        return findAll().find(team => team.id == id);
     }
 
     return {

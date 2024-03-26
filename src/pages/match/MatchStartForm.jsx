@@ -8,7 +8,7 @@ import {series} from "../../ds/series";
 import {venus} from "../../ds/venus";
 import {teams} from "../../ds/teams";
 
-const MatchForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubmit, isUpdate = false}) => {
+const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubmit}) => {
 
     const [match, setMatch] = useState({});
     const [resetCounter, setResetCounter] = useState(0);
@@ -112,10 +112,7 @@ const MatchForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubm
                         </Button>
                         <Button variant="primary" className="ms-2" onClick={() => {
                             handleSubmit(match);
-                            if (!isUpdate) {
-                                reset();
-                                setShowFormModal(false);
-                            }
+                            setShowFormModal(false);
                         }}>
                             {buttonLabel}
                         </Button>
@@ -126,4 +123,4 @@ const MatchForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubm
     )
 }
 
-export default MatchForm;
+export default MatchStartForm;

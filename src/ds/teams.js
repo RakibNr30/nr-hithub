@@ -48,5 +48,10 @@ export const teams = [
         id: 10,
         name: "Sri Lanka",
         code: "sl"
+    },
+    {
+        id: 11,
+        name: "Ireland",
+        code: "ire"
     }
 ];

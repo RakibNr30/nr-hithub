@@ -7,7 +7,7 @@ const SeriesService = () => {
     }
 
     const findById = (id) => {
-        return findAll().find(series => series.id === id);
+        return findAll().find(series => series.id == id);
     }
 
     return {

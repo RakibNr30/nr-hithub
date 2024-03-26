@@ -6,12 +6,17 @@ const PlayerService = () => {
         return players;
     }
 
+    const findAllByTeamId = (id) => {
+        return findAll().filter(player => player.teamId == id);
+    }
+
     const findById = (id) => {
-        return findAll().find(player => player.id === id);
+        return findAll().find(player => player.id == id);
     }
 
     return {
         findAll,
+        findAllByTeamId,
         findById
     }
 }

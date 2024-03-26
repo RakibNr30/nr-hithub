@@ -11,7 +11,7 @@ const HomeIndex = () => {
     const [match, setMatch] = useState({});
 
     useEffect(() => {
-        setMatch(matchService.findById(parseInt(id)));
+        setMatch(matchService.findById(id));
     }, [])
 
     if (!match) {

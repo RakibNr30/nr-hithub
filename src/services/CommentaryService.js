@@ -7,7 +7,7 @@ const CommentaryService = () => {
     }
 
     const findById = (id) => {
-        return findAll().find(commentary => commentary.id === id);
+        return findAll().find(commentary => commentary.id == id);
     }
 
     return {

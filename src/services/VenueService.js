@@ -7,7 +7,7 @@ const VenueService = () => {
     }
 
     const findById = (id) => {
-        return findAll().find(venue => venue.id === id);
+        return findAll().find(venue => venue.id == id);
     }
 
     return {

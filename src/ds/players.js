@@ -1,7 +1,7 @@
 export const players = [
     {
         id: 1,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rob",
         name: "Mahmudullah Riyadh",
@@ -11,7 +11,7 @@ export const players = [
     },
     {
         id: 2,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "sla",
         name: "Shakib Al Hasan",
@@ -21,7 +21,7 @@ export const players = [
     },
     {
         id: 3,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rfm",
         name: "Tamim Iqbal",
@@ -31,7 +31,7 @@ export const players = [
     },
     {
         id: 4,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "lfm",
         name: "Mustafizur Rahman",
@@ -41,7 +41,7 @@ export const players = [
     },
     {
         id: 5,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "rm",
         name: "Mushfiqur Rahim",
@@ -51,7 +51,7 @@ export const players = [
     },
     {
         id: 6,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rmf",
         name: "Mehidy Hasan Miraz",
@@ -61,7 +61,7 @@ export const players = [
     },
     {
         id: 7,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "rm",
         name: "Liton Das",
@@ -71,7 +71,7 @@ export const players = [
     },
     {
         id: 8,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "lfm",
         name: "Taskin Ahmed",
@@ -81,7 +81,7 @@ export const players = [
     },
     {
         id: 9,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rfm",
         name: "Soumya Sarkar",
@@ -91,7 +91,7 @@ export const players = [
     },
     {
         id: 10,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "sla",
         name: "Nasum Ahmed",
@@ -101,7 +101,7 @@ export const players = [
     },
     {
         id: 11,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rm",
         name: "Afif Hossain",
@@ -111,7 +111,7 @@ export const players = [
     },
     {
         id: 12,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rmf",
         name: "Mohammad Naim",
@@ -121,7 +121,7 @@ export const players = [
     },
     {
         id: 13,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "rm",
         name: "Mohammad Saifuddin",
@@ -131,7 +131,7 @@ export const players = [
     },
     {
         id: 14,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "sla",
         name: "Taijul Islam",
@@ -141,7 +141,7 @@ export const players = [
     },
     {
         id: 15,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rm",
         name: "Mahedi Hasan",
@@ -151,7 +151,7 @@ export const players = [
     },
     {
         id: 16,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "lfm",
         name: "Abu Jayed",
@@ -161,7 +161,7 @@ export const players = [
     },
     {
         id: 17,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rm",
         name: "Rubel Hossain",
@@ -171,7 +171,7 @@ export const players = [
     },
     {
         id: 18,
-        team: "ban",
+        teamId: 2,
         bat: "lhb",
         bowl: "rmf",
         name: "Mohammad Mithun",
@@ -181,7 +181,7 @@ export const players = [
     },
     {
         id: 19,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rmf",
         name: "Shoriful Islam",
@@ -191,7 +191,7 @@ export const players = [
     },
     {
         id: 20,
-        team: "ban",
+        teamId: 2,
         bat: "rhb",
         bowl: "rlb",
         name: "Rishad Hossain",
@@ -201,7 +201,7 @@ export const players = [
     },
     {
         id: 21,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rmf",
         name: "Virat Kohli",
@@ -211,7 +211,7 @@ export const players = [
     },
     {
         id: 22,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "sla",
         name: "Rohit Sharma",
@@ -221,7 +221,7 @@ export const players = [
     },
     {
         id: 23,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rfm",
         name: "Jasprit Bumrah",
@@ -231,7 +231,7 @@ export const players = [
     },
     {
         id: 24,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rm",
         name: "Ravindra Jadeja",
@@ -241,7 +241,7 @@ export const players = [
     },
     {
         id: 25,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "rfm",
         name: "KL Rahul",
@@ -251,7 +251,7 @@ export const players = [
     },
     {
         id: 26,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rmf",
         name: "Hardik Pandya",
@@ -261,7 +261,7 @@ export const players = [
     },
     {
         id: 27,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rfm",
         name: "Bhuvneshwar Kumar",
@@ -271,7 +271,7 @@ export const players = [
     },
     {
         id: 28,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "rmf",
         name: "Shikhar Dhawan",
@@ -281,7 +281,7 @@ export const players = [
     },
     {
         id: 29,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rm",
         name: "Rishabh Pant",
@@ -291,7 +291,7 @@ export const players = [
     },
     {
         id: 30,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "sla",
         name: "Yuzvendra Chahal",
@@ -301,7 +301,7 @@ export const players = [
     },
     {
         id: 31,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rfm",
         name: "Shardul Thakur",
@@ -311,7 +311,7 @@ export const players = [
     },
     {
         id: 32,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rm",
         name: "Washington Sundar",
@@ -321,7 +321,7 @@ export const players = [
     },
     {
         id: 33,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "rmf",
         name: "Axar Patel",
@@ -331,7 +331,7 @@ export const players = [
     },
     {
         id: 34,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rfm",
         name: "Mohammed Shami",
@@ -341,7 +341,7 @@ export const players = [
     },
     {
         id: 35,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "rmf",
         name: "Rahul Chahar",
@@ -351,7 +351,7 @@ export const players = [
     },
     {
         id: 36,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rm",
         name: "Shreyas Iyer",
@@ -361,7 +361,7 @@ export const players = [
     },
     {
         id: 37,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "rmf",
         name: "Prasidh Krishna",
@@ -371,7 +371,7 @@ export const players = [
     },
     {
         id: 38,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rmf",
         name: "Ishan Kishan",
@@ -381,7 +381,7 @@ export const players = [
     },
     {
         id: 39,
-        team: "ind",
+        teamId: 6,
         bat: "lhb",
         bowl: "rfm",
         name: "Deepak Chahar",
@@ -391,7 +391,7 @@ export const players = [
     },
     {
         id: 40,
-        team: "ind",
+        teamId: 6,
         bat: "rhb",
         bowl: "rfm",
         name: "Mayank Agarwal",
@@ -401,7 +401,7 @@ export const players = [
     },
     {
         id: 41,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rmf",
         name: "Aaron Finch",
@@ -411,7 +411,7 @@ export const players = [
     },
     {
         id: 42,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "rfm",
         name: "David Warner",
@@ -421,7 +421,7 @@ export const players = [
     },
     {
         id: 43,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rmf",
         name: "Steve Smith",
@@ -431,7 +431,7 @@ export const players = [
     },
     {
         id: 44,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rfm",
         name: "Glenn Maxwell",
@@ -441,7 +441,7 @@ export const players = [
     },
     {
         id: 45,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "sla",
         name: "Adam Zampa",
@@ -451,7 +451,7 @@ export const players = [
     },
     {
         id: 46,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rfm",
         name: "Mitchell Starc",
@@ -461,7 +461,7 @@ export const players = [
     },
     {
         id: 47,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "rm",
         name: "Mitchell Marsh",
@@ -471,7 +471,7 @@ export const players = [
     },
     {
         id: 48,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rmf",
         name: "Pat Cummins",
@@ -481,7 +481,7 @@ export const players = [
     },
     {
         id: 49,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rm",
         name: "Alex Carey",
@@ -491,7 +491,7 @@ export const players = [
     },
     {
         id: 50,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "rmf",
         name: "Marcus Stoinis",
@@ -501,7 +501,7 @@ export const players = [
     },
     {
         id: 51,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rfm",
         name: "Josh Hazlewood",
@@ -511,7 +511,7 @@ export const players = [
     },
     {
         id: 52,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "rmf",
         name: "Ashton Agar",
@@ -521,7 +521,7 @@ export const players = [
     },
     {
         id: 53,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rm",
         name: "Matthew Wade",
@@ -531,7 +531,7 @@ export const players = [
     },
     {
         id: 54,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "rm",
         name: "Nathan Lyon",
@@ -541,7 +541,7 @@ export const players = [
     },
     {
         id: 55,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rmf",
         name: "Kane Richardson",
@@ -551,7 +551,7 @@ export const players = [
     },
     {
         id: 56,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "rm",
         name: "Josh Philippe",
@@ -561,7 +561,7 @@ export const players = [
     },
     {
         id: 57,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rfm",
         name: "Andrew Tye",
@@ -571,7 +571,7 @@ export const players = [
     },
     {
         id: 58,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rfm",
         name: "Adam Finch",
@@ -581,7 +581,7 @@ export const players = [
     },
     {
         id: 59,
-        team: "aus",
+        teamId: 3,
         bat: "lhb",
         bowl: "rm",
         name: "Travis Head",
@@ -591,7 +591,7 @@ export const players = [
     },
     {
         id: 60,
-        team: "aus",
+        teamId: 3,
         bat: "rhb",
         bowl: "rmf",
         name: "Jason Behrendorff",
@@ -601,7 +601,7 @@ export const players = [
     },
     {
         id: 61,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rmf",
         name: "Eoin Morgan",
@@ -611,7 +611,7 @@ export const players = [
     },
     {
         id: 62,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rmf",
         name: "Joe Root",
@@ -621,7 +621,7 @@ export const players = [
     },
     {
         id: 63,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rm",
         name: "Ben Stokes",
@@ -631,7 +631,7 @@ export const players = [
     },
     {
         id: 64,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rm",
         name: "Jos Buttler",
@@ -641,7 +641,7 @@ export const players = [
     },
     {
         id: 65,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rfm",
         name: "Jofra Archer",
@@ -651,7 +651,7 @@ export const players = [
     },
     {
         id: 66,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "sla",
         name: "Adil Rashid",
@@ -661,7 +661,7 @@ export const players = [
     },
     {
         id: 67,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rfm",
         name: "Chris Woakes",
@@ -671,7 +671,7 @@ export const players = [
     },
     {
         id: 68,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rm",
         name: "Moeen Ali",
@@ -681,7 +681,7 @@ export const players = [
     },
     {
         id: 69,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rmf",
         name: "Mark Wood",
@@ -691,7 +691,7 @@ export const players = [
     },
     {
         id: 70,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rm",
         name: "Sam Curran",
@@ -701,7 +701,7 @@ export const players = [
     },
     {
         id: 71,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rfm",
         name: "Tom Curran",
@@ -711,7 +711,7 @@ export const players = [
     },
     {
         id: 72,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rfm",
         name: "Sam Billings",
@@ -721,7 +721,7 @@ export const players = [
     },
     {
         id: 73,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rmf",
         name: "David Willey",
@@ -731,7 +731,7 @@ export const players = [
     },
     {
         id: 74,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rfm",
         name: "Liam Plunkett",
@@ -741,7 +741,7 @@ export const players = [
     },
     {
         id: 75,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rm",
         name: "Jason Roy",
@@ -751,7 +751,7 @@ export const players = [
     },
     {
         id: 76,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rfm",
         name: "Liam Livingstone",
@@ -761,7 +761,7 @@ export const players = [
     },
     {
         id: 77,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rm",
         name: "Jonny Bairstow",
@@ -771,7 +771,7 @@ export const players = [
     },
     {
         id: 78,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rfm",
         name: "Chris Jordan",
@@ -781,7 +781,7 @@ export const players = [
     },
     {
         id: 79,
-        team: "eng",
+        teamId: 5,
         bat: "lhb",
         bowl: "rfm",
         name: "Olly Stone",
@@ -791,7 +791,7 @@ export const players = [
     },
     {
         id: 80,
-        team: "eng",
+        teamId: 5,
         bat: "rhb",
         bowl: "rmf",
         name: "Saqib Mahmood",
@@ -801,7 +801,7 @@ export const players = [
     },
     {
         id: 81,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rmf",
         name: "Kane Williamson",
@@ -811,7 +811,7 @@ export const players = [
     },
     {
         id: 82,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "rmf",
         name: "Martin Guptill",
@@ -821,7 +821,7 @@ export const players = [
     },
     {
         id: 83,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rmf",
         name: "Ross Taylor",
@@ -831,7 +831,7 @@ export const players = [
     },
     {
         id: 84,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rfm",
         name: "Trent Boult",
@@ -841,7 +841,7 @@ export const players = [
     },
     {
         id: 85,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "rmf",
         name: "Tim Southee",
@@ -851,7 +851,7 @@ export const players = [
     },
     {
         id: 86,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "sla",
         name: "Mitchell Santner",
@@ -861,7 +861,7 @@ export const players = [
     },
     {
         id: 87,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rfm",
         name: "Lockie Ferguson",
@@ -871,7 +871,7 @@ export const players = [
     },
     {
         id: 88,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rmf",
         name: "Jimmy Neesham",
@@ -881,7 +881,7 @@ export const players = [
     },
     {
         id: 89,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rmf",
         name: "Kyle Jamieson",
@@ -891,7 +891,7 @@ export const players = [
     },
     {
         id: 90,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "rmf",
         name: "Colin de Grandhomme",
@@ -901,7 +901,7 @@ export const players = [
     },
     {
         id: 91,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rmf",
         name: "Adam Milne",
@@ -911,7 +911,7 @@ export const players = [
     },
     {
         id: 92,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "rfm",
         name: "Colin Munro",
@@ -921,7 +921,7 @@ export const players = [
     },
     {
         id: 93,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rfm",
         name: "Matt Henry",
@@ -931,7 +931,7 @@ export const players = [
     },
     {
         id: 94,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "rmf",
         name: "Tom Latham",
@@ -941,7 +941,7 @@ export const players = [
     },
     {
         id: 95,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rm",
         name: "Ish Sodhi",
@@ -951,7 +951,7 @@ export const players = [
     },
     {
         id: 96,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "rm",
         name: "Devon Conway",
@@ -961,7 +961,7 @@ export const players = [
     },
     {
         id: 97,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rfm",
         name: "Doug Bracewell",
@@ -971,7 +971,7 @@ export const players = [
     },
     {
         id: 98,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rm",
         name: "James Neesham",
@@ -981,7 +981,7 @@ export const players = [
     },
     {
         id: 99,
-        team: "nz",
+        teamId: 7,
         bat: "rhb",
         bowl: "rfm",
         name: "Daryl Mitchell",
@@ -991,7 +991,7 @@ export const players = [
     },
     {
         id: 100,
-        team: "nz",
+        teamId: 7,
         bat: "lhb",
         bowl: "rmf",
         name: "Tim Southee",
@@ -1001,7 +1001,7 @@ export const players = [
     },
     {
         id: 101,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rmf",
         name: "Quinton de Kock",
@@ -1011,7 +1011,7 @@ export const players = [
     },
     {
         id: 102,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rfm",
         name: "Kagiso Rabada",
@@ -1021,7 +1021,7 @@ export const players = [
     },
     {
         id: 103,
-        team: "sa",
+        teamId: 9,
         bat: "lhb",
         bowl: "rmf",
         name: "Faf du Plessis",
@@ -1031,7 +1031,7 @@ export const players = [
     },
     {
         id: 104,
-        team: "sa",
+        teamId: 9,
         bat: "lhb",
         bowl: "sla",
         name: "Tabraiz Shamsi",
@@ -1041,7 +1041,7 @@ export const players = [
     },
     {
         id: 105,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rfm",
         name: "Anrich Nortje",
@@ -1051,7 +1051,7 @@ export const players = [
     },
     {
         id: 106,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rm",
         name: "David Miller",
@@ -1061,7 +1061,7 @@ export const players = [
     },
     {
         id: 107,
-        team: "sa",
+        teamId: 9,
         bat: "lhb",
         bowl: "rm",
         name: "Heinrich Klaasen",
@@ -1071,7 +1071,7 @@ export const players = [
     },
     {
         id: 108,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rfm",
         name: "Lungi Ngidi",
@@ -1081,7 +1081,7 @@ export const players = [
     },
     {
         id: 109,
-        team: "sa",
+        teamId: 9,
         bat: "lhb",
         bowl: "rmf",
         name: "George Linde",
@@ -1091,7 +1091,7 @@ export const players = [
     },
     {
         id: 110,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rm",
         name: "Aiden Markram",
@@ -1101,7 +1101,7 @@ export const players = [
     },
     {
         id: 111,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rmf",
         name: "Andile Phehlukwayo",
@@ -1111,7 +1111,7 @@ export const players = [
     },
     {
         id: 112,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rfm",
         name: "Dwaine Pretorius",
@@ -1121,7 +1121,7 @@ export const players = [
     },
     {
         id: 113,
-        team: "sa",
+        teamId: 9,
         bat: "lhb",
         bowl: "rm",
         name: "Temba Bavuma",
@@ -1131,7 +1131,7 @@ export const players = [
     },
     {
         id: 114,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rmf",
         name: "Lizaad Williams",
@@ -1141,7 +1141,7 @@ export const players = [
     },
     {
         id: 115,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rm",
         name: "Kyle Verreynne",
@@ -1151,7 +1151,7 @@ export const players = [
     },
     {
         id: 116,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rmf",
         name: "Rassie van der Dussen",
@@ -1161,7 +1161,7 @@ export const players = [
     },
     {
         id: 117,
-        team: "sa",
+        teamId: 9,
         bat: "lhb",
         bowl: "rmf",
         name: "Beuran Hendricks",
@@ -1171,7 +1171,7 @@ export const players = [
     },
     {
         id: 118,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rfm",
         name: "Daryn Dupavillon",
@@ -1181,7 +1181,7 @@ export const players = [
     },
     {
         id: 119,
-        team: "sa",
+        teamId: 9,
         bat: "lhb",
         bowl: "rmf",
         name: "Wiaan Mulder",
@@ -1191,7 +1191,7 @@ export const players = [
     },
     {
         id: 120,
-        team: "sa",
+        teamId: 9,
         bat: "rhb",
         bowl: "rfm",
         name: "Anrich Nortje",
@@ -1201,7 +1201,7 @@ export const players = [
     },
     {
         id: 121,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rmf",
         name: "Babar Azam",
@@ -1211,7 +1211,7 @@ export const players = [
     },
     {
         id: 122,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "sla",
         name: "Shadab Khan",
@@ -1221,7 +1221,7 @@ export const players = [
     },
     {
         id: 123,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "rmf",
         name: "Shaheen Afridi",
@@ -1231,7 +1231,7 @@ export const players = [
     },
     {
         id: 124,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rfm",
         name: "Mohammad Rizwan",
@@ -1241,7 +1241,7 @@ export const players = [
     },
     {
         id: 125,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rfm",
         name: "Fakhar Zaman",
@@ -1251,7 +1251,7 @@ export const players = [
     },
     {
         id: 126,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "rmf",
         name: "Imad Wasim",
@@ -1261,7 +1261,7 @@ export const players = [
     },
     {
         id: 127,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rmf",
         name: "Shoaib Malik",
@@ -1271,7 +1271,7 @@ export const players = [
     },
     {
         id: 128,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rmf",
         name: "Mohammad Hafeez",
@@ -1281,7 +1281,7 @@ export const players = [
     },
     {
         id: 129,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "rmf",
         name: "Haris Rauf",
@@ -1291,7 +1291,7 @@ export const players = [
     },
     {
         id: 130,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "sla",
         name: "Usman Qadir",
@@ -1301,7 +1301,7 @@ export const players = [
     },
     {
         id: 131,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rfm",
         name: "Hasan Ali",
@@ -1311,7 +1311,7 @@ export const players = [
     },
     {
         id: 132,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rfm",
         name: "Sarfraz Ahmed",
@@ -1321,7 +1321,7 @@ export const players = [
     },
     {
         id: 133,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "rfm",
         name: "Shaheen Shah Afridi",
@@ -1331,7 +1331,7 @@ export const players = [
     },
     {
         id: 134,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rm",
         name: "Imam-ul-Haq",
@@ -1341,7 +1341,7 @@ export const players = [
     },
     {
         id: 135,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "rmf",
         name: "Mohammad Nawaz",
@@ -1351,7 +1351,7 @@ export const players = [
     },
     {
         id: 136,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rm",
         name: "Mohammad Hasnain",
@@ -1361,7 +1361,7 @@ export const players = [
     },
     {
         id: 137,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rfm",
         name: "Mohammad Amir",
@@ -1371,7 +1371,7 @@ export const players = [
     },
     {
         id: 138,
-        team: "pak",
+        teamId: 8,
         bat: "lhb",
         bowl: "rm",
         name: "Faheem Ashraf",
@@ -1381,7 +1381,7 @@ export const players = [
     },
     {
         id: 139,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rfm",
         name: "Shan Masood",
@@ -1391,7 +1391,7 @@ export const players = [
     },
     {
         id: 140,
-        team: "pak",
+        teamId: 8,
         bat: "rhb",
         bowl: "rfm",
         name: "Naseem Shah",
@@ -1401,7 +1401,7 @@ export const players = [
     },
     {
         id: 161,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rmf",
         name: "Mohammad Nabi",
@@ -1411,7 +1411,7 @@ export const players = [
     },
     {
         id: 162,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rmf",
         name: "Rashid Khan",
@@ -1421,7 +1421,7 @@ export const players = [
     },
     {
         id: 163,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Mujeeb Ur Rahman",
@@ -1431,7 +1431,7 @@ export const players = [
     },
     {
         id: 164,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rm",
         name: "Asghar Afghan",
@@ -1441,7 +1441,7 @@ export const players = [
     },
     {
         id: 165,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Gulbadin Naib",
@@ -1451,7 +1451,7 @@ export const players = [
     },
     {
         id: 166,
-        team: "afg",
+        teamId: 1,
         bat: "lhb",
         bowl: "rm",
         name: "Najibullah Zadran",
@@ -1461,7 +1461,7 @@ export const players = [
     },
     {
         id: 167,
-        team: "afg",
+        teamId: 1,
         bat: "lhb",
         bowl: "slc",
         name: "Rahmat Shah",
@@ -1471,7 +1471,7 @@ export const players = [
     },
     {
         id: 168,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Hamid Hassan",
@@ -1481,7 +1481,7 @@ export const players = [
     },
     {
         id: 169,
-        team: "afg",
+        teamId: 1,
         bat: "lhb",
         bowl: "sla",
         name: "Rahmanullah Gurbaz",
@@ -1491,7 +1491,7 @@ export const players = [
     },
     {
         id: 170,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Naveen-ul-Haq",
@@ -1501,7 +1501,7 @@ export const players = [
     },
     {
         id: 171,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Karim Janat",
@@ -1511,7 +1511,7 @@ export const players = [
     },
     {
         id: 172,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rmf",
         name: "Sharafuddin Ashraf",
@@ -1521,7 +1521,7 @@ export const players = [
     },
     {
         id: 173,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Fareed Ahmad",
@@ -1531,7 +1531,7 @@ export const players = [
     },
     {
         id: 174,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Rashid Khan",
@@ -1541,7 +1541,7 @@ export const players = [
     },
     {
         id: 175,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Mujeeb Ur Rahman",
@@ -1551,7 +1551,7 @@ export const players = [
     },
     {
         id: 176,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rm",
         name: "Asghar Afghan",
@@ -1561,7 +1561,7 @@ export const players = [
     },
     {
         id: 177,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Gulbadin Naib",
@@ -1571,7 +1571,7 @@ export const players = [
     },
     {
         id: 178,
-        team: "afg",
+        teamId: 1,
         bat: "lhb",
         bowl: "rm",
         name: "Najibullah Zadran",
@@ -1581,7 +1581,7 @@ export const players = [
     },
     {
         id: 179,
-        team: "afg",
+        teamId: 1,
         bat: "lhb",
         bowl: "slc",
         name: "Rahmat Shah",
@@ -1591,7 +1591,7 @@ export const players = [
     },
     {
         id: 180,
-        team: "afg",
+        teamId: 1,
         bat: "rhb",
         bowl: "rfm",
         name: "Hamid Hassan",
@@ -1601,7 +1601,7 @@ export const players = [
     },
     {
         id: 181,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "lfm",
         name: "Kraigg Brathwaite",
@@ -1611,7 +1611,7 @@ export const players = [
     },
     {
         id: 182,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rmf",
         name: "Jermaine Blackwood",
@@ -1621,7 +1621,7 @@ export const players = [
     },
     {
         id: 183,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "lfm",
         name: "Kyle Mayers",
@@ -1631,7 +1631,7 @@ export const players = [
     },
     {
         id: 184,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rmf",
         name: "Nkrumah Bonner",
@@ -1641,7 +1641,7 @@ export const players = [
     },
     {
         id: 185,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rfm",
         name: "Jason Holder",
@@ -1651,7 +1651,7 @@ export const players = [
     },
     {
         id: 186,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rf",
         name: "Alzarri Joseph",
@@ -1661,7 +1661,7 @@ export const players = [
     },
     {
         id: 187,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "rm",
         name: "Shamarh Brooks",
@@ -1671,7 +1671,7 @@ export const players = [
     },
     {
         id: 188,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rmf",
         name: "Roston Chase",
@@ -1681,7 +1681,7 @@ export const players = [
     },
     {
         id: 189,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "sla",
         name: "Kieran Powell",
@@ -1691,7 +1691,7 @@ export const players = [
     },
     {
         id: 190,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rfm",
         name: "Shannon Gabriel",
@@ -1701,7 +1701,7 @@ export const players = [
     },
     {
         id: 191,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "rmf",
         name: "Kemar Roach",
@@ -1711,7 +1711,7 @@ export const players = [
     },
     {
         id: 192,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "rmf",
         name: "Darren Bravo",
@@ -1721,7 +1721,7 @@ export const players = [
     },
     {
         id: 193,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "sla",
         name: "Rahkeem Cornwall",
@@ -1731,7 +1731,7 @@ export const players = [
     },
     {
         id: 194,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rfm",
         name: "Keemo Paul",
@@ -1741,7 +1741,7 @@ export const players = [
     },
     {
         id: 195,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rm",
         name: "Joshua Da Silva",
@@ -1751,7 +1751,7 @@ export const players = [
     },
     {
         id: 196,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rfm",
         name: "Chemar Holder",
@@ -1761,7 +1761,7 @@ export const players = [
     },
     {
         id: 197,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rfm",
         name: "Jayden Seales",
@@ -1771,7 +1771,7 @@ export const players = [
     },
     {
         id: 198,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rm",
         name: "Shai Hope",
@@ -1781,7 +1781,7 @@ export const players = [
     },
     {
         id: 199,
-        team: "wi",
+        teamId: 4,
         bat: "rhb",
         bowl: "rf",
         name: "Oshane Thomas",
@@ -1791,7 +1791,7 @@ export const players = [
     },
     {
         id: 200,
-        team: "wi",
+        teamId: 4,
         bat: "lhb",
         bowl: "sla",
         name: "Jomel Warrican",
@@ -1801,7 +1801,7 @@ export const players = [
     },
     {
         id: 201,
-        team: "sl",
+        teamId: 10,
         bat: "lhb",
         bowl: "sla",
         name: "Dimuth Karunaratne",
@@ -1811,7 +1811,7 @@ export const players = [
     },
     {
         id: 202,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rmf",
         name: "Dinesh Chandimal",
@@ -1821,7 +1821,7 @@ export const players = [
     },
     {
         id: 203,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rfm",
         name: "Angelo Mathews",
@@ -1831,7 +1831,7 @@ export const players = [
     },
     {
         id: 204,
-        team: "sl",
+        teamId: 10,
         bat: "lhb",
         bowl: "sla",
         name: "Dhananjaya de Silva",
@@ -1841,7 +1841,7 @@ export const players = [
     },
     {
         id: 205,
-        team: "sl",
+        teamId: 10,
         bat: "lhb",
         bowl: "rmf",
         name: "Niroshan Dickwella",
@@ -1851,7 +1851,7 @@ export const players = [
     },
     {
         id: 206,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rmf",
         name: "Dasun Shanaka",
@@ -1861,7 +1861,7 @@ export const players = [
     },
     {
         id: 207,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rfm",
         name: "Lahiru Kumara",
@@ -1871,7 +1871,7 @@ export const players = [
     },
     {
         id: 208,
-        team: "sl",
+        teamId: 10,
         bat: "lhb",
         bowl: "rm",
         name: "Kusal Perera",
@@ -1881,7 +1881,7 @@ export const players = [
     },
     {
         id: 209,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rmf",
         name: "Wanindu Hasaranga",
@@ -1891,7 +1891,7 @@ export const players = [
     },
     {
         id: 210,
-        team: "sl",
+        teamId: 10,
         bat: "lhb",
         bowl: "rmf",
         name: "Lahiru Thirimanne",
@@ -1901,7 +1901,7 @@ export const players = [
     },
     {
         id: 211,
-        team: "sl",
+        teamId: 10,
         bat: "lhb",
         bowl: "rm",
         name: "Dushmantha Chameera",
@@ -1911,7 +1911,7 @@ export const players = [
     },
     {
         id: 212,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rmf",
         name: "Suranga Lakmal",
@@ -1921,7 +1921,7 @@ export const players = [
     },
     {
         id: 213,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rmf",
         name: "Akila Dananjaya",
@@ -1931,7 +1931,7 @@ export const players = [
     },
     {
         id: 214,
-        team: "sl",
+        teamId: 10,
         bat: "lhb",
         bowl: "rmf",
         name: "Ramesh Mendis",
@@ -1941,7 +1941,7 @@ export const players = [
     },
     {
         id: 215,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rfm",
         name: "Nuwan Pradeep",
@@ -1951,7 +1951,7 @@ export const players = [
     },
     {
         id: 216,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rm",
         name: "Pathum Nissanka",
@@ -1961,7 +1961,7 @@ export const players = [
     },
     {
         id: 217,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rm",
         name: "Minod Bhanuka",
@@ -1971,7 +1971,7 @@ export const players = [
     },
     {
         id: 218,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rfm",
         name: "Binura Fernando",
@@ -1981,7 +1981,7 @@ export const players = [
     },
     {
         id: 219,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rfm",
         name: "Chamika Karunaratne",
@@ -1991,7 +1991,7 @@ export const players = [
     },
     {
         id: 220,
-        team: "sl",
+        teamId: 10,
         bat: "rhb",
         bowl: "rm",
         name: "Lahiru Kumara",
@@ -2001,7 +2001,7 @@ export const players = [
     },
     {
         id: 221,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rfm",
         name: "Paul Stirling",
@@ -2011,7 +2011,7 @@ export const players = [
     },
     {
         id: 222,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "rm",
         name: "William Porterfield",
@@ -2021,7 +2021,7 @@ export const players = [
     },
     {
         id: 223,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rfm",
         name: "Andrew Balbirnie",
@@ -2031,7 +2031,7 @@ export const players = [
     },
     {
         id: 224,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rmf",
         name: "Kevin O'Brien",
@@ -2041,7 +2041,7 @@ export const players = [
     },
     {
         id: 225,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "sla",
         name: "Simi Singh",
@@ -2051,7 +2051,7 @@ export const players = [
     },
     {
         id: 226,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rm",
         name: "Harry Tector",
@@ -2061,7 +2061,7 @@ export const players = [
     },
     {
         id: 227,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rfm",
         name: "Mark Adair",
@@ -2071,7 +2071,7 @@ export const players = [
     },
     {
         id: 228,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "rmf",
         name: "Curtis Campher",
@@ -2081,7 +2081,7 @@ export const players = [
     },
     {
         id: 229,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "sla",
         name: "George Dockrell",
@@ -2091,7 +2091,7 @@ export const players = [
     },
     {
         id: 230,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rf",
         name: "Lorcan Tucker",
@@ -2101,7 +2101,7 @@ export const players = [
     },
     {
         id: 231,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "rm",
         name: "Gareth Delany",
@@ -2111,7 +2111,7 @@ export const players = [
     },
     {
         id: 232,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "sla",
         name: "Andy McBrine",
@@ -2121,7 +2121,7 @@ export const players = [
     },
     {
         id: 233,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rfm",
         name: "Barry McCarthy",
@@ -2131,7 +2131,7 @@ export const players = [
     },
     {
         id: 234,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "rmf",
         name: "Josh Little",
@@ -2141,7 +2141,7 @@ export const players = [
     },
     {
         id: 235,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rfm",
         name: "Craig Young",
@@ -2151,7 +2151,7 @@ export const players = [
     },
     {
         id: 236,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "rmf",
         name: "David Delany",
@@ -2161,7 +2161,7 @@ export const players = [
     },
     {
         id: 237,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rf",
         name: "Peter Chase",
@@ -2171,7 +2171,7 @@ export const players = [
     },
     {
         id: 238,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "rm",
         name: "Harry Tector",
@@ -2181,7 +2181,7 @@ export const players = [
     },
     {
         id: 239,
-        team: "ire",
+        teamId: 11,
         bat: "rhb",
         bowl: "rfm",
         name: "Ben White",
@@ -2191,7 +2191,7 @@ export const players = [
     },
     {
         id: 240,
-        team: "ire",
+        teamId: 11,
         bat: "lhb",
         bowl: "rmf",
         name: "William McClintock",

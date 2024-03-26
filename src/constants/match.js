@@ -5,4 +5,9 @@ const STAGE = Object.freeze({
     END: 3,
 });
 
-export {STAGE}
+const TOSS_DECISION = Object.freeze({
+    BAT: "bat",
+    BOWL: "bowl",
+});
+
+export {STAGE, TOSS_DECISION}

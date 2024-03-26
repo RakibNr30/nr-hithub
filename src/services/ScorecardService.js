@@ -7,7 +7,7 @@ const ScorecardService = () => {
     }
 
     const findById = (id) => {
-        return findAll().find(scorecard => scorecard.id === id);
+        return findAll().find(scorecard => scorecard.id == id);
     }
 
     return {
