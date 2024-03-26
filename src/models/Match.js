@@ -5,7 +5,7 @@ class Match {
     constructor(data = {}) {
         this.id = data.id || uid();
         this.title = data.title || "";
-        this.over = data.over || 20;
+        this.over = data.over || 20.0;
         this.seriesId = data.seriesId || null;
         this.venueId = data.venueId || null;
         this.batTeamId = data.batTeamId || null;
@@ -21,6 +21,7 @@ class Match {
             winnerName: data?.tossResult?.winnerName || "",
             winningTeamCode: data?.tossResult?.winningTeamCode || "",
             decision: data?.tossResult?.decision || "",
+            batFirstTeamId: data?.tossResult?.batFirstTeamId || null,
             time: data?.tossResult?.time || null,
         };
         this.matchResult = {

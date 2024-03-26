@@ -4,26 +4,25 @@ import {Col, FormGroup, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import InputField from "../../components/form/InputField";
 import SelectField from "../../components/form/SelectField";
-import {series} from "../../ds/series";
-import {venus} from "../../ds/venus";
-import {teams} from "../../ds/teams";
+import {series as seriesList} from "../../ds/series";
+import {venus as venueList} from "../../ds/venus";
+import {teams as teamList} from "../../ds/teams";
 
 const MatchForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubmit, isUpdate = false}) => {
 
     const [match, setMatch] = useState({});
     const [resetCounter, setResetCounter] = useState(0);
-    const [seriesOptions, setSeriesOptions] = useState([]);
-    const [venueOptions, setVenueOptions] = useState([]);
     const [team1Options, setTeam1Options] = useState([]);
     const [team2Options, setTeam2Options] = useState([]);
 
+    const venues = venueList.map((item) => {return {label: `${item.ground}, ${item.city}, ${item.country}`, value: item.id}});
+    const series = seriesList.map((item) => {return {label: item.title, value: item.id}});
+    const teams = teamList.map((item) => {return {label: item.name, value: item.id}})
+
     useEffect(() => {
         reset();
-
-        setSeriesOptions(series.map((item) => {return {label: item.title, value: item.id}}));
-        setVenueOptions(venus.map((item) => {return {label: `${item.ground}, ${item.city}, ${item.country}`, value: item.id}}));
-        setTeam1Options(teams.map((item) => {return {label: item.name, value: item.id}}));
-        setTeam2Options(teams.map((item) => {return {label: item.name, value: item.id}}));
+        setTeam1Options(teams);
+        setTeam2Options(teams);
     }, []);
 
     const reset = () => {
@@ -36,10 +35,10 @@ const MatchForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubm
 
         switch (e.target.name) {
             case "team1Id":
-                setTeam2Options(team2Options.filter(item => item.value != e.target.value));
+                setTeam2Options(teams.filter(item => item.value != e.target.value));
                 break;
             case "team2Id":
-                setTeam1Options(team1Options.filter(item => item.value != e.target.value));
+                setTeam1Options(teams.filter(item => item.value != e.target.value));
                 break;
             default:
                 break;
@@ -61,7 +60,7 @@ const MatchForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubm
                     <SelectField
                         fieldName="seriesId"
                         fieldLabel="Series"
-                        options={seriesOptions}
+                        options={series}
                         defaultValue={match.seriesId}
                         handler={onChangeHandler}
                         resetCounter={resetCounter}
@@ -71,7 +70,7 @@ const MatchForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubm
                     <SelectField
                         fieldName="venueId"
                         fieldLabel="Venue"
-                        options={venueOptions}
+                        options={venues}
                         defaultValue={match.venueId}
                         handler={onChangeHandler}
                         resetCounter={resetCounter}

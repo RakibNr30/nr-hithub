@@ -1,18 +1,30 @@
-import {scorecards} from "../ds/scorecards";
+import useScorecardStore from "../stores/scorecardStore";
 
 const ScorecardService = () => {
 
+    const {addScorecard, updateScorecard, getAllScorecard} = useScorecardStore();
+
     const findAll = () => {
-        return scorecards;
+        return getAllScorecard();
     }
 
     const findById = (id) => {
         return findAll().find(scorecard => scorecard.id == id);
     }
 
+    const save = (scorecard) => {
+        addScorecard(scorecard);
+    }
+
+    const update = (scorecard) => {
+        updateScorecard(scorecard);
+    }
+
     return {
         findAll,
-        findById
+        findById,
+        save,
+        update
     }
 }
 

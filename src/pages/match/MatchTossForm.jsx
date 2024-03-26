@@ -2,15 +2,17 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {Col, FormGroup, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
-import InputField from "../../components/form/InputField";
 import SelectField from "../../components/form/SelectField";
 import TeamService from "../../services/TeamService";
 import PlayerService from "../../services/PlayerService";
-import {TOSS_DECISION} from "../../constants/match";
+import {STAGE, TOSS_DECISION} from "../../constants/match";
 import MultiSelectField from "../../components/form/MultiSelectField";
+import moment from "moment";
+import MatchService from "../../services/MatchService";
 
-const MatchTossForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handleSubmit}) => {
+const MatchTossForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
 
+    const matchService = MatchService();
     const teamService = TeamService();
     const playerService = PlayerService();
 
@@ -19,8 +21,12 @@ const MatchTossForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handle
 
     const team1 = teamService.findById(match.team1Id);
     const team2 = teamService.findById(match.team2Id);
-    const team1Players = playerService.findAllByTeamId(match.team1Id).map(item => {return {...item, label: `${item.name} (${item.role})`}});
-    const team2Players = playerService.findAllByTeamId(match.team2Id).map(item => {return {...item, label: `${item.name} (${item.role})`}});
+    const team1Players = playerService.findAllByTeamId(match.team1Id).map(item => {
+        return {...item, label: `${item.name} (${item.role})`}
+    });
+    const team2Players = playerService.findAllByTeamId(match.team2Id).map(item => {
+        return {...item, label: `${item.name} (${item.role})`}
+    });
 
     const teamOptions = [
         {label: team1.name, value: team1.id},
@@ -55,8 +61,17 @@ const MatchTossForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handle
                 });
                 break;
             case "tossDecision":
+                const battingFirst = e.target.value == TOSS_DECISION.BAT
+                    ? (match.tossResult.winnerId == match.team1Id ? match.team1Id : match.team2Id)
+                    : (match.tossResult.winnerId == match.team1Id ? match.team2Id : match.team1Id);
                 setMatch({
-                    ...match, tossResult: {...match.tossResult, decision: e.target.value},
+                    ...match,
+                    tossResult: {
+                        ...match.tossResult,
+                        decision: e.target.value,
+                        batFirstTeamId: battingFirst
+                    },
+                    batTeamId: battingFirst
                 });
                 break;
             default:
@@ -74,6 +89,10 @@ const MatchTossForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handle
         setMatch({
             ...match, team2Players: values
         })
+    }
+
+    const handleMatchToss = (match) => {
+        matchService.update({...match, stage: STAGE.TOSS, tossResult: {...match.tossResult, time: moment().format()}})
     }
 
     return (
@@ -119,7 +138,7 @@ const MatchTossForm = ({defaultMatch = {}, buttonLabel, setShowFormModal, handle
                             Clear
                         </Button>
                         <Button variant="primary" className="ms-2" onClick={() => {
-                            handleSubmit(match);
+                            handleMatchToss(match);
                             setShowFormModal(false);
                         }}>
                             {buttonLabel}

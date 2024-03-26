@@ -271,7 +271,7 @@ export const commentaries = [
                     wickets: 10,
                     overs: 14.4
                 },
-                tossResults: {
+                tossResult: {
                     tossWinnerId: 1,
                     tossWinnerName: "United Arab Emirates",
                     decision: "Bowling"

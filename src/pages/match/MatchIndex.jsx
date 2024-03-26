@@ -1,22 +1,19 @@
 import AppLayout from "../../layouts/AppLayout";
-import {useEffect, useState} from "react";
-import {matches as matchList} from "../../ds/matches";
+import {useState} from "react";
 import DefaultModal from "../../components/common/DefaultModal";
 import MatchForm from "./MatchForm";
 import MatchCard from "./MatchCard";
 import Match from "../../models/Match";
 import MatchService from "../../services/MatchService";
+import useMatchStore from "../../stores/matchStore";
 
 const MatchIndex = () => {
 
     const matchService = MatchService();
 
-    const [matches, setMatches] = useState([]);
     const [showAddModal, setShowAddModal] = useState(false);
 
-    useEffect(() => {
-        setMatches(matchService.findAll());
-    }, []);
+    const matches = useMatchStore.getState().matches;
 
     const handleAdd = (match) => {
         matchService.save(match);

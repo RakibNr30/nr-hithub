@@ -1,21 +1,240 @@
 import AppLayout from "../../layouts/AppLayout";
 import {useParams} from "react-router-dom";
 import MatchService from "../../services/MatchService";
-import {useEffect, useState} from "react";
+import SeriesService from "../../services/SeriesService";
+import VenueService from "../../services/VenueService";
+import TeamService from "../../services/TeamService";
+import CommentaryService from "../../services/CommentaryService";
+import {STAGE} from "../../constants/match";
+import useCommentaryStore from "../../stores/commentaryStore";
+import useMatchStore from "../../stores/matchStore";
 
 const HomeIndex = () => {
 
     const matchService = MatchService();
+    const commentaryService = CommentaryService();
+    const seriesService = SeriesService();
+    const venueService = VenueService();
+    const teamService = TeamService();
+
     const {id} = useParams();
 
-    const [match, setMatch] = useState({});
-
-    useEffect(() => {
-        setMatch(matchService.findById(id));
-    }, [])
+    const match = useMatchStore.getState().matches.find(match => match.id == id);
 
     if (!match) {
         return <h1>NOT FOUND</h1>
+    }
+
+    const venue = venueService.findById(match.venueId);
+    const series = seriesService.findById(match.seriesId);
+    const team1 = teamService.findById(match.team1Id);
+    const team2 = teamService.findById(match.team2Id);
+
+    let commentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+
+    const ballToOver = (balls) => {
+        return parseInt(balls/6) + ((balls%6)/10)
+    }
+
+    const onRunHandler = (value) => {
+        switch (value) {
+            case 0:
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        balls: commentary.miniScore.balls + 1,
+                        overs: ballToOver(commentary.miniScore.balls + 1),
+                        batsmanStriker: {
+                            ...commentary.miniScore.batsmanStriker,
+                            balls: commentary.miniScore.batsmanStriker.balls + 1,
+                            dots: commentary.miniScore.batsmanStriker.dots + 1,
+                        },
+                        bowlerStriker: {
+                            ...commentary.miniScore.bowlerStriker,
+                            balls: commentary.miniScore.bowlerStriker.balls + 1,
+                            dots: commentary.miniScore.bowlerStriker.dots + 1,
+                            overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                        }
+                    }
+                });
+                break;
+            case 1:
+                commentaryService.update({
+                   ...commentary,
+                   miniScore: {
+                       ...commentary.miniScore,
+                       scores: commentary.miniScore.scores + 1,
+                       balls: commentary.miniScore.balls + 1,
+                       overs: ballToOver(commentary.miniScore.balls + 1),
+                       batsmanStriker: {
+                           ...commentary.miniScore.batsmanStriker,
+                           runs: commentary.miniScore.batsmanStriker.runs + 1,
+                           balls: commentary.miniScore.batsmanStriker.balls + 1,
+                           ones: commentary.miniScore.batsmanStriker.ones + 1,
+                       },
+                       bowlerStriker: {
+                           ...commentary.miniScore.bowlerStriker,
+                           runs: commentary.miniScore.bowlerStriker.runs + 1,
+                           balls: commentary.miniScore.bowlerStriker.balls + 1,
+                           overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                       }
+                   }
+                });
+
+                commentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        batsmanStriker: commentary.miniScore.batsmanNonStriker,
+                        batsmanNonStriker: commentary.miniScore.batsmanStriker,
+                    }
+                })
+                break;
+            case 2:
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        scores: commentary.miniScore.scores + 2,
+                        balls: commentary.miniScore.balls + 1,
+                        overs: ballToOver(commentary.miniScore.balls + 1),
+                        batsmanStriker: {
+                            ...commentary.miniScore.batsmanStriker,
+                            runs: commentary.miniScore.batsmanStriker.runs + 2,
+                            balls: commentary.miniScore.batsmanStriker.balls + 1,
+                            twos: commentary.miniScore.batsmanStriker.twos + 1,
+                        },
+                        bowlerStriker: {
+                            ...commentary.miniScore.bowlerStriker,
+                            runs: commentary.miniScore.bowlerStriker.runs + 2,
+                            balls: commentary.miniScore.bowlerStriker.balls + 1,
+                            overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                        }
+                    }
+                });
+                break;
+            case 3:
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        scores: commentary.miniScore.scores + 3,
+                        balls: commentary.miniScore.balls + 1,
+                        overs: ballToOver(commentary.miniScore.balls + 1),
+                        batsmanStriker: {
+                            ...commentary.miniScore.batsmanStriker,
+                            runs: commentary.miniScore.batsmanStriker.runs + 3,
+                            balls: commentary.miniScore.batsmanStriker.balls + 1,
+                            threes: commentary.miniScore.batsmanStriker.threes + 1,
+                        },
+                        bowlerStriker: {
+                            ...commentary.miniScore.bowlerStriker,
+                            runs: commentary.miniScore.bowlerStriker.runs + 3,
+                            balls: commentary.miniScore.bowlerStriker.balls + 1,
+                            overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                        }
+                    }
+                });
+
+                commentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        batsmanStriker: commentary.miniScore.batsmanNonStriker,
+                        batsmanNonStriker: commentary.miniScore.batsmanStriker,
+                    }
+                })
+                break;
+            case 4:
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        scores: commentary.miniScore.scores + 4,
+                        balls: commentary.miniScore.balls + 1,
+                        overs: ballToOver(commentary.miniScore.balls + 1),
+                        batsmanStriker: {
+                            ...commentary.miniScore.batsmanStriker,
+                            runs: commentary.miniScore.batsmanStriker.runs + 4,
+                            balls: commentary.miniScore.batsmanStriker.balls + 1,
+                            fours: commentary.miniScore.batsmanStriker.fours + 1,
+                        },
+                        bowlerStriker: {
+                            ...commentary.miniScore.bowlerStriker,
+                            runs: commentary.miniScore.bowlerStriker.runs + 4,
+                            balls: commentary.miniScore.bowlerStriker.balls + 1,
+                            fours: commentary.miniScore.bowlerStriker.fours + 1,
+                            overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                        }
+                    }
+                });
+                break;
+            case 5:
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        scores: commentary.miniScore.scores + 5,
+                        balls: commentary.miniScore.balls + 1,
+                        overs: ballToOver(commentary.miniScore.balls + 1),
+                        batsmanStriker: {
+                            ...commentary.miniScore.batsmanStriker,
+                            runs: commentary.miniScore.batsmanStriker.runs + 1,
+                            balls: commentary.miniScore.batsmanStriker.balls + 1,
+                            fives: commentary.miniScore.batsmanStriker.fives + 1,
+                        },
+                        bowlerStriker: {
+                            ...commentary.miniScore.bowlerStriker,
+                            runs: commentary.miniScore.bowlerStriker.runs + 5,
+                            balls: commentary.miniScore.bowlerStriker.balls + 1,
+                            overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                        }
+                    }
+                });
+
+                commentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        batsmanStriker: commentary.miniScore.batsmanNonStriker,
+                        batsmanNonStriker: commentary.miniScore.batsmanStriker,
+                    }
+                })
+                break;
+            case 6:
+                commentaryService.update({
+                    ...commentary,
+                    miniScore: {
+                        ...commentary.miniScore,
+                        scores: commentary.miniScore.scores + 6,
+                        balls: commentary.miniScore.balls + 1,
+                        overs: ballToOver(commentary.miniScore.balls + 1),
+                        batsmanStriker: {
+                            ...commentary.miniScore.batsmanStriker,
+                            runs: commentary.miniScore.batsmanStriker.runs + 6,
+                            balls: commentary.miniScore.batsmanStriker.balls + 1,
+                            sixes: commentary.miniScore.batsmanStriker.sixes + 1,
+                        },
+                        bowlerStriker: {
+                            ...commentary.miniScore.bowlerStriker,
+                            runs: commentary.miniScore.bowlerStriker.runs + 6,
+                            balls: commentary.miniScore.bowlerStriker.balls + 1,
+                            sixes: commentary.miniScore.bowlerStriker.sixes + 1,
+                            overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                        }
+                    }
+                });
+                break;
+            default:
+                break;
+        }
     }
 
     return (
@@ -69,27 +288,27 @@ const HomeIndex = () => {
                                             <div className="runs">
                                                 <div className="card card-shadow mb-0 h-100 first-second">
                                                     <ul className="first">
-                                                        <li>
+                                                        <li onClick={() => onRunHandler(0)}>
                                                             <span>0</span>
                                                         </li>
-                                                        <li>
+                                                        <li onClick={() => onRunHandler(1)}>
                                                             <span>1</span>
                                                         </li>
-                                                        <li>
+                                                        <li onClick={() => onRunHandler(2)}>
                                                             <span>2</span>
                                                         </li>
-                                                        <li>
+                                                        <li onClick={() => onRunHandler(3)}>
                                                             <span>3</span>
                                                         </li>
                                                     </ul>
                                                     <ul className="second">
-                                                        <li>
+                                                        <li onClick={() => onRunHandler(4)}>
                                                             <span>4</span>
                                                         </li>
-                                                        <li>
+                                                        <li onClick={() => onRunHandler(5)}>
                                                             <span>5</span>
                                                         </li>
-                                                        <li>
+                                                        <li onClick={() => onRunHandler(6)}>
                                                             <span>6</span>
                                                         </li>
                                                         <li>
@@ -109,41 +328,49 @@ const HomeIndex = () => {
                                             <div className="score-card-inner flex-grow-1 px-20 py-20">
                                                 <div className="score-card-header mb-15">
                                                     <strong className="text-red">live</strong>
-                                                    <span>1st T20, Mirpur, Mar 24, India tour of Bangladesh</span>
+                                                    <span>{match.title}, {venue.ground}, {series.title}</span>
                                                 </div>
                                                 <div className="score-card-body">
                                                     <div className="country-info">
                                                         <div className="flag-avatar">
                                                             <figure>
-                                                                <img src="/images/flags/ban.png" alt=""/>
+                                                                <img src={`/images/flags/${team1.code}.png`} alt=""/>
                                                             </figure>
-                                                            <span className="country-name">ban</span>
+                                                            <span className="country-name">{team1.code}</span>
                                                         </div>
-                                                        <div className="score-update ml-10">
-                                                            <h5>163/6</h5>
-                                                            <p className="text-muted">18.3 ov.</p>
-                                                        </div>
+                                                        {match.stage == STAGE.IN_PROGRESS && <>
+                                                            {match.runningInnings == commentary.miniScore.innings && match.team1Id == commentary.miniScore.batTeamId &&
+                                                                <div className="score-update ml-10">
+                                                                    <h5>{`${commentary.miniScore.matchScoreDetails.firstInnings.score}/${commentary.miniScore.matchScoreDetails.firstInnings.wickets}`}</h5>
+                                                                    <p className="text-muted">{commentary.miniScore.matchScoreDetails.firstInnings.overs} ov.</p>
+                                                                </div>}
+                                                        </>}
                                                     </div>
                                                     <div className="score-update text-center">
-                                                        <p>Bangladesh won by 4 wickets with 9 balls remaining.</p>
+                                                        <p>
+                                                            <strong className="text-uppercase">{match.tossResult.winningTeamCode}</strong> opt to {match.tossResult.decision}.
+                                                        </p>
                                                     </div>
                                                     <div className="country-info flex-row-reverse">
                                                         <div className="flag-avatar ml-10">
                                                             <figure>
-                                                                <img src="/images/flags/ind.png" alt=""/>
+                                                                <img src={`/images/flags/${team2.code}.png`} alt=""/>
                                                             </figure>
-                                                            <span className="country-name">ind</span>
+                                                            <span className="country-name">{team2.code}</span>
                                                         </div>
-                                                        <div className="score-update">
-                                                            <h5>162/4</h5>
-                                                            <p className="text-muted">20.0 ov.</p>
-                                                        </div>
+                                                        {match.stage == STAGE.IN_PROGRESS && <>
+                                                            {match.runningInnings == commentary.miniScore.innings && match.team2Id == commentary.miniScore.batTeamId &&
+                                                                <div className="score-update">
+                                                                    <h5>{`${commentary.miniScore.scores}/${commentary.miniScore.wickets}`}</h5>
+                                                                    <p className="text-muted">{commentary.miniScore.overs} ov.</p>
+                                                                </div>}
+                                                        </>}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="card-aside text-left px-20 py-20">
-                                                <p>Current RR<span>3.84</span></p>
-                                                <p>Last 5 ov. (RR)<span>6.25</span></p>
+                                                <p>Current RR<span>{commentary.miniScore.overs <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.scores / commentary.miniScore.overs)).toFixed(2)}</span></p>
+                                                <p>Last 5 ov. (RR)<span>{commentary.miniScore.latestPerformance.overs <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.latestPerformance.runs / commentary.miniScore.latestPerformance.overs)).toFixed(2)}</span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -171,23 +398,23 @@ const HomeIndex = () => {
                                                 <tbody>
                                                 <tr>
                                                     <td>
-                                                        <a href="#"><strong>Mahmudullah*</strong></a> (rhb)
+                                                        <a href="#"><strong>{commentary.miniScore.batsmanStriker.nickname}*</strong></a> ({commentary.miniScore.batsmanStriker.bat})
                                                     </td>
-                                                    <td><strong>28</strong></td>
-                                                    <td>11</td>
-                                                    <td>2</td>
-                                                    <td>3</td>
-                                                    <td>254.54</td>
+                                                    <td><strong>{commentary.miniScore.batsmanStriker.runs}</strong></td>
+                                                    <td>{commentary.miniScore.batsmanStriker.balls}</td>
+                                                    <td>{commentary.miniScore.batsmanStriker.fours}</td>
+                                                    <td>{commentary.miniScore.batsmanStriker.sixes}</td>
+                                                    <td>{commentary.miniScore.batsmanStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat((commentary.miniScore.batsmanStriker.runs * 100) / commentary.miniScore.batsmanStriker.balls).toFixed(2)}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <a href="#"><strong>Miraz</strong></a> (rhb)
+                                                        <a href="#"><strong>{commentary.miniScore.batsmanNonStriker.nickname}</strong></a> ({commentary.miniScore.batsmanNonStriker.bat})
                                                     </td>
-                                                    <td><strong>23</strong></td>
-                                                    <td>20</td>
-                                                    <td>2</td>
-                                                    <td>1</td>
-                                                    <td>115.00</td>
+                                                    <td><strong>{commentary.miniScore.batsmanNonStriker.runs}</strong></td>
+                                                    <td>{commentary.miniScore.batsmanNonStriker.balls}</td>
+                                                    <td>{commentary.miniScore.batsmanNonStriker.fours}</td>
+                                                    <td>{commentary.miniScore.batsmanNonStriker.sixes}</td>
+                                                    <td>{commentary.miniScore.batsmanNonStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat((commentary.miniScore.batsmanNonStriker.runs * 100) / commentary.miniScore.batsmanNonStriker.balls).toFixed(2)}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -203,39 +430,38 @@ const HomeIndex = () => {
                                                     <th scope="col">m</th>
                                                     <th scope="col">r</th>
                                                     <th scope="col">w</th>
+                                                    <th scope="col">NB</th>
+                                                    <th scope="col">WD</th>
                                                     <th scope="col">econ</th>
-                                                    <th scope="col">0s</th>
-                                                    <th scope="col">4s</th>
-                                                    <th scope="col">6s</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 <tr>
                                                     <td>
-                                                        <a href="#"><strong>Bumrah*</strong></a> (rf)
+                                                        <a href="#"><strong>{commentary.miniScore.bowlerStriker.nickname}*</strong></a> ({commentary.miniScore.bowlerStriker.bowl})
                                                     </td>
-                                                    <td><strong>1.5</strong></td>
-                                                    <td>0</td>
-                                                    <td>28</td>
-                                                    <td>0</td>
-                                                    <td>13.76</td>
-                                                    <td>3</td>
-                                                    <td>4</td>
-                                                    <td>2</td>
+                                                    <td><strong>{commentary.miniScore.bowlerStriker.overs}</strong></td>
+                                                    <td>{commentary.miniScore.bowlerStriker.maidens}</td>
+                                                    <td>{commentary.miniScore.bowlerStriker.runs}</td>
+                                                    <td>{commentary.miniScore.bowlerStriker.wickets}</td>
+                                                    <td>{commentary.miniScore.bowlerStriker.noBalls}</td>
+                                                    <td>{commentary.miniScore.bowlerStriker.wideBalls}</td>
+                                                    <td>{commentary.miniScore.bowlerStriker.overs <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerStriker.runs / commentary.miniScore.bowlerStriker.overs).toFixed(2)}</td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        <a href="#"><strong>Kuldip</strong></a> (ls)
-                                                    </td>
-                                                    <td><strong>3.0</strong></td>
-                                                    <td>0</td>
-                                                    <td>21</td>
-                                                    <td>1</td>
-                                                    <td>7.00</td>
-                                                    <td>4</td>
-                                                    <td>1</td>
-                                                    <td>0</td>
-                                                </tr>
+                                                {commentary.miniScore.bowlerNonStriker.nickname &&
+                                                    <tr>
+                                                        <td>
+                                                            <a href="#"><strong>{commentary.miniScore.bowlerNonStriker.nickname}</strong></a> ({commentary.miniScore.bowlerNonStriker.bowl})
+                                                        </td>
+                                                        <td><strong>{commentary.miniScore.bowlerNonStriker.overs}</strong></td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.maidens}</td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.runs}</td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.wickets}</td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.noBalls}</td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.wideBalls}</td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.overs <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerNonStriker.runs / commentary.miniScore.bowlerNonStriker.overs).toFixed(2)}</td>
+                                                    </tr>
+                                                }
                                                 </tbody>
                                             </table>
                                         </div>
@@ -243,14 +469,12 @@ const HomeIndex = () => {
 
                                     <div className="card card-shadow">
                                         <div className="spell-sum-box">
-                                            <h5>Last Bat: <span>Mushfiqur c Rahul b Siraj - 20r 10b 2x4 1x6) SR: 200.00 ) | </span>FOW:
-                                                67/3
-                                                (7.4 ov)</h5>
+                                            <h5>Last Bat: <span>Mushfiqur c Rahul b Siraj - 20r 10b 2x4 1x6) SR: 200.00 ) | </span>FOW: 67/3 (7.4 ov)</h5>
                                             <div className="recent-spell">
                                                 <label>recent:</label>
                                                 <ul>
                                                     <li>
-                                                        <span className="bg-success">6</span>
+                                                    <span className="bg-success">6</span>
                                                     </li>
                                                     <li>
                                                         <span>2</span>
