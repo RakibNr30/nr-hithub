@@ -5,7 +5,7 @@ class OverSeparator {
         this.id = data.id || uid();
         this.score = data.score || 0;
         this.wickets = data.wickets || 0;
-        this.over_summary = data.over_summary || "";
+        this.overSummary = data.overSummary || "";
         this.runs = data.runs || 0;
         this.batStrikerId = data.batStrikerId || null;
         this.batStrikerName = data.batStrikerName || "";

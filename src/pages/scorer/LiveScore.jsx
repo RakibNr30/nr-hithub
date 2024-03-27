@@ -166,8 +166,10 @@ const HomeIndex = () => {
                                                 </div>
                                             </div>
                                             <div className="card-aside text-left px-20 py-20">
-                                                <p>Current RR<span>{commentary.miniScore.overs <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.scores / commentary.miniScore.overs)).toFixed(2)}</span></p>
-                                                <p>Last 5 ov. (RR)<span>{commentary.miniScore.latestPerformance.overs <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.latestPerformance.runs / commentary.miniScore.latestPerformance.overs)).toFixed(2)}</span></p>
+                                                <p>Current RR<span>{commentary.miniScore.balls <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.scores / (commentary.miniScore.balls/6))).toFixed(2)}</span></p>
+                                                {/*<p>
+                                                    Last 5 ov. (RR)<span>{commentary.miniScore.latestPerformance.overs <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.latestPerformance.runs / commentary.miniScore.latestPerformance.overs)).toFixed(2)}</span>
+                                                </p>*/}
                                             </div>
                                         </div>
                                     </div>
@@ -243,11 +245,11 @@ const HomeIndex = () => {
                                                     <td>{commentary.miniScore.bowlerStriker.wickets}</td>
                                                     <td>{commentary.miniScore.bowlerStriker.noBalls}</td>
                                                     <td>{commentary.miniScore.bowlerStriker.wideBalls}</td>
-                                                    <td>{commentary.miniScore.bowlerStriker.overs <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerStriker.runs / commentary.miniScore.bowlerStriker.overs).toFixed(2)}</td>
+                                                    <td>{commentary.miniScore.bowlerStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerStriker.runs / (commentary.miniScore.bowlerStriker.balls / 6)).toFixed(2)}</td>
                                                 </tr>
                                                 {commentary.miniScore.bowlerNonStriker.nickname &&
                                                     <tr>
-                                                        <td>
+                                                    <td>
                                                             <a href="#"><strong>{commentary.miniScore.bowlerNonStriker.nickname}</strong></a> ({commentary.miniScore.bowlerNonStriker.bowl})
                                                         </td>
                                                         <td><strong>{commentary.miniScore.bowlerNonStriker.overs}</strong></td>
@@ -256,7 +258,7 @@ const HomeIndex = () => {
                                                         <td>{commentary.miniScore.bowlerNonStriker.wickets}</td>
                                                         <td>{commentary.miniScore.bowlerNonStriker.noBalls}</td>
                                                         <td>{commentary.miniScore.bowlerNonStriker.wideBalls}</td>
-                                                        <td>{commentary.miniScore.bowlerNonStriker.overs <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerNonStriker.runs / commentary.miniScore.bowlerNonStriker.overs).toFixed(2)}</td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerNonStriker.runs / (commentary.miniScore.bowlerNonStriker.balls/6)).toFixed(2)}</td>
                                                     </tr>
                                                 }
                                                 </tbody>

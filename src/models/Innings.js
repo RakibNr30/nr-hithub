@@ -8,7 +8,8 @@ class Innings {
         this.batTeamCode = data.batTeamCode || "";
         this.score = data.score || 0;
         this.wickets = data.wickets || 0;
-        this.overs = data.overs || 0.;
+        this.overs = data.overs || 0.0;
+        this.balls = data.balls || 0;
     }
 }
 

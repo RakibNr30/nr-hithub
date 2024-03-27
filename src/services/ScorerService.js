@@ -1,5 +1,7 @@
 import useCommentaryStore from "../stores/commentaryStore";
 import CommentaryService from "./CommentaryService";
+import CommentaryEvent from "../models/CommentaryEvent";
+import {EVENT} from "../constants/commentary";
 
 const ScorerService = () => {
     const commentaryService = CommentaryService();
@@ -11,8 +13,13 @@ const ScorerService = () => {
             case 0:
                 commentaryService.update({
                     ...commentary,
+                    commentaryList: [
+                        ...commentary.commentaryList,
+                        createCommentaryEvent(commentary, takenRun)
+                    ],
                     miniScore: {
                         ...commentary.miniScore,
+                        totalBalls: commentary.miniScore.totalBalls + 1,
                         balls: commentary.miniScore.balls + 1,
                         overs: ballToOver(commentary.miniScore.balls + 1),
                         batsmanStriker: {
@@ -25,6 +32,20 @@ const ScorerService = () => {
                             balls: commentary.miniScore.bowlerStriker.balls + 1,
                             dots: commentary.miniScore.bowlerStriker.dots + 1,
                             overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                        },
+                        partnership: {
+                            ...commentary.miniScore.partnership,
+                            balls: commentary.miniScore.partnership.balls + 1,
+                            bat1Balls: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat1Id ? commentary.miniScore.partnership.bat1Balls + 1 : commentary.miniScore.partnership.bat1Balls,
+                            bat2Balls: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat2Id ? commentary.miniScore.partnership.bat2Balls + 1 : commentary.miniScore.partnership.bat2Balls,
+                        },
+                        matchScoreDetails: {
+                            ...commentary.miniScore.matchScoreDetails,
+                            firstInnings: {
+                                ...commentary.miniScore.matchScoreDetails.firstInnings,
+                                balls: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.balls + 1 : commentary.miniScore.matchScoreDetails.secondInnings.balls + 1,
+                                overs: commentary.miniScore.innings == 1 ? ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls + 1) : ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls + 1),
+                            }
                         }
                     }
                 });
@@ -32,9 +53,14 @@ const ScorerService = () => {
             case 1:
                 commentaryService.update({
                     ...commentary,
+                    commentaryList: [
+                        ...commentary.commentaryList,
+                        createCommentaryEvent(commentary, takenRun)
+                    ],
                     miniScore: {
                         ...commentary.miniScore,
                         scores: commentary.miniScore.scores + 1,
+                        totalBalls: commentary.miniScore.totalBalls + 1,
                         balls: commentary.miniScore.balls + 1,
                         overs: ballToOver(commentary.miniScore.balls + 1),
                         batsmanStriker: {
@@ -66,9 +92,14 @@ const ScorerService = () => {
             case 2:
                 commentaryService.update({
                     ...commentary,
+                    commentaryList: [
+                        ...commentary.commentaryList,
+                        createCommentaryEvent(commentary, takenRun)
+                    ],
                     miniScore: {
                         ...commentary.miniScore,
                         scores: commentary.miniScore.scores + 2,
+                        totalBalls: commentary.miniScore.totalBalls + 1,
                         balls: commentary.miniScore.balls + 1,
                         overs: ballToOver(commentary.miniScore.balls + 1),
                         batsmanStriker: {
@@ -89,9 +120,14 @@ const ScorerService = () => {
             case 3:
                 commentaryService.update({
                     ...commentary,
+                    commentaryList: [
+                        ...commentary.commentaryList,
+                        createCommentaryEvent(commentary, takenRun)
+                    ],
                     miniScore: {
                         ...commentary.miniScore,
                         scores: commentary.miniScore.scores + 3,
+                        totalBalls: commentary.miniScore.totalBalls + 1,
                         balls: commentary.miniScore.balls + 1,
                         overs: ballToOver(commentary.miniScore.balls + 1),
                         batsmanStriker: {
@@ -123,9 +159,14 @@ const ScorerService = () => {
             case 4:
                 commentaryService.update({
                     ...commentary,
+                    commentaryList: [
+                        ...commentary.commentaryList,
+                        createCommentaryEvent(commentary, takenRun)
+                    ],
                     miniScore: {
                         ...commentary.miniScore,
                         scores: commentary.miniScore.scores + 4,
+                        totalBalls: commentary.miniScore.totalBalls + 1,
                         balls: commentary.miniScore.balls + 1,
                         overs: ballToOver(commentary.miniScore.balls + 1),
                         batsmanStriker: {
@@ -147,9 +188,14 @@ const ScorerService = () => {
             case 5:
                 commentaryService.update({
                     ...commentary,
+                    commentaryList: [
+                        ...commentary.commentaryList,
+                        createCommentaryEvent(commentary, takenRun)
+                    ],
                     miniScore: {
                         ...commentary.miniScore,
                         scores: commentary.miniScore.scores + 5,
+                        totalBalls: commentary.miniScore.totalBalls + 1,
                         balls: commentary.miniScore.balls + 1,
                         overs: ballToOver(commentary.miniScore.balls + 1),
                         batsmanStriker: {
@@ -181,9 +227,14 @@ const ScorerService = () => {
             case 6:
                 commentaryService.update({
                     ...commentary,
+                    commentaryList: [
+                        ...commentary.commentaryList,
+                        createCommentaryEvent(commentary, takenRun)
+                    ],
                     miniScore: {
                         ...commentary.miniScore,
                         scores: commentary.miniScore.scores + 6,
+                        totalBalls: commentary.miniScore.totalBalls + 1,
                         balls: commentary.miniScore.balls + 1,
                         overs: ballToOver(commentary.miniScore.balls + 1),
                         batsmanStriker: {
@@ -208,7 +259,37 @@ const ScorerService = () => {
     }
 
     const ballToOver = (balls) => {
-        return parseInt(balls/6) + ((balls%6)/10)
+        return parseInt(balls / 6) + ((balls % 6) / 10)
+    }
+
+    const createCommentaryEvent = (commentary, takenRun) => {
+        let event = EVENT.NONE;
+        switch (takenRun) {
+            case 4:
+                event = EVENT.FOUR;
+                break;
+            case 6:
+                event = EVENT.SIX;
+                break;
+            default:
+                break;
+        }
+
+        return new CommentaryEvent({
+            inningsNumber: commentary.miniScore.innings,
+            batsmanId: commentary.miniScore.batsmanStriker.id,
+            batsmanName: commentary.miniScore.batsmanStriker.name,
+            batsmanNickname: commentary.miniScore.batsmanStriker.nickname,
+            bowlerId: commentary.miniScore.bowlerStriker.id,
+            bowlerName: commentary.miniScore.bowlerStriker.name,
+            bowlerNickname: commentary.miniScore.bowlerStriker.nickname,
+            text: `${commentary.miniScore.bowlerStriker.nickname} to ${commentary.miniScore.batsmanStriker.nickname}, no run.`,
+            totalBalls: commentary.miniScore.totalBalls + 1,
+            balls: commentary.miniScore.balls + 1,
+            overs: ballToOver(commentary.miniScore.balls + 1),
+            runs: takenRun,
+            event: event,
+        })
     }
 
     return {
