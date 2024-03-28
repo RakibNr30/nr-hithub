@@ -21,10 +21,11 @@ class Commentary {
             target: data.miniScore?.target || 0,
             lastWicketText: data.miniScore?.lastWicketText || "",
             lastOverBowlerId: data.miniScore?.lastOverBowlerId || null,
+            shouldBowlerChange: data.miniScore?.shouldBowlerChange || false,
+            shouldInningsChange: data.miniScore?.shouldInningsChange || false,
             batsmanStriker: new Batsman(data.miniScore?.batsmanStriker || {}),
             batsmanNonStriker: new Batsman(data.miniScore?.batsmanNonStriker || {}),
             bowlerStriker: new Bowler(data.miniScore?.bowlerStriker || {}),
-            bowlerNonStriker: new Bowler(data.miniScore?.bowlerNonStriker || {}),
             partnership: new Partnership(data.miniScore?.partnership || {}),
             matchScoreDetails: {
                 firstInnings: new Innings(data.miniScore?.matchScoreDetails?.firstInnings || {}),

@@ -1026,3 +1026,28 @@ ul.commentary-list {
 .live-matches .nav li a {
     padding: 5px 12px;
 }
+.disabled-area {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: #fff;
+    border-radius: 10px;
+    z-index: 1;
+    opacity: 0.8;
+}
+.widget-scorer .hithub-btn-2 {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 40px;
+    border-radius: 5px;
+    padding: 0 1rem;
+    cursor: pointer;
+    background: var(--color-secondary);
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 21px;
+    transition: 0.3s;
+}

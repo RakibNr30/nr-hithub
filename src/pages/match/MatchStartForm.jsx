@@ -81,7 +81,7 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
                 batTeamId: match.tossResult.batFirstTeamId,
                 batsmanStriker: new Batsman({...striker, order: 1}),
                 batsmanNonStriker: new Batsman({...nonStriker, order: 2}),
-                bowlerStriker: new Bowler({...openingBowler, order: 1}),
+                bowlerStriker: new Bowler({...openingBowler, order: 1, canMaxOvers: parseInt(match.over/5)}),
                 partnership: new Partnership({
                     bat1Id: striker.id,
                     bat1Name: striker.name,
@@ -130,10 +130,11 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
                     teamId: bowlingTeam.id,
                     teamName: bowlingTeam.name,
                     teamCode: bowlingTeam.code,
-                    teamBowler: [
+                    teamBowlers: [
                         new Bowler({
                             ...openingBowler,
                             order: 1,
+                            canMaxOvers: parseInt(match.over/5)
                         }),
                     ]
                 },

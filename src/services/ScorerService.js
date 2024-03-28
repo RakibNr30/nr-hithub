@@ -1,22 +1,28 @@
 import useCommentaryStore from "../stores/commentaryStore";
-import CommentaryService from "./CommentaryService";
 import CommentaryEvent from "../models/CommentaryEvent";
 import {EVENT} from "../constants/commentary";
 import OverSeparator from "../models/OverSeparator";
-import {useState} from "react";
-import commentary from "../models/Commentary";
+import CommentaryService from "./CommentaryService";
+import ScorecardService from "./ScorecardService";
+import useScorecardStore from "../stores/scorecardStore";
+import Bowler from "../models/Bowler";
 
 const ScorerService = () => {
     const commentaryService = CommentaryService();
+    const scorecardService = ScorecardService();
 
     const getCommentary = (match) => {
         return  useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+    }
+    const getScorecard = (match) => {
+        return  useScorecardStore.getState().scorecards.find(scorecard => scorecard.id == match.scorecardId);
     }
 
     const runAndEvents = (match = {}, takenRun = 0) => {
         const commentary = getCommentary(match);
 
         updateCommentary(match, commentary, takenRun);
+        updateScorecard(match);
 
         switch (takenRun) {
             case 1:
@@ -35,6 +41,7 @@ const ScorerService = () => {
         }
     }
 
+    /* update commentary */
     const updateCommentary = (match = {}, commentary = {}, takenRun) => {
         commentaryService.update({
             ...commentary,
@@ -45,6 +52,7 @@ const ScorerService = () => {
                 scores: commentary.miniScore.scores + takenRun,
                 wickets: commentary.miniScore.wickets + 0,
                 overs: ballToOver(commentary.miniScore.balls + 1),
+                //shouldBowlerChange: false,
                 batsmanStriker: {
                     ...commentary.miniScore.batsmanStriker,
                     runs: commentary.miniScore.batsmanStriker.runs + takenRun,
@@ -115,6 +123,7 @@ const ScorerService = () => {
                 miniScore: {
                     ...updatedCommentary.miniScore,
                     lastOverBowlerId: updatedCommentary.miniScore.bowlerStriker.id,
+                    shouldBowlerChange: true,
                     bowlerStriker: {
                         ...updatedCommentary.miniScore.bowlerStriker,
                         maidens: updatedCommentary.miniScore.bowlerStriker.maidens + (lastOverRuns == 0 ? 1 : 0),
@@ -122,6 +131,125 @@ const ScorerService = () => {
                 },
             })
         }
+
+        updatedCommentary = getCommentary(match);
+
+        if (isLastBallOfInnings(match, updatedCommentary)) {
+            commentaryService.update({
+                ...updatedCommentary,
+                miniScore: {
+                    ...updatedCommentary.miniScore,
+                    shouldBowlerChange: false,
+                    shouldInningsChange: true,
+                },
+            })
+        }
+    }
+
+    const changeBowlingStriker = (match, bowler) => {
+        const scorecard = getScorecard(match);
+        const commentary = getCommentary(match);
+
+        let teamBowlers = commentary.miniScore.innings == 1
+            ? scorecard.firstInnings.bowlingDetails.teamBowlers
+            : scorecard.secondInnings.bowlingDetails.teamBowlers;
+
+        const existingBowlerIndex = teamBowlers.findIndex(item => item.id == bowler.id);
+
+        const currentOrder = teamBowlers.length;
+
+        commentaryService.update({
+            ...commentary,
+            miniScore: {
+                ...commentary.miniScore,
+                shouldBowlerChange: false,
+                bowlerStriker: existingBowlerIndex != -1
+                    ? teamBowlers[existingBowlerIndex] :
+                    new Bowler({...bowler, order: currentOrder + 1, canMaxOvers: parseInt(match.over/5)}),
+            }
+        });
+
+        updateScorecard(match);
+    }
+
+    /* update scorecard section */
+    const updateScorecard = (match = {}) => {
+        const commentary = getCommentary(match);
+        const scorecard = getScorecard(match);
+
+        switch (commentary.miniScore.innings) {
+            case 1:
+                scorecardService.update({
+                    ...scorecard,
+                    firstInnings: {
+                        ...scorecard.firstInnings,
+                        battingDetails: {
+                            ...scorecard.firstInnings.battingDetails,
+                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, scorecard.firstInnings.battingDetails.teamBatsmen)
+                        },
+                        bowlingDetails: {
+                            ...scorecard.firstInnings.bowlingDetails,
+                            teamBowlers: updateOrAddBowler(match, commentary.miniScore.bowlerStriker, scorecard.firstInnings.bowlingDetails.teamBowlers)
+                        }
+                    }
+                })
+                break;
+            case 2:
+                scorecardService.update({
+                    ...scorecard,
+                    secondInnings: {
+                        ...scorecard.secondInnings,
+                        battingDetails: {
+                            ...scorecard.secondInnings.battingDetails,
+                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, scorecard.secondInnings.battingDetails.teamBatsmen)
+                        },
+                        bowlingDetails: {
+                            ...scorecard.secondInnings.bowlingDetails,
+                            teamBowlers: updateOrAddBowler(match, commentary.miniScore.bowlerStriker, scorecard.secondInnings.bowlingDetails.teamBowlers)
+                        }
+                    }
+                })
+                break;
+            default:
+                break;
+        }
+    }
+
+    const updateOrAddBatsman = (match = {}, batsman, teamBatsmen) => {
+        const existingBatsmanIndex = teamBatsmen.findIndex(item => item.id === batsman.id);
+        if (existingBatsmanIndex != -1) {
+            teamBatsmen[existingBatsmanIndex] = batsman;
+        } else {
+            const currentOrder = teamBatsmen.length;
+            teamBatsmen = [
+                ...teamBatsmen,
+                {
+                    ...batsman,
+                    order: currentOrder + 1
+                }
+            ]
+        }
+
+        return teamBatsmen;
+    }
+
+    const updateOrAddBowler = (match = {}, bowler, teamBowlers) => {
+        const existingBowlerIndex = teamBowlers.findIndex(item => item.id == bowler.id);
+        if (existingBowlerIndex != -1) {
+            teamBowlers[existingBowlerIndex] = bowler;
+        } else {
+            const currentOrder = teamBowlers.length;
+            teamBowlers = [
+                ...teamBowlers,
+                {
+                    ...bowler,
+                    order: currentOrder + 1,
+                    canMaxOvers: parseInt(match.over/5)
+                }
+            ]
+        }
+
+        return teamBowlers;
     }
 
     const createCommentaryEvent = (commentary, takenRun) => {
@@ -240,13 +368,18 @@ const ScorerService = () => {
        return commentary.miniScore.balls % 6 == 0;
     }
 
+    const isLastBallOfInnings = (match, commentary) => {
+        return match.over <= commentary.miniScore.overs;
+    }
+
     const ballToOver = (balls) => {
         return parseInt(balls / 6) + ((balls % 6) / 10)
     }
 
     return {
         runAndEvents,
-        swapBatsman
+        swapBatsman,
+        changeBowlingStriker
     }
 }
 

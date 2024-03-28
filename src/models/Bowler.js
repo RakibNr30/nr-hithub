@@ -6,9 +6,9 @@ class Bowler {
         this.order = data.order || null;
         this.name = data.name || "";
         this.nickname = data.nickname || "";
-        this.isEndQuota = data.isEndQuota || false;
         this.bowl = data.bowl || "";
         this.overs = data.overs || 0.0;
+        this.canMaxOvers = data.canMaxOvers || 0;
         this.runs = data.runs || 0;
         this.wickets = data.wickets || 0;
         this.maidens = data.maidens || 0;
@@ -19,6 +19,7 @@ class Bowler {
         this.sixes = data.sixes || 0;
         this.noBalls = data.noBalls || 0;
         this.wideBalls = data.wideBalls || 0;
+        this.penalty = data.penalty || 0;
     }
 }
 
