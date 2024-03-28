@@ -3,12 +3,18 @@ import CommentaryService from "./CommentaryService";
 import CommentaryEvent from "../models/CommentaryEvent";
 import {EVENT} from "../constants/commentary";
 import OverSeparator from "../models/OverSeparator";
+import {useState} from "react";
+import commentary from "../models/Commentary";
 
 const ScorerService = () => {
     const commentaryService = CommentaryService();
 
-    const run = (match = {}, takenRun = 0) => {
-        const commentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+    const getCommentary = (match) => {
+        return  useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+    }
+
+    const runAndEvents = (match = {}, takenRun = 0) => {
+        const commentary = getCommentary(match);
 
         updateCommentary(match, commentary, takenRun);
 
@@ -16,19 +22,16 @@ const ScorerService = () => {
             case 1:
             case 3:
             case 5:
-                const updatedCommentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
-
-                commentaryService.update({
-                    ...updatedCommentary,
-                    miniScore: {
-                        ...updatedCommentary.miniScore,
-                        batsmanStriker: updatedCommentary.miniScore.batsmanNonStriker,
-                        batsmanNonStriker: updatedCommentary.miniScore.batsmanStriker,
-                    }
-                })
+                swapBatsman(match);
                 break;
             default:
                 break;
+        }
+
+        const updatedCommentary = getCommentary(match);
+
+        if (updatedCommentary.miniScore.balls % 6 == 0) {
+            swapBatsman(match);
         }
     }
 
@@ -93,7 +96,8 @@ const ScorerService = () => {
             }
         });
 
-        const updatedCommentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+        let updatedCommentary = getCommentary(match);
+
         commentaryService.update({
             ...updatedCommentary,
             commentaryList: [
@@ -101,6 +105,23 @@ const ScorerService = () => {
                 ...updatedCommentary.commentaryList
             ],
         })
+
+        updatedCommentary = getCommentary(match);
+
+        if (isLastBallOfOver(updatedCommentary)) {
+            const [lastOverRuns] = getOverFullSummary(updatedCommentary, updatedCommentary.miniScore.overs - 1);
+            commentaryService.update({
+                ...updatedCommentary,
+                miniScore: {
+                    ...updatedCommentary.miniScore,
+                    lastOverBowlerId: updatedCommentary.miniScore.bowlerStriker.id,
+                    bowlerStriker: {
+                        ...updatedCommentary.miniScore.bowlerStriker,
+                        maidens: updatedCommentary.miniScore.bowlerStriker.maidens + (lastOverRuns == 0 ? 1 : 0),
+                    }
+                },
+            })
+        }
     }
 
     const createCommentaryEvent = (commentary, takenRun) => {
@@ -124,7 +145,7 @@ const ScorerService = () => {
             bowlerId: commentary.miniScore.bowlerStriker.id,
             bowlerName: commentary.miniScore.bowlerStriker.name,
             bowlerNickname: commentary.miniScore.bowlerStriker.nickname,
-            text: `${commentary.miniScore.bowlerStriker.nickname} to ${commentary.miniScore.batsmanStriker.nickname}, ${takenRun} run${takenRun>1?"s":""}.`,
+            text: `${commentary.miniScore.bowlerStriker.nickname} to ${commentary.miniScore.batsmanStriker.nickname}, ${takenRun} run${takenRun > 1 ? "s" : ""}.`,
             totalBalls: commentary.miniScore.totalBalls,
             balls: commentary.miniScore.balls,
             overs: commentary.miniScore.overs,
@@ -133,14 +154,15 @@ const ScorerService = () => {
         });
 
         if (commentaryEvent.balls % 6 == 0) {
+
             commentaryEvent = {
                 ...commentaryEvent,
                 overSeparator: new OverSeparator({
                     score: commentary.miniScore.scores,
                     overs: commentary.miniScore.overs,
                     wickets: commentary.miniScore.wickets,
-                    overSummary: "", //
-                    runs: 0, //
+                    overSummary: "",
+                    runs: 0,
                     batStrikerId: commentary.miniScore.batsmanStriker.id,
                     batStrikerName: commentary.miniScore.batsmanStriker.name,
                     batStrikerNickname: commentary.miniScore.batsmanStriker.nickname,
@@ -160,9 +182,62 @@ const ScorerService = () => {
                     bowlerWickets: commentary.miniScore.bowlerStriker.wickets,
                 })
             }
+
+            const [lastOverRuns, lastOverSummary] = getOverFullSummary(commentary, commentary.miniScore.overs - 1, commentaryEvent);
+
+            commentaryEvent = {
+                ...commentaryEvent,
+                overSeparator: {
+                    ...commentaryEvent.overSeparator,
+                    bowlerMaidens: commentaryEvent.overSeparator.bowlerMaidens + (lastOverRuns == 0 ? 1 : 0),
+                    overSummary: lastOverSummary,
+                    runs: lastOverRuns,
+                }
+            }
         }
 
         return commentaryEvent;
+    }
+
+    const getOverFullSummary = (commentary, overNumber, currentCommentaryEvent) => {
+        let thisOverCommentaryEvents = commentary.commentaryList.filter(item => {
+            const overAndBall = parseInt(item.overs) == item.overs ? (item.overs - 0.4) : item.overs;
+            return overNumber == parseInt(overAndBall);
+        });
+
+        if (currentCommentaryEvent) {
+            thisOverCommentaryEvents = [
+                currentCommentaryEvent,
+                ...thisOverCommentaryEvents
+            ]
+        }
+
+        const thisOverRuns = thisOverCommentaryEvents.reduce((previous, current) => {
+            return previous + current.runs;
+        }, 0)
+
+        const thisOverSummary = thisOverCommentaryEvents.reduce((previous, current) => {
+            return current.runs + " " + previous;
+        }, "")
+
+        return [thisOverRuns, thisOverSummary.trim()];
+    }
+
+    const swapBatsman = (match) => {
+        const updatedCommentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+
+        commentaryService.update({
+            ...updatedCommentary,
+            miniScore: {
+                ...updatedCommentary.miniScore,
+                batsmanStriker: updatedCommentary.miniScore.batsmanNonStriker,
+                batsmanNonStriker: updatedCommentary.miniScore.batsmanStriker,
+            }
+        })
+    }
+
+    const isLastBallOfOver = (commentary) => {
+       return commentary.miniScore.balls % 6 == 0;
     }
 
     const ballToOver = (balls) => {
@@ -170,7 +245,8 @@ const ScorerService = () => {
     }
 
     return {
-        run
+        runAndEvents,
+        swapBatsman
     }
 }
 

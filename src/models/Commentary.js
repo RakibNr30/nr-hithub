@@ -20,6 +20,7 @@ class Commentary {
             totalBalls: data.miniScore?.totalBalls || 0,
             target: data.miniScore?.target || 0,
             lastWicketText: data.miniScore?.lastWicketText || "",
+            lastOverBowlerId: data.miniScore?.lastOverBowlerId || null,
             batsmanStriker: new Batsman(data.miniScore?.batsmanStriker || {}),
             batsmanNonStriker: new Batsman(data.miniScore?.batsmanNonStriker || {}),
             bowlerStriker: new Bowler(data.miniScore?.bowlerStriker || {}),

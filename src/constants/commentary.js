@@ -4,6 +4,7 @@ const EVENT = Object.freeze({
     CENTURY: "century",
     FOUR: "four",
     SIX: "six",
+    PENALTY: "penalty",
     WICKET: "wicket",
 });
 

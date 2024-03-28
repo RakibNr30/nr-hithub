@@ -6,6 +6,7 @@ class Bowler {
         this.order = data.order || null;
         this.name = data.name || "";
         this.nickname = data.nickname || "";
+        this.isEndQuota = data.isEndQuota || false;
         this.bowl = data.bowl || "";
         this.overs = data.overs || 0.0;
         this.runs = data.runs || 0;

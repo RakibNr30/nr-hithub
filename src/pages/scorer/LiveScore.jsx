@@ -8,6 +8,7 @@ import useCommentaryStore from "../../stores/commentaryStore";
 import useMatchStore from "../../stores/matchStore";
 import ScorerService from "../../services/ScorerService";
 import {getEventBg, getEventText} from "../../utils/commentaryUtil";
+import {useState} from "react";
 
 const HomeIndex = () => {
 
@@ -16,8 +17,16 @@ const HomeIndex = () => {
     const venueService = VenueService();
     const teamService = TeamService();
 
-    const {id} = useParams();
+    const [showChangeBowlerModal, setShowChangeBowlerModal] = useState(false);
+    const [showChangeInningsModal, setShowChangeInningsModal] = useState(false);
 
+    const [isWicket, setIsWicket] = useState(false);
+    const [isWide, setIsWide] = useState(false);
+    const [isNoBall, setIsNoBall] = useState(false);
+    const [isByes, setIsByes] = useState(false);
+    const [isLegByes, setIsLegByes] = useState(false);
+
+    const {id} = useParams();
     const match = useMatchStore.getState().matches.find(match => match.id == id);
 
     if (!match) {
@@ -33,8 +42,44 @@ const HomeIndex = () => {
 
     const commentaryList = commentary.commentaryList.filter(item => item.inningsNumber == commentary.miniScore.innings);
 
+    const onToggle = (event) => {
+        switch (event) {
+            case "wicket":
+                setIsWicket(!isWicket);
+                break;
+            case "wide":
+                setIsWide(!isWide);
+                break;
+            case "noBall":
+                setIsNoBall(!isNoBall);
+                break;
+            case "byes":
+                setIsByes(!isByes);
+                break;
+            case "legByes":
+                setIsLegByes(!isLegByes);
+                break;
+            default:
+                break;
+        }
+    }
+
     const onRunHandler = (takenRun) => {
-        scorerService.run(match, takenRun);
+        if (commentary.miniScore.balls !=0 && commentary.miniScore.balls % 6 == 0) {
+            alert("you should change bowler");
+            return;
+        }
+
+        if (match.over == commentary.miniScore.overs) {
+            alert("you should change innings");
+            return;
+        }
+
+        scorerService.runAndEvents(match, takenRun);
+    }
+
+    const onSwapBatsmanHandler = () => {
+        scorerService.swapBatsman(match);
     }
 
     return (
@@ -49,19 +94,19 @@ const HomeIndex = () => {
                                         <div className="card card-shadow">
                                             <div className="scorer-wicket-and-extras">
                                                 <ul>
-                                                    <li className="wicket">
+                                                    <li className={`wicket ${isWicket ? 'active' : ''}`} onClick={() => onToggle("wicket")}>
                                                         <span>Wicket</span>
                                                     </li>
-                                                    <li className="extra">
+                                                    <li className={`extra ${isWide ? 'active' : ''}`} onClick={() => onToggle("wide")}>
                                                         <span>Wide</span>
                                                     </li>
-                                                    <li className="extra">
+                                                    <li className={`extra ${isNoBall ? 'active' : ''}`} onClick={() => onToggle("noBall")}>
                                                         <span>No Ball</span>
                                                     </li>
-                                                    <li className="extra">
+                                                    <li className={`extra ${isByes ? 'active' : ''}`} onClick={() => onToggle("byes")}>
                                                         <span>Byes</span>
                                                     </li>
-                                                    <li className="extra">
+                                                    <li className={`extra ${isLegByes ? 'active' : ''}`} onClick={() => onToggle("legByes")}>
                                                         <span>Leg Byes</span>
                                                     </li>
                                                 </ul>
@@ -80,7 +125,7 @@ const HomeIndex = () => {
                                                             <span className="bg-primary">Retire</span>
                                                         </li>
                                                         <li>
-                                                            <span className="bg-primary">Swap</span>
+                                                            <span className="bg-primary" onClick={onSwapBatsmanHandler}>Swap</span>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -148,7 +193,9 @@ const HomeIndex = () => {
                                                     </div>
                                                     <div className="score-update text-center">
                                                         <p>
-                                                            <strong className="text-uppercase">{match.tossResult.winningTeamCode}</strong> opt to {match.tossResult.decision}.
+                                                            <strong
+                                                                className="text-uppercase">{match.tossResult.winningTeamCode}</strong> opt
+                                                            to {match.tossResult.decision}.
                                                         </p>
                                                     </div>
                                                     <div className="country-info flex-row-reverse">
@@ -169,7 +216,9 @@ const HomeIndex = () => {
                                                 </div>
                                             </div>
                                             <div className="card-aside text-left px-20 py-20">
-                                                <p>Current RR<span>{commentary.miniScore.balls <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.scores / (commentary.miniScore.balls/6))).toFixed(2)}</span></p>
+                                                <p>Current
+                                                    RR<span>{commentary.miniScore.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat((commentary.miniScore.scores / (commentary.miniScore.balls / 6))).toFixed(2)}</span>
+                                                </p>
                                                 {/*<p>
                                                     Last 5 ov. (RR)<span>{commentary.miniScore.latestPerformance.overs <=0 ? parseFloat(0).toFixed(2) :  parseFloat((commentary.miniScore.latestPerformance.runs / commentary.miniScore.latestPerformance.overs)).toFixed(2)}</span>
                                                 </p>*/}
@@ -212,7 +261,8 @@ const HomeIndex = () => {
                                                     <td>
                                                         <a href="#"><strong>{commentary.miniScore.batsmanNonStriker.nickname}</strong></a> ({commentary.miniScore.batsmanNonStriker.bat})
                                                     </td>
-                                                    <td><strong>{commentary.miniScore.batsmanNonStriker.runs}</strong></td>
+                                                    <td><strong>{commentary.miniScore.batsmanNonStriker.runs}</strong>
+                                                    </td>
                                                     <td>{commentary.miniScore.batsmanNonStriker.balls}</td>
                                                     <td>{commentary.miniScore.batsmanNonStriker.fours}</td>
                                                     <td>{commentary.miniScore.batsmanNonStriker.sixes}</td>
@@ -252,16 +302,18 @@ const HomeIndex = () => {
                                                 </tr>
                                                 {commentary.miniScore.bowlerNonStriker.nickname &&
                                                     <tr>
-                                                    <td>
+                                                        <td>
                                                             <a href="#"><strong>{commentary.miniScore.bowlerNonStriker.nickname}</strong></a> ({commentary.miniScore.bowlerNonStriker.bowl})
                                                         </td>
-                                                        <td><strong>{commentary.miniScore.bowlerNonStriker.overs}</strong></td>
+                                                        <td>
+                                                            <strong>{commentary.miniScore.bowlerNonStriker.overs}</strong>
+                                                        </td>
                                                         <td>{commentary.miniScore.bowlerNonStriker.maidens}</td>
                                                         <td>{commentary.miniScore.bowlerNonStriker.runs}</td>
                                                         <td>{commentary.miniScore.bowlerNonStriker.wickets}</td>
                                                         <td>{commentary.miniScore.bowlerNonStriker.noBalls}</td>
                                                         <td>{commentary.miniScore.bowlerNonStriker.wideBalls}</td>
-                                                        <td>{commentary.miniScore.bowlerNonStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerNonStriker.runs / (commentary.miniScore.bowlerNonStriker.balls/6)).toFixed(2)}</td>
+                                                        <td>{commentary.miniScore.bowlerNonStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat(commentary.miniScore.bowlerNonStriker.runs / (commentary.miniScore.bowlerNonStriker.balls / 6)).toFixed(2)}</td>
                                                     </tr>
                                                 }
                                                 </tbody>
@@ -271,59 +323,40 @@ const HomeIndex = () => {
 
                                     <div className="card card-shadow">
                                         <div className="spell-sum-box">
-                                            <h5>Last Bat: <span>Mushfiqur c Rahul b Siraj - 20r 10b 2x4 1x6) SR: 200.00 ) | </span>FOW: 67/3 (7.4 ov)</h5>
+                                            {commentary.miniScore.lastWicketText.length > 0 &&
+                                                <h5>Last Bat: <span>Mushfiqur c Rahul b Siraj - 20r 10b 2x4 1x6) SR: 200.00</span></h5>
+                                            }
                                             <div className="recent-spell">
                                                 <label>recent:</label>
                                                 <ul>
-                                                    <li>
-                                                    <span className="bg-success">6</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>2</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>3</span>
-                                                    </li>
-                                                    <li>
-                                                        <span className="bg-success">6</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>0</span>
-                                                    </li>
-                                                    <li>
-                                                        <span className="bg-primary">4</span>
-                                                    </li>
+                                                    {commentaryList.slice(0, 6).map((item, index) => {
+                                                        return (
+                                                            <li key={index}>
+                                                                <span
+                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                            </li>
+                                                        )
+                                                    })}
                                                 </ul>
                                                 <ul>
-                                                    <li>
-                                                        <span>1</span>
-                                                    </li>
-                                                    <li>
-                                                        <span className="bg-primary">4</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>2</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>2</span>
-                                                    </li>
-                                                    <li>
-                                                        <span className="bg-danger">W</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>2</span>
-                                                    </li>
+                                                    {commentaryList.slice(6, 12).map((item, index) => {
+                                                        return (
+                                                            <li key={index}>
+                                                                <span
+                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                            </li>
+                                                        )
+                                                    })}
                                                 </ul>
                                                 <ul>
-                                                    <li>
-                                                        <span>6</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>2</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>3</span>
-                                                    </li>
+                                                    {commentaryList.slice(12, 15).map((item, index) => {
+                                                        return (
+                                                            <li key={index}>
+                                                                <span
+                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                            </li>
+                                                        )
+                                                    })}
                                                 </ul>
                                             </div>
                                         </div>
@@ -334,50 +367,34 @@ const HomeIndex = () => {
                                     <div className="widget widget-rankings">
                                         <div className="card card-shadow">
                                             <div className="commentary-box">
-                                                <div className="commentary-header">
-                                                    <h5>Runs<br/>21
-                                                    </h5>
-                                                    <h5>
-                                                        After 6.0 overs<br/>
-                                                        53/2
-                                                    </h5>
-                                                    <p>
-                                                        Mahmudullah - 10 (5)<br/>
-                                                        Mushfiqur - 8 (3)<br/>
-                                                    </p>
-                                                    <p>
-                                                        Bumrah<br/>
-                                                        1-0-21-0
-                                                    </p>
-                                                </div>
                                                 <div className="commentary-body">
                                                     <ul className="commentary-list">
-                                                        <li className="separator">
-                                                            <h5>Runs<br/>21
-                                                            </h5>
-                                                            <h5>
-                                                                After 6.0 overs<br/>
-                                                                53/2
-                                                            </h5>
-                                                            <p>
-                                                                Mahmudullah - 10 (5)<br/>
-                                                                Mushfiqur - 8 (3)<br/>
-                                                            </p>
-                                                            <p>
-                                                                Bumrah<br/>
-                                                                1-0-21-0
-                                                            </p>
-                                                        </li>
-                                                        {commentaryList.map((item, index) => {
+                                                    {commentaryList.map((item, index) => {
                                                             return (
-                                                                <li key={index}>
-                                                                    <div>
-                                                                        <h5>{item.overs}</h5>
-                                                                        <span
-                                                                            className={`${getEventBg(item.event)}`}>{item.runs}</span>
-                                                                    </div>
-                                                                    <p>{item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item)}</p>
-                                                                </li>
+                                                                <div key={index}>
+                                                                    {Object.keys(item.overSeparator).length > 0 &&
+                                                                        <li className="separator">
+                                                                            <h6>Runs<br/>{item.overSeparator.runs}</h6>
+                                                                            <h6>After {item.overSeparator.overs} overs<br/>{item.overSeparator.score}/{item.overSeparator.wickets}</h6>
+                                                                            <h6>
+                                                                                {item.overSeparator.batStrikerNickname} - {item.overSeparator.batStrikerRuns} ({item.overSeparator.batStrikerBalls})<br/>
+                                                                                {item.overSeparator.batNonStrikerNickname} - {item.overSeparator.batNonStrikerRuns} ({item.overSeparator.batNonStrikerBalls})
+                                                                            </h6>
+                                                                            <h6>
+                                                                                {item.overSeparator.bowlerNickname}<br/>
+                                                                                {item.overSeparator.bowlerOvers}-{item.overSeparator.bowlerMaidens}-{item.overSeparator.bowlerRuns}-{item.overSeparator.bowlerWickets}
+                                                                            </h6>
+                                                                        </li>
+                                                                    }
+                                                                    <li>
+                                                                        <div>
+                                                                            <h5>{parseInt(item.overs) == item.overs ? (item.overs - 0.4) : item.overs}</h5>
+                                                                            <span
+                                                                                className={`${getEventBg(item.event)}`}>{item.runs}</span>
+                                                                        </div>
+                                                                        <p>{item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item)}</p>
+                                                                    </li>
+                                                                </div>
                                                             )
                                                         })}
                                                     </ul>

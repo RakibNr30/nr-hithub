@@ -592,6 +592,12 @@ a:focus {
     border-radius: 0 0 10px 10px;
 }
 
+ul.commentary-list {
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
 .commentary-list li {
     align-items: center;
     display: -webkit-box;
@@ -608,23 +614,16 @@ a:focus {
     flex-wrap: wrap;
     justify-content: space-between;
     background: #32313f;
-    border-radius: 10px 10px 0 0;
+    /*border-radius: 10px 10px 0 0;*/
     padding: 10px 20px;
 }
-.commentary-list li.separator h5 {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 21px;
-    margin-bottom: 0;
-}
-
-.commentary-list li.separator p {
+.commentary-list li.separator h6 {
     color: #fff;
     font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
+    font-weight: normal;
+    line-height: 21px;
     margin-bottom: 0;
+    margin-right: unset;
 }
 
 .commentary-list li:not(:last-child) {
@@ -922,10 +921,25 @@ a:focus {
 .widget-scorer .scorer-wicket-and-extras ul li.wicket span {
     background-color: transparent;
     border: var(--color-danger) solid 1px;
+    color: var(--color-danger);
+}
+.widget-scorer .scorer-wicket-and-extras ul li.wicket:hover span {
+    letter-spacing: 1px;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.wicket.active span {
+    background-color: var(--color-danger);
+    color: white;
 }
 .widget-scorer .scorer-wicket-and-extras ul li.extra span {
     background-color: transparent;
     border: var(--color-orange) solid 1px;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.extra:hover span {
+    letter-spacing: 1px;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.extra.active span {
+    background-color: var(--color-orange);
+    color: white;
 }
 
 /**********************************
