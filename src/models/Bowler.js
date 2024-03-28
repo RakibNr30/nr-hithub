@@ -11,7 +11,7 @@ class Bowler {
         this.runs = data.runs || 0;
         this.wickets = data.wickets || 0;
         this.maidens = data.maidens || 0;
-        this.economy = data.economy || 0.0;
+        this.totalBalls = data.totalBalls || 0;
         this.balls = data.balls || 0;
         this.dots = data.dots || 0;
         this.fours = data.fours || 0;

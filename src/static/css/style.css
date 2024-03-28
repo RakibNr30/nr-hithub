@@ -559,16 +559,11 @@ a:focus {
 }
 
 .commentary-header {
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
     justify-content: space-between;
     background: #32313f;
     border-radius: 10px 10px 0 0;
@@ -593,24 +588,43 @@ a:focus {
 
 .commentary-body {
     position: relative;
-    padding: 15px 20px;
     background: #f6f7fb;
     border-radius: 0 0 10px 10px;
 }
 
 .commentary-list li {
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
     justify-content: flex-start;
-    padding: 10px 0;
+    padding: 10px 20px;
+}
+
+.commentary-list li.separator {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: #32313f;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 20px;
+}
+.commentary-list li.separator h5 {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 21px;
+    margin-bottom: 0;
+}
+
+.commentary-list li.separator p {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 0;
 }
 
 .commentary-list li:not(:last-child) {
@@ -958,6 +972,7 @@ a:focus {
     display: flex;
     gap: 0.75rem;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 .widget-scorer .scorer-control-buttons .runs ul.first li,
 .widget-scorer .scorer-control-buttons .runs ul.second li  {

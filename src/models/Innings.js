@@ -9,6 +9,7 @@ class Innings {
         this.score = data.score || 0;
         this.wickets = data.wickets || 0;
         this.overs = data.overs || 0.0;
+        this.totalBalls = data.totalBalls || 0;
         this.balls = data.balls || 0;
     }
 }

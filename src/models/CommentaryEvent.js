@@ -1,5 +1,4 @@
 import {uid} from "uid";
-import OverSeparator from "./OverSeparator";
 import moment from "moment";
 
 class CommentaryEvent {

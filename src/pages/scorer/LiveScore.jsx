@@ -7,6 +7,7 @@ import {STAGE} from "../../constants/match";
 import useCommentaryStore from "../../stores/commentaryStore";
 import useMatchStore from "../../stores/matchStore";
 import ScorerService from "../../services/ScorerService";
+import {getEventBg, getEventText} from "../../utils/commentaryUtil";
 
 const HomeIndex = () => {
 
@@ -29,6 +30,8 @@ const HomeIndex = () => {
     const team2 = teamService.findById(match.team2Id);
 
     const commentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+
+    const commentaryList = commentary.commentaryList.filter(item => item.inningsNumber == commentary.miniScore.innings);
 
     const onRunHandler = (takenRun) => {
         scorerService.run(match, takenRun);
@@ -349,60 +352,34 @@ const HomeIndex = () => {
                                                 </div>
                                                 <div className="commentary-body">
                                                     <ul className="commentary-list">
-                                                        <li>
-                                                            <div>
-                                                                <h5>5.6</h5>
-                                                                <span className="bg-success">6</span>
-                                                            </div>
+                                                        <li className="separator">
+                                                            <h5>Runs<br/>21
+                                                            </h5>
+                                                            <h5>
+                                                                After 6.0 overs<br/>
+                                                                53/2
+                                                            </h5>
                                                             <p>
-                                                                Bumrah to Mushfiqur, <strong>SIX</strong>.
+                                                                Mahmudullah - 10 (5)<br/>
+                                                                Mushfiqur - 8 (3)<br/>
+                                                            </p>
+                                                            <p>
+                                                                Bumrah<br/>
+                                                                1-0-21-0
                                                             </p>
                                                         </li>
-                                                        <li>
-                                                            <div>
-                                                                <h5>5.5</h5>
-                                                                <span>2</span>
-                                                            </div>
-                                                            <p>
-                                                                Bumrah to Mushfiqur, 2 runs.
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <div>
-                                                                <h5>5.4</h5>
-                                                                <span>3</span>
-                                                            </div>
-                                                            <p>
-                                                                Bumrah to Mahmudullah,3 runs.
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <div>
-                                                                <h5>5.3</h5>
-                                                                <span className="bg-success">6</span>
-                                                            </div>
-                                                            <p>
-                                                                Bumrah to Mahmudullah, <strong>SIX</strong>.
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <div>
-                                                                <h5>5.2</h5>
-                                                                <span>0</span>
-                                                            </div>
-                                                            <p>
-                                                                Bumrah to Mahmudullah, no run.
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <div>
-                                                                <h5>5.1</h5>
-                                                                <span className="bg-primary">4</span>
-                                                            </div>
-                                                            <p>
-                                                                Bumrah to Mahmudullah, <strong>FOUR</strong>.
-                                                            </p>
-                                                        </li>
+                                                        {commentaryList.map((item, index) => {
+                                                            return (
+                                                                <li key={index}>
+                                                                    <div>
+                                                                        <h5>{item.overs}</h5>
+                                                                        <span
+                                                                            className={`${getEventBg(item.event)}`}>{item.runs}</span>
+                                                                    </div>
+                                                                    <p>{item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item)}</p>
+                                                                </li>
+                                                            )
+                                                        })}
                                                     </ul>
                                                 </div>
                                             </div>
