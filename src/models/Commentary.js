@@ -10,6 +10,10 @@ class Commentary {
         this.id = data.id || uid();
         this.matchId = data.matchId || null;
         this.commentaryList = data.commentaryList || [];
+        this.preFirstInningsCommentaries = data.preFirstInningsCommentaries || [];
+        this.postFirstInningsCommentaries = data.postFirstInningsCommentaries || [];
+        this.preSecondInningsCommentaries = data.preSecondInningsCommentaries || [];
+        this.postSecondInningsCommentaries = data.postSecondInningsCommentaries || [];
         this.miniScore = {
             innings: data.miniScore?.innings || 0,
             batTeamId: data.miniScore?.batTeamId || null,
@@ -21,8 +25,8 @@ class Commentary {
             target: data.miniScore?.target || 0,
             lastWicketText: data.miniScore?.lastWicketText || "",
             lastOverBowlerId: data.miniScore?.lastOverBowlerId || null,
-            shouldBowlerChange: data.miniScore?.shouldBowlerChange || false,
-            shouldInningsChange: data.miniScore?.shouldInningsChange || false,
+            isOverBreak: data.miniScore?.isOverBreak || false,
+            isInningsBreak: data.miniScore?.isInningsBreak || false,
             batsmanStriker: new Batsman(data.miniScore?.batsmanStriker || {}),
             batsmanNonStriker: new Batsman(data.miniScore?.batsmanNonStriker || {}),
             bowlerStriker: new Bowler(data.miniScore?.bowlerStriker || {}),

@@ -6,8 +6,14 @@ import CommentaryService from "./CommentaryService";
 import ScorecardService from "./ScorecardService";
 import useScorecardStore from "../stores/scorecardStore";
 import Bowler from "../models/Bowler";
+import MatchService from "./MatchService";
+import {STAGE} from "../constants/match";
+import moment from "moment";
+import Batsman from "../models/Batsman";
+import Partnership from "../models/Partnarship";
 
 const ScorerService = () => {
+    const matchService = MatchService();
     const commentaryService = CommentaryService();
     const scorecardService = ScorecardService();
 
@@ -34,10 +40,53 @@ const ScorerService = () => {
                 break;
         }
 
-        const updatedCommentary = getCommentary(match);
+        let updatedCommentary = getCommentary(match);
 
         if (updatedCommentary.miniScore.balls % 6 == 0) {
             swapBatsman(match);
+        }
+
+        updatedCommentary = getCommentary(match);
+
+        if (isMatchEnded(match, updatedCommentary)) {
+            const matchResult = getMatchResult(updatedCommentary);
+            matchService.update({
+                ...match,
+                batTeamId: null,
+                runningInnings: null,
+                matchResult: matchResult,
+                stage: STAGE.END
+            })
+
+            commentaryService.update({
+                ...updatedCommentary,
+                commentaryList: [
+                    ...updatedCommentary.commentaryList,
+                ],
+                postSecondInningsCommentaries: [
+                    ...updatedCommentary.postSecondInningsCommentaries,
+                    `${matchResult.isMatchTie ? "Match is tie" : `${matchResult.winningTeamName} won the match by ${matchResult.winningMargin} ${matchResult.isWinByRuns ? "run" : "wicket"}${matchResult.winningMargin > 1 ? "s" : ""}`}`
+                ],
+                miniScore: {
+                    ...updatedCommentary.miniScore,
+                    innings: 0,
+                    batTeamId: null,
+                    scores: 0,
+                    wickets: 0,
+                    overs: 0.0,
+                    balls: 0,
+                    totalBalls: 0,
+                    target: 0,
+                    lastWicketText: "",
+                    lastOverBowlerId: null,
+                    isOverBreak: false,
+                    isInningsBreak: false,
+                    batsmanStriker: new Batsman({}),
+                    batsmanNonStriker: new Batsman({}),
+                    bowlerStriker: new Bowler({}),
+                    partnership: new Partnership({}),
+                }
+            })
         }
     }
 
@@ -52,7 +101,6 @@ const ScorerService = () => {
                 scores: commentary.miniScore.scores + takenRun,
                 wickets: commentary.miniScore.wickets + 0,
                 overs: ballToOver(commentary.miniScore.balls + 1),
-                //shouldBowlerChange: false,
                 batsmanStriker: {
                     ...commentary.miniScore.batsmanStriker,
                     runs: commentary.miniScore.batsmanStriker.runs + takenRun,
@@ -91,7 +139,7 @@ const ScorerService = () => {
                         score: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.score + takenRun : commentary.miniScore.matchScoreDetails.firstInnings.score,
                         balls: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.balls + 1 : commentary.miniScore.matchScoreDetails.firstInnings.balls,
                         wickets: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.wickets + 0 : commentary.miniScore.matchScoreDetails.firstInnings.wickets,
-                        overs: commentary.miniScore.innings == 1 ? ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls + 1) : ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls),
+                        overs: commentary.miniScore.innings == 1 ? ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls + 1) : ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls),
                     },
                     secondInnings: {
                         ...commentary.miniScore.matchScoreDetails.secondInnings,
@@ -123,7 +171,7 @@ const ScorerService = () => {
                 miniScore: {
                     ...updatedCommentary.miniScore,
                     lastOverBowlerId: updatedCommentary.miniScore.bowlerStriker.id,
-                    shouldBowlerChange: true,
+                    isOverBreak: true,
                     bowlerStriker: {
                         ...updatedCommentary.miniScore.bowlerStriker,
                         maidens: updatedCommentary.miniScore.bowlerStriker.maidens + (lastOverRuns == 0 ? 1 : 0),
@@ -139,8 +187,9 @@ const ScorerService = () => {
                 ...updatedCommentary,
                 miniScore: {
                     ...updatedCommentary.miniScore,
-                    shouldBowlerChange: false,
-                    shouldInningsChange: true,
+                    isOverBreak: false,
+                    isInningsBreak: true,
+                    target: updatedCommentary.miniScore.scores + 1
                 },
             })
         }
@@ -162,7 +211,7 @@ const ScorerService = () => {
             ...commentary,
             miniScore: {
                 ...commentary.miniScore,
-                shouldBowlerChange: false,
+                isOverBreak: false,
                 bowlerStriker: existingBowlerIndex != -1
                     ? teamBowlers[existingBowlerIndex] :
                     new Bowler({...bowler, order: currentOrder + 1, canMaxOvers: parseInt(match.over/5)}),
@@ -170,6 +219,13 @@ const ScorerService = () => {
         });
 
         updateScorecard(match);
+    }
+
+    const makeManOfTheMatch = (match, player) => {
+        matchService.update({
+            ...match,
+            manOfTheMatch: player
+        })
     }
 
     /* update scorecard section */
@@ -330,7 +386,7 @@ const ScorerService = () => {
     const getOverFullSummary = (commentary, overNumber, currentCommentaryEvent) => {
         let thisOverCommentaryEvents = commentary.commentaryList.filter(item => {
             const overAndBall = parseInt(item.overs) == item.overs ? (item.overs - 0.4) : item.overs;
-            return overNumber == parseInt(overAndBall);
+            return overNumber == parseInt(overAndBall) && item.inningsNumber == commentary.miniScore.innings;
         });
 
         if (currentCommentaryEvent) {
@@ -364,6 +420,53 @@ const ScorerService = () => {
         })
     }
 
+    const getMatchResult = (commentary) => {
+        const firstInnings = commentary.miniScore.matchScoreDetails.firstInnings;
+        const secondInnings = commentary.miniScore.matchScoreDetails.secondInnings;
+
+        let winningTeamId = null;
+        let winningTeamName = "";
+        let winningTeamCode = "";
+        let isMatchTie = false;
+        let winningMargin = 0;
+        let isWinByRuns = false;
+        let ballsRemaining = 0;
+
+        if (firstInnings.score > secondInnings.score) {
+            winningTeamId = firstInnings.batTeamId;
+            winningTeamName = firstInnings.batTeamName;
+            winningTeamCode = firstInnings.batTeamCode;
+            winningMargin = firstInnings.score - secondInnings.score;
+            isWinByRuns = true;
+        } else if (firstInnings.score < secondInnings.score) {
+            winningTeamId = secondInnings.batTeamId;
+            winningTeamName = secondInnings.batTeamName;
+            winningTeamCode = secondInnings.batTeamCode;
+            winningMargin = 10 - secondInnings.wickets;
+        } else {
+            isMatchTie = true;
+        }
+
+        return {
+            winningTeamId: winningTeamId,
+            winningTeamName: winningTeamName,
+            winningTeamCode: winningTeamCode,
+            isMatchTie: isMatchTie,
+            winningMargin: winningMargin,
+            isWinByRuns: isWinByRuns,
+            ballsRemaining: ballsRemaining,
+            time: moment().format()
+        }
+    }
+
+    const isMatchEnded = (match, commentary) => {
+        if (commentary.miniScore.innings == 1) return false;
+
+        if (commentary.miniScore.target <= commentary.miniScore.scores) return true;
+
+        if (commentary.miniScore.overs >= match.over) return true;
+    }
+
     const isLastBallOfOver = (commentary) => {
        return commentary.miniScore.balls % 6 == 0;
     }
@@ -376,10 +479,16 @@ const ScorerService = () => {
         return parseInt(balls / 6) + ((balls % 6) / 10)
     }
 
+    const calculateRR = (runs, balls) => {
+        return balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat(runs / (balls / 6)).toFixed(2)
+    }
+
     return {
         runAndEvents,
         swapBatsman,
-        changeBowlingStriker
+        changeBowlingStriker,
+        makeManOfTheMatch,
+        calculateRR
     }
 }
 

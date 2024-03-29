@@ -357,7 +357,7 @@ a:focus {
 }
 
 .card-aside {
-    max-width: 180px;
+    max-width: 140px;
     flex-basis: 100%;
     width: 100%;
     border-left: 1px solid #eff0f5;
@@ -371,6 +371,9 @@ a:focus {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
+}
+.card-aside.big {
+    max-width: 180px;
 }
 
 @media screen and (max-width: 767px) {
@@ -591,8 +594,7 @@ a:focus {
     background: #f6f7fb;
     border-radius: 0 0 10px 10px;
 }
-
-ul.commentary-list {
+div.commentary-body {
     max-height: 80vh;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -721,12 +723,14 @@ ul.commentary-list {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
     row-gap: 0.45rem;
+    overflow-x: clip;
+    white-space: nowrap;
 }
 
 .spell-sum-box .recent-spell label {
@@ -761,7 +765,7 @@ ul.commentary-list {
 }
 
 .spell-sum-box .recent-spell ul li:not(:last-child) {
-    margin-right: 2px;
+    margin-right: 5px;
 }
 
 @media screen and (max-width: 767px) {

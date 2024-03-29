@@ -26,12 +26,17 @@ class Match {
         };
         this.matchResult = {
             winningTeamId: data?.matchResult?.winningTeamId || null,
-            winningMargin: data?.matchResult?.winningMargin || null,
-            winByRuns: data?.matchResult?.winByRuns || false,
-            ballsRemaining: data?.matchResult?.ballsRemaining || null,
+            winningTeamName: data?.matchResult?.winningTeamName || "",
+            winningTeamCode: data?.matchResult?.winningTeamCode || "",
+            isMatchTie: data?.matchResult?.isMatchTie || false,
+            winningMargin: data?.matchResult?.winningMargin || 0,
+            isWinByRuns: data?.matchResult?.isWinByRuns || false,
+            ballsRemaining: data?.matchResult?.ballsRemaining || 0,
             time: data?.matchResult?.time || null,
         };
-        this.momPlayerId = data.momPlayerId || null;
+        this.manOfTheMatch = {
+
+        }
         this.stage = data.stage || 0;
         this.time = data.time || moment().format();
     }

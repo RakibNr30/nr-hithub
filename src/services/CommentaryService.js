@@ -12,6 +12,10 @@ const CommentaryService = () => {
         return findAll().find(commentary => commentary.id == id);
     }
 
+    const findByMatchId = (matchId) => {
+        return findAll().find(commentary => commentary.matchId == matchId);
+    }
+
     const save = (commentary) => {
         addCommentary(commentary);
     }
@@ -23,6 +27,7 @@ const CommentaryService = () => {
     return {
         findAll,
         findById,
+        findByMatchId,
         save,
         update
     }

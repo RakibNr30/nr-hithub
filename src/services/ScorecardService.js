@@ -21,6 +21,10 @@ const ScorecardService = () => {
         return findAll().find(scorecard => scorecard.id == id);
     }
 
+    const findByMatchId = (matchId) => {
+        return findAll().find(scorecard => scorecard.matchId == matchId);
+    }
+
     const save = (scorecard) => {
         addScorecard(scorecard);
     }
@@ -54,6 +58,7 @@ const ScorecardService = () => {
     return {
         findAll,
         findById,
+        findByMatchId,
         save,
         update,
         getExistingBowlers,

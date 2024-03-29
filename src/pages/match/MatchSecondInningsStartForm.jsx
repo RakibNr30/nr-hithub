@@ -3,21 +3,15 @@ import Button from "react-bootstrap/Button";
 import {Col, FormGroup, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import SelectField from "../../components/form/SelectField";
-import Commentary from "../../models/Commentary";
 import Batsman from "../../models/Batsman";
 import Bowler from "../../models/Bowler";
-import {STAGE} from "../../constants/match";
 import CommentaryService from "../../services/CommentaryService";
 import MatchService from "../../services/MatchService";
-import {uid} from "uid";
-import Innings from "../../models/Innings";
 import TeamService from "../../services/TeamService";
 import Partnership from "../../models/Partnarship";
-import Scorecard from "../../models/Scorecard";
-import ScorecardInnings from "../../models/ScorecardInnings";
 import ScorecardService from "../../services/ScorecardService";
 
-const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
+const MatchSecondInningsStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
     const matchService = MatchService();
     const commentaryService = CommentaryService();
     const scorecardService = ScorecardService();
@@ -31,21 +25,21 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
     const [nonStriker, setNonStriker] = useState({});
     const [openingBowler, setOpeningBowler] = useState({});
 
-    const battingTeam = teamService.findById(match.tossResult.batFirstTeamId == match.team1Id ? match.team1Id : match.team2Id);
-    const bowlingTeam = teamService.findById(match.tossResult.batFirstTeamId == match.team2Id ? match.team1Id : match.team2Id);
+    const battingTeam = teamService.findById(match.tossResult.batFirstTeamId == match.team1Id ? match.team2Id : match.team1Id);
+    const bowlingTeam = teamService.findById(match.tossResult.batFirstTeamId == match.team2Id ? match.team2Id : match.team1Id);
 
-    let batFirstSquads = battingTeam.id == match.team1Id ? match.team1Players : match.team2Players;
-    let bowlFirstSquads = bowlingTeam.id == match.team1Id ? match.team1Players : match.team2Players;
+    let battingSquads = battingTeam.id == match.team1Id ? match.team1Players : match.team2Players;
+    let bowlingSquads = bowlingTeam.id == match.team1Id ? match.team1Players : match.team2Players;
 
-    batFirstSquads = batFirstSquads.map(item => {
+    battingSquads = battingSquads.map(item => {
         return {...item, label: `${item.name} (${item.role})`, value: item.id}
     });
-    bowlFirstSquads = bowlFirstSquads.map(item => {
+    bowlingSquads = bowlingSquads.map(item => {
         return {...item, label: `${item.name} (${item.role})`, value: item.id}
     });
 
     useEffect(() => {
-        setStrikers(batFirstSquads);
+        setStrikers(battingSquads);
         reset();
     }, []);
 
@@ -58,31 +52,43 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
         switch (e.target.name) {
             case "strikerId":
                 setNonStrikers(strikers.filter(item => item.value != e.target.value))
-                setStriker(batFirstSquads.find(item => item.id == e.target.value));
+                setStriker(battingSquads.find(item => item.id == e.target.value));
                 setNonStriker(strikers.filter(item => item.value != e.target.value)[0]);
                 break;
             case "nonStrikerId":
-                setNonStriker(batFirstSquads.find(item => item.id == e.target.value));
+                setNonStriker(battingSquads.find(item => item.id == e.target.value));
                 break;
             case "openingBowlerId":
-                setOpeningBowler(bowlFirstSquads.find(item => item.id == e.target.value));
+                setOpeningBowler(bowlingSquads.find(item => item.id == e.target.value));
                 break;
             default:
                 break;
         }
     }
 
-    const handleMatchStart = (match, openers = {}) => {
-        const commentaryId = uid();
-        commentaryService.save(new Commentary({
-            id: commentaryId,
-            matchId: match.id,
-            preFirstInningsCommentaries: [
-                `${striker.name} and ${nonStriker.name} are comes to the crease. ${openingBowler.name} will open with ball.`
+    const handleMatchSecondInningsStart = (match, openers = {}) => {
+
+        const commentary = commentaryService.findByMatchId(match.id);
+
+        commentaryService.update({
+            ...commentary,
+            preSecondInningsCommentaries: [
+                ...commentary.preSecondInningsCommentaries,
+                `${striker.name} and ${nonStriker.name} are comes to the crease. ${openingBowler.name} will open with ball. ${commentary.miniScore.matchScoreDetails.secondInnings.batTeamName} need ${commentary.miniScore.target} runs from ${match.over} overs.`
             ],
             miniScore: {
-                innings: 1,
-                batTeamId: match.tossResult.batFirstTeamId,
+                ...commentary.miniScore,
+                innings: 2,
+                batTeamId: match.tossResult.batFirstTeamId == match.team1Id ? match.team2Id : match.team1Id,
+                scores: 0,
+                wickets: 0,
+                overs: 0.0,
+                balls: 0,
+                totalBalls: 0,
+                lastWicketText: "",
+                lastOverBowlerId: null,
+                isOverBreak: false,
+                isInningsBreak: false,
                 batsmanStriker: new Batsman({...striker, order: 1}),
                 batsmanNonStriker: new Batsman({...nonStriker, order: 2}),
                 bowlerStriker: new Bowler({...openingBowler, order: 1, canMaxOvers: parseInt(match.over/5)}),
@@ -94,31 +100,17 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
                     bat2Name: nonStriker.name,
                     bat2Nickname: nonStriker.nickname,
                 }),
-                matchScoreDetails: {
-                    firstInnings: new Innings({
-                        batTeamId: battingTeam.id,
-                        batTeamName: battingTeam.name,
-                        batTeamCode: battingTeam.code,
-                    }),
-                    secondInnings: new Innings({
-                        batTeamId: bowlingTeam.id,
-                        batTeamName: bowlingTeam.name,
-                        batTeamCode: bowlingTeam.code,
-                    }),
-                    tossResult: match.tossResult
-                }
             }
-        }));
+        })
 
-        const scorecardId = uid();
-        scorecardService.save(new Scorecard({
-            id: scorecardId,
-            matchId: match.id,
-            firstInnings: new ScorecardInnings({
+        const scorecard = scorecardService.findByMatchId(match.id);
+
+        scorecardService.update({
+            ...scorecard,
+            secondInnings: {
+                ...scorecard.secondInnings,
                 battingDetails: {
-                    teamId: battingTeam.id,
-                    teamName: battingTeam.name,
-                    teamCode: battingTeam.code,
+                    ...scorecard.secondInnings.battingDetails,
                     teamBatsmen: [
                         new Batsman({
                             ...striker,
@@ -131,9 +123,7 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
                     ]
                 },
                 bowlingDetails: {
-                    teamId: bowlingTeam.id,
-                    teamName: bowlingTeam.name,
-                    teamCode: bowlingTeam.code,
+                    ...scorecard.secondInnings.bowlingDetails,
                     teamBowlers: [
                         new Bowler({
                             ...openingBowler,
@@ -150,27 +140,13 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
                     bat2Name: nonStriker.name,
                     bat2Nickname: nonStriker.nickname,
                 }),
-            }),
-            secondInnings: new ScorecardInnings({
-                battingDetails: {
-                    teamId: bowlingTeam.id,
-                    teamName: bowlingTeam.name,
-                    teamCode: bowlingTeam.code,
-                },
-                bowlingDetails: {
-                    teamId: battingTeam.id,
-                    teamName: battingTeam.name,
-                    teamCode: battingTeam.code,
-                },
-            }),
-        }))
+            },
+        })
 
         matchService.update({
             ...match,
-            stage: STAGE.IN_PROGRESS,
-            commentaryId: commentaryId,
-            scorecardId: scorecardId,
-            runningInnings: 1
+            batTeamId: match.tossResult.batFirstTeamId == match.team1Id ? match.team2Id : match.team1Id,
+            runningInnings: 2
         })
     }
 
@@ -198,7 +174,7 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
                     <SelectField
                         fieldName="openingBowlerId"
                         fieldLabel="Opening Bowler"
-                        options={bowlFirstSquads}
+                        options={bowlingSquads}
                         handler={onChangeHandler}
                         resetCounter={resetCounter}
                     />
@@ -209,7 +185,7 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
                             Clear
                         </Button>
                         <Button variant="primary" className="ms-2" onClick={() => {
-                            handleMatchStart(match);
+                            handleMatchSecondInningsStart(match);
                             setShowFormModal(false);
                         }}>
                             {buttonLabel}
@@ -220,4 +196,4 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
         </Form>)
 }
 
-export default MatchStartForm;
+export default MatchSecondInningsStartForm;
