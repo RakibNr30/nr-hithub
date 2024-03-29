@@ -78,7 +78,7 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
             id: commentaryId,
             matchId: match.id,
             preFirstInningsCommentaries: [
-                `${striker.name} and ${nonStriker.name} are comes to the crease. ${openingBowler.name} will open with ball.`
+                `${striker.name} and ${nonStriker.name} are comes to the crease. ${striker.name} is on strike. ${openingBowler.name} will open the attack.`
             ],
             miniScore: {
                 innings: 1,

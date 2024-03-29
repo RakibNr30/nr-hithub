@@ -74,7 +74,7 @@ const MatchSecondInningsStartForm = ({defaultMatch = {}, buttonLabel, setShowFor
             ...commentary,
             preSecondInningsCommentaries: [
                 ...commentary.preSecondInningsCommentaries,
-                `${striker.name} and ${nonStriker.name} are comes to the crease. ${openingBowler.name} will open with ball. ${commentary.miniScore.matchScoreDetails.secondInnings.batTeamName} need ${commentary.miniScore.target} runs from ${match.over} overs.`
+                `${striker.name} and ${nonStriker.name} are comes to the crease. ${striker.name} is on strike. ${openingBowler.name} will open the attack. ${commentary.miniScore.matchScoreDetails.secondInnings.batTeamName} need ${commentary.miniScore.target} runs from ${match.over} overs.`
             ],
             miniScore: {
                 ...commentary.miniScore,

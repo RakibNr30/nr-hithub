@@ -58,6 +58,8 @@ const ScorerService = () => {
                 stage: STAGE.END
             })
 
+            const commentaryText = `${matchResult.isMatchTie ? "Amidst an intense battle, neither team could claim victory, as the match concludes in a thrilling tie, leaving both sides with a shared sense of accomplishment and frustration." : `The ${matchResult.isWinByRuns ? "fielding" : "batting"} side celebrates in jubilation, their hard work and determination paying off in the end. Commiserations to the ${matchResult.isWinByRuns ? "batting" : "fielding"} team.`}`
+
             commentaryService.update({
                 ...updatedCommentary,
                 commentaryList: [
@@ -65,7 +67,8 @@ const ScorerService = () => {
                 ],
                 postSecondInningsCommentaries: [
                     ...updatedCommentary.postSecondInningsCommentaries,
-                    `${matchResult.isMatchTie ? "Match is tie" : `${matchResult.winningTeamName} won the match by ${matchResult.winningMargin} ${matchResult.isWinByRuns ? "run" : "wicket"}${matchResult.winningMargin > 1 ? "s" : ""}`}`
+                    `${commentaryText}`,
+                    `${matchResult.isMatchTie ? "Match is tie." : `${matchResult.winningTeamName} won the match by ${matchResult.winningMargin} ${matchResult.isWinByRuns ? "run" : "wicket"}${matchResult.winningMargin > 1 ? "s" : ""}.`}`
                 ],
                 miniScore: {
                     ...updatedCommentary.miniScore,
@@ -185,6 +188,10 @@ const ScorerService = () => {
         if (isLastBallOfInnings(match, updatedCommentary)) {
             commentaryService.update({
                 ...updatedCommentary,
+                postFirstInningsCommentaries: [
+                    ...updatedCommentary.postFirstInningsCommentaries,
+                    `After end of the innings ${commentary.miniScore.matchScoreDetails.firstInnings.batTeamName} collects ${commentary.miniScore.matchScoreDetails.firstInnings.score} runs. Back for ${commentary.miniScore.matchScoreDetails.secondInnings.batTeamName}'s reply in few minutes...`
+                ],
                 miniScore: {
                     ...updatedCommentary.miniScore,
                     isOverBreak: false,

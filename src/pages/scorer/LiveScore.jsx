@@ -79,7 +79,6 @@ const HomeIndex = () => {
     }
 
     const handleMOMPlayer = (match) => {
-        console.log(manOfTheMatch)
         if (Object.keys(manOfTheMatch).length <= 0) {
             return;
         }
@@ -270,7 +269,7 @@ const HomeIndex = () => {
                                             <div className="card card-shadow">
                                                 <Button className="hithub-btn-2"
                                                         onClick={() => setShowMatchSecondInningsStartModal(true)}>
-                                                    Start Innings
+                                                    Start 2nd Innings
                                                 </Button>
                                             </div>
                                         </div>
@@ -309,7 +308,10 @@ const HomeIndex = () => {
                                         <div className="score-card score-card-lg d-md-flex p-0">
                                             <div className="score-card-inner flex-grow-1 px-20 py-20">
                                                 <div className="score-card-header mb-15">
-                                                    <strong className="text-red">live</strong>
+                                                    {match.stage == STAGE.UPCOMING && <strong className="text-primary">Upcoming</strong>}
+                                                    {match.stage == STAGE.TOSS && <strong className="text-primary">Toss</strong>}
+                                                    {(match.stage == STAGE.IN_PROGRESS || (match.stage == STAGE.END && Object.keys(match.manOfTheMatch).length <= 0)) && <strong className="text-red">Live</strong>}
+                                                    {Object.keys(match.manOfTheMatch).length > 0 && <strong className="text-dark">Ended</strong>}
                                                     <span>{match.title}, {venue.ground}, {series.title}</span>
                                                 </div>
                                                 <div className="score-card-body">
@@ -339,8 +341,8 @@ const HomeIndex = () => {
                                                         {commentary.miniScore.isInningsBreak == true && match.stage != STAGE.END &&
                                                             <p className="text-danger">Innings Break.</p>}
                                                         {commentary.miniScore.innings == 2 && match.stage != STAGE.END &&
-                                                            <p><strong
-                                                                className="text-uppercase">{commentary.miniScore.matchScoreDetails.secondInnings.batTeamCode}</strong> need
+                                                            <p>
+                                                                <strong className="text-uppercase">{commentary.miniScore.matchScoreDetails.secondInnings.batTeamCode}</strong> need
                                                                 more {(commentary.miniScore.target - commentary.miniScore.scores)} runs
                                                                 from {(match.over * 6 - commentary.miniScore.balls)} balls.
                                                             </p>
@@ -423,7 +425,7 @@ const HomeIndex = () => {
                                                 <div className="card-aside big text-left px-20 py-20">
                                                     <p>
                                                         Man of the
-                                                        Match<span>{match.manOfTheMatch.name}</span><span>{match.manOfTheMatch.team}</span>
+                                                        Match<span>{match.manOfTheMatch.name}</span><span style={{fontWeight: "normal"}}>{match.manOfTheMatch.team}</span>
                                                     </p>
                                                 </div>
                                             }
@@ -586,13 +588,30 @@ const HomeIndex = () => {
                                     }
                                 </section>
 
-                                {(commentary1stInningsList.length > 0 || commentary2ndInningsList.length > 0 || commentary.preFirstInningsCommentaries.length > 0 || commentary.preSecondInningsCommentaries.length > 0) &&
+                                {(commentary1stInningsList.length > 0 ||
+                                        commentary2ndInningsList.length > 0 ||
+                                        commentary.preFirstInningsCommentaries.length > 0 ||
+                                        commentary.postFirstInningsCommentaries.length > 0 ||
+                                        commentary.preSecondInningsCommentaries.length > 0 ||
+                                        commentary.postSecondInningsCommentaries.length > 0
+                                    ) &&
                                     <section className="pt-0">
                                         <div className="widget widget-rankings">
                                             <div className="card card-shadow">
                                                 <div className="commentary-box">
                                                     <div className="commentary-body">
                                                         <ul className="commentary-list">
+                                                            {commentary.postSecondInningsCommentaries.length > 0 &&
+                                                                <ul className="commentary-list">
+                                                                    {commentary.postSecondInningsCommentaries.map((item, index) => {
+                                                                        return (
+                                                                            <li key={index}>
+                                                                                <p>{item}</p>
+                                                                            </li>
+                                                                        )
+                                                                    })}
+                                                                </ul>
+                                                            }
                                                             {commentary2ndInningsList.map((item, index) => {
                                                                 return (
                                                                     <div key={index}>
@@ -627,6 +646,17 @@ const HomeIndex = () => {
                                                         {commentary.preSecondInningsCommentaries.length > 0 &&
                                                             <ul className="commentary-list">
                                                                 {commentary.preSecondInningsCommentaries.map((item, index) => {
+                                                                    return (
+                                                                        <li key={index}>
+                                                                            <p>{item}</p>
+                                                                        </li>
+                                                                    )
+                                                                })}
+                                                            </ul>
+                                                        }
+                                                        {commentary.postFirstInningsCommentaries.length > 0 &&
+                                                            <ul className="commentary-list">
+                                                                {commentary.postFirstInningsCommentaries.map((item, index) => {
                                                                     return (
                                                                         <li key={index}>
                                                                             <p>{item}</p>
@@ -691,7 +721,7 @@ const HomeIndex = () => {
 
                 {commentary.miniScore.isInningsBreak == true &&
                     <DefaultModal
-                        title="Start Innings"
+                        title="Start 2nd Innings"
                         show={showMatchSecondInningsStartModal}
                         handleClose={() => {
                             setShowMatchSecondInningsStartModal(false)
