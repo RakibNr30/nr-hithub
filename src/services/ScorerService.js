@@ -1,6 +1,6 @@
 import useCommentaryStore from "../stores/commentaryStore";
 import CommentaryEvent from "../models/CommentaryEvent";
-import {EVENT} from "../constants/commentary";
+import {EVENT, EXTRAS, MILESTONE} from "../constants/commentary";
 import OverSeparator from "../models/OverSeparator";
 import CommentaryService from "./CommentaryService";
 import ScorecardService from "./ScorecardService";
@@ -24,10 +24,10 @@ const ScorerService = () => {
         return  useScorecardStore.getState().scorecards.find(scorecard => scorecard.id == match.scorecardId);
     }
 
-    const runAndEvents = (match = {}, takenRun = 0) => {
+    const runAndEvents = (match = {}, takenRun = 0, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}) => {
         const commentary = getCommentary(match);
 
-        updateCommentary(match, commentary, takenRun);
+        updateCommentary(match, commentary, takenRun, extras);
         updateScorecard(match);
 
         switch (takenRun) {
@@ -42,7 +42,7 @@ const ScorerService = () => {
 
         let updatedCommentary = getCommentary(match);
 
-        if (updatedCommentary.miniScore.balls % 6 == 0) {
+        if (!updatedCommentary.miniScore.isLastBallExtra && updatedCommentary.miniScore.balls % 6 == 0) {
             swapBatsman(match);
         }
 
@@ -94,62 +94,87 @@ const ScorerService = () => {
     }
 
     /* update commentary */
-    const updateCommentary = (match = {}, commentary = {}, takenRun) => {
+    const updateCommentary = (match = {}, commentary = {}, takenRun, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}) => {
+
+        let ballCount = 1;
+        let runCount = takenRun;
+        let batterBallCount = 1;
+        let batterRunCount = takenRun;
+        let hasExtra = false;
+
+        if (extras.isWide) {
+            ballCount = 0;
+            runCount += 1;
+            batterBallCount = 0;
+            batterRunCount = 0;
+            hasExtra = true;
+        }
+
+        if (extras.isNoBall) {
+            ballCount = 0;
+            runCount += 1;
+            batterBallCount = 1;
+            hasExtra = true;
+        }
+
         commentaryService.update({
             ...commentary,
             miniScore: {
                 ...commentary.miniScore,
                 totalBalls: commentary.miniScore.totalBalls + 1,
-                balls: commentary.miniScore.balls + 1,
-                scores: commentary.miniScore.scores + takenRun,
+                balls: commentary.miniScore.balls + ballCount,
+                scores: commentary.miniScore.scores + runCount,
+                overs: ballToOver(commentary.miniScore.balls + ballCount),
+                isLastBallExtra: hasExtra,
                 wickets: commentary.miniScore.wickets + 0,
-                overs: ballToOver(commentary.miniScore.balls + 1),
                 batsmanStriker: {
                     ...commentary.miniScore.batsmanStriker,
-                    runs: commentary.miniScore.batsmanStriker.runs + takenRun,
-                    balls: commentary.miniScore.batsmanStriker.balls + 1,
-                    dots: commentary.miniScore.batsmanStriker.dots + (takenRun == 0 ? 1 : 0),
-                    ones: commentary.miniScore.batsmanStriker.ones + (takenRun == 1 ? 1 : 0),
-                    twos: commentary.miniScore.batsmanStriker.twos + (takenRun == 2 ? 1 : 0),
-                    threes: commentary.miniScore.batsmanStriker.threes + (takenRun == 3 ? 1 : 0),
-                    fours: commentary.miniScore.batsmanStriker.fours + (takenRun == 4 ? 1 : 0),
-                    fives: commentary.miniScore.batsmanStriker.fives + (takenRun == 5 ? 1 : 0),
-                    sixes: commentary.miniScore.batsmanStriker.sixes + (takenRun == 6 ? 1 : 0),
+                    runs: commentary.miniScore.batsmanStriker.runs + batterRunCount,
+                    balls: commentary.miniScore.batsmanStriker.balls + batterBallCount,
+                    dots: commentary.miniScore.batsmanStriker.dots + (batterRunCount == 0 ? 1 : 0),
+                    ones: commentary.miniScore.batsmanStriker.ones + (batterRunCount == 1 ? 1 : 0),
+                    twos: commentary.miniScore.batsmanStriker.twos + (batterRunCount == 2 ? 1 : 0),
+                    threes: commentary.miniScore.batsmanStriker.threes + (batterRunCount == 3 ? 1 : 0),
+                    fours: commentary.miniScore.batsmanStriker.fours + (batterRunCount == 4 ? 1 : 0),
+                    fives: commentary.miniScore.batsmanStriker.fives + (batterRunCount == 5 ? 1 : 0),
+                    sixes: commentary.miniScore.batsmanStriker.sixes + (batterRunCount == 6 ? 1 : 0),
                 },
                 bowlerStriker: {
                     ...commentary.miniScore.bowlerStriker,
-                    runs: commentary.miniScore.bowlerStriker.runs + takenRun,
+                    runs: commentary.miniScore.bowlerStriker.runs + runCount,
                     totalBalls: commentary.miniScore.bowlerStriker.totalBalls + 1,
-                    balls: commentary.miniScore.bowlerStriker.balls + 1,
-                    dots: commentary.miniScore.bowlerStriker.dots + (takenRun == 0 ? 1 : 0),
-                    fours: commentary.miniScore.bowlerStriker.fours + (takenRun == 4 ? 1 : 0),
-                    sixes: commentary.miniScore.bowlerStriker.sixes + (takenRun == 6 ? 1 : 0),
-                    overs: ballToOver(commentary.miniScore.bowlerStriker.balls + 1)
+                    balls: commentary.miniScore.bowlerStriker.balls + ballCount,
+                    dots: commentary.miniScore.bowlerStriker.dots + (runCount == 0 ? 1 : 0),
+                    fours: commentary.miniScore.bowlerStriker.fours + (runCount == 4 ? 1 : 0),
+                    sixes: commentary.miniScore.bowlerStriker.sixes + (runCount == 6 ? 1 : 0),
+                    wideBalls: commentary.miniScore.bowlerStriker.wideBalls + (extras.isWide ? 1 : 0),
+                    noBalls: commentary.miniScore.bowlerStriker.noBalls + (extras.isNoBall ? 1 : 0),
+                    overs: ballToOver(commentary.miniScore.bowlerStriker.balls + ballCount)
                 },
                 partnership: {
                     ...commentary.miniScore.partnership,
-                    runs: commentary.miniScore.partnership.runs + takenRun,
-                    balls: commentary.miniScore.partnership.balls + 1,
-                    bat1Balls: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat1Id ? commentary.miniScore.partnership.bat1Balls + 1 : commentary.miniScore.partnership.bat1Balls,
-                    bat2Balls: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat2Id ? commentary.miniScore.partnership.bat2Balls + 1 : commentary.miniScore.partnership.bat2Balls,
-                    bat1Runs: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat1Id ? commentary.miniScore.partnership.bat1Runs + takenRun : commentary.miniScore.partnership.bat1Runs,
-                    bat2Runs: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat2Id ? commentary.miniScore.partnership.bat2Runs + takenRun : commentary.miniScore.partnership.bat2Runs,
+                    runs: commentary.miniScore.partnership.runs + runCount,
+                    balls: commentary.miniScore.partnership.balls + batterBallCount,
+                    bat1Balls: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat1Id ? commentary.miniScore.partnership.bat1Balls + batterBallCount : commentary.miniScore.partnership.bat1Balls,
+                    bat2Balls: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat2Id ? commentary.miniScore.partnership.bat2Balls + batterBallCount : commentary.miniScore.partnership.bat2Balls,
+                    bat1Runs: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat1Id ? commentary.miniScore.partnership.bat1Runs + batterRunCount : commentary.miniScore.partnership.bat1Runs,
+                    bat2Runs: commentary.miniScore.batsmanStriker.id == commentary.miniScore.partnership.bat2Id ? commentary.miniScore.partnership.bat2Runs + batterRunCount : commentary.miniScore.partnership.bat2Runs,
                 },
                 matchScoreDetails: {
                     ...commentary.miniScore.matchScoreDetails,
                     firstInnings: {
                         ...commentary.miniScore.matchScoreDetails.firstInnings,
-                        score: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.score + takenRun : commentary.miniScore.matchScoreDetails.firstInnings.score,
-                        balls: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.balls + 1 : commentary.miniScore.matchScoreDetails.firstInnings.balls,
+                        score: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.score + runCount : commentary.miniScore.matchScoreDetails.firstInnings.score,
+                        balls: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.balls + ballCount : commentary.miniScore.matchScoreDetails.firstInnings.balls,
                         wickets: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.wickets + 0 : commentary.miniScore.matchScoreDetails.firstInnings.wickets,
-                        overs: commentary.miniScore.innings == 1 ? ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls + 1) : ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls),
+                        overs: commentary.miniScore.innings == 1 ? ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls + ballCount) : ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls),
                     },
                     secondInnings: {
                         ...commentary.miniScore.matchScoreDetails.secondInnings,
-                        score: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.score + takenRun : commentary.miniScore.matchScoreDetails.secondInnings.score,
-                        balls: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.balls + 1 : commentary.miniScore.matchScoreDetails.secondInnings.balls,
+                        score: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.score + runCount : commentary.miniScore.matchScoreDetails.secondInnings.score,
+                        balls: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.balls + ballCount : commentary.miniScore.matchScoreDetails.secondInnings.balls,
                         wickets: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.wickets + 0 : commentary.miniScore.matchScoreDetails.secondInnings.wickets,
-                        overs: commentary.miniScore.innings == 2 ? ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls + 1) : ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls),
+                        overs: commentary.miniScore.innings == 2 ? ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls + ballCount) : ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls),
                     }
                 }
             }
@@ -160,14 +185,15 @@ const ScorerService = () => {
         commentaryService.update({
             ...updatedCommentary,
             commentaryList: [
-                createCommentaryEvent(updatedCommentary, takenRun),
+                createCommentaryEvent(updatedCommentary, takenRun, extras),
                 ...updatedCommentary.commentaryList
             ],
         })
 
         updatedCommentary = getCommentary(match);
 
-        if (isLastBallOfOver(updatedCommentary)) {
+        if (!updatedCommentary.miniScore.isLastBallExtra && isLastBallOfOver(updatedCommentary)) {
+            console.log(updatedCommentary.miniScore.isLastBallExtra)
             const [lastOverRuns] = getOverFullSummary(updatedCommentary, updatedCommentary.miniScore.overs - 1);
             commentaryService.update({
                 ...updatedCommentary,
@@ -315,17 +341,42 @@ const ScorerService = () => {
         return teamBowlers;
     }
 
-    const createCommentaryEvent = (commentary, takenRun) => {
+    const createCommentaryEvent = (commentary, takenRun, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}) => {
         let event = EVENT.NONE;
         switch (takenRun) {
             case 4:
-                event = EVENT.FOUR;
+                event = (extras.isWide || extras.isByes || extras.isLegByes) ? EVENT.NONE : EVENT.FOUR;
                 break;
             case 6:
                 event = EVENT.SIX;
                 break;
             default:
                 break;
+        }
+
+        let runCount = takenRun;
+        let extraRunCount = 0;
+        let extraType = "";
+
+        if (extras.isWide) {
+            runCount += 1;
+            extraRunCount += 1;
+            extraType = EXTRAS.WIDE;
+        }
+
+        if (extras.isNoBall) {
+            runCount += 1;
+            extraRunCount += 1;
+            extraType = EXTRAS.NO_BALL;
+        }
+
+        let milestone = null;
+
+        if (commentary.miniScore.batsmanStriker.runs == 50) {
+            milestone = MILESTONE.FIFTY;
+        }
+        if (commentary.miniScore.batsmanStriker.runs == 100) {
+            milestone = MILESTONE.CENTURY
         }
 
         let commentaryEvent = new CommentaryEvent({
@@ -336,15 +387,18 @@ const ScorerService = () => {
             bowlerId: commentary.miniScore.bowlerStriker.id,
             bowlerName: commentary.miniScore.bowlerStriker.name,
             bowlerNickname: commentary.miniScore.bowlerStriker.nickname,
-            text: `${commentary.miniScore.bowlerStriker.nickname} to ${commentary.miniScore.batsmanStriker.nickname}, ${takenRun} run${takenRun > 1 ? "s" : ""}.`,
+            text: `${commentary.miniScore.bowlerStriker.nickname} to ${commentary.miniScore.batsmanStriker.nickname}, ${runCount} run${runCount > 1 ? "s" : ""}.`,
+            milestone: milestone,
             totalBalls: commentary.miniScore.totalBalls,
             balls: commentary.miniScore.balls,
             overs: commentary.miniScore.overs,
-            runs: takenRun,
+            runs: runCount,
+            extraRuns: extraRunCount,
+            extraType: extraType,
             event: event,
         });
 
-        if (commentaryEvent.balls % 6 == 0) {
+        if (!commentary.miniScore.isLastBallExtra && commentaryEvent.balls % 6 == 0) {
 
             commentaryEvent = {
                 ...commentaryEvent,
@@ -408,7 +462,14 @@ const ScorerService = () => {
         }, 0)
 
         const thisOverSummary = thisOverCommentaryEvents.reduce((previous, current) => {
-            return current.runs + " " + previous;
+            let total = current.runs;
+
+            if (current.extraRuns > 0) {
+                total -= current.extraRuns;
+                total = `${current.extraType}${total}`;
+            }
+
+            return total + " " + previous;
         }, "")
 
         return [thisOverRuns, thisOverSummary.trim()];

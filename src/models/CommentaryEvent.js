@@ -12,10 +12,13 @@ class CommentaryEvent {
         this.bowlerName = data.bowlerName || "";
         this.bowlerNickname = data.bowlerNickname || "";
         this.text = data.text || "";
+        this.milestone = data.milestone || null;
         this.totalBalls = data.totalBalls || 0;
         this.balls = data.balls || 0;
         this.overs = data.overs || 0.0;
         this.runs = data.runs || 0;
+        this.extraRuns = data.extraRuns || 0;
+        this.extraType = data.extraType || "";
         this.event = data.event || "";
         this.overSeparator = data.overSeparator || {};
         this.timestamp = data.timestamp || moment().format();

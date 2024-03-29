@@ -1,4 +1,4 @@
-import {EVENT} from "../constants/commentary";
+import {EVENT, EXTRAS} from "../constants/commentary";
 
 const getEventBg = (event) => {
     switch (event) {
@@ -11,21 +11,45 @@ const getEventBg = (event) => {
     }
 }
 
-const getEventText = (commentary) => {
+const getEventText = (commentary, hasExtra) => {
     switch (commentary.event) {
         case EVENT.SIX:
-            return <strong>SIX!</strong>
+            if (commentary.extraRuns > 0) {
+                if (commentary.extraType == EXTRAS.NO_BALL) {
+                    return <><strong>no ball!</strong> and <strong>SIX!</strong>.</>
+                }
+            } else {
+                return <strong>SIX!</strong>
+            }
+            break;
         case EVENT.FOUR:
-            return <strong>FOUR!</strong>
+            if (commentary.extraRuns > 0) {
+                if (commentary.extraType == EXTRAS.NO_BALL) {
+                    return <><strong>no ball!</strong> and <strong>FOUR!</strong>.</>
+                }
+            } else {
+                return <strong>FOUR!</strong>
+            }
+            break;
         case EVENT.WICKET:
             return <strong>WICKET!</strong>
         case EVENT.NONE:
-            if (commentary.runs == 0)
-                return <>no run.</>
-            else if (commentary.runs == 1)
-                return <>1 run.</>
-            else
-                return <>{commentary.runs} runs.</>
+            if (commentary.extraRuns > 0) {
+                if (commentary.extraType == EXTRAS.WIDE) {
+                    return <><strong>wide!</strong> and {commentary.runs-commentary.extraRuns} run(s).</>
+                }
+                if (commentary.extraType == EXTRAS.NO_BALL) {
+                    return <><strong>no ball!</strong> and {commentary.runs-commentary.extraRuns} run(s).</>
+                }
+            } else {
+                if (commentary.runs == 0)
+                    return <>no run.</>
+                else if (commentary.runs == 1)
+                    return <>1 run.</>
+                else
+                    return <>{commentary.runs} runs.</>
+            }
+            break
         default:
             return <>{commentary.runs} runs.</>
     }

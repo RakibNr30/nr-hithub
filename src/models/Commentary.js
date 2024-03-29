@@ -24,6 +24,7 @@ class Commentary {
             totalBalls: data.miniScore?.totalBalls || 0,
             target: data.miniScore?.target || 0,
             lastWicketText: data.miniScore?.lastWicketText || "",
+            isLastBallExtra: data.miniScore?.isLastBallExtra || null,
             lastOverBowlerId: data.miniScore?.lastOverBowlerId || null,
             isOverBreak: data.miniScore?.isOverBreak || false,
             isInningsBreak: data.miniScore?.isInningsBreak || false,

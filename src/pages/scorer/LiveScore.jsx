@@ -16,6 +16,7 @@ import Button from "react-bootstrap/Button";
 import ScorecardService from "../../services/ScorecardService";
 import DefaultModal from "../../components/common/DefaultModal";
 import MatchSecondInningsStartForm from "../match/MatchSecondInningsStartForm";
+import {EXTRAS} from "../../constants/commentary";
 
 const HomeIndex = () => {
 
@@ -90,27 +91,35 @@ const HomeIndex = () => {
         scorerService.swapBatsman(match);
     }
 
-    const onToggle = (event) => {
-        switch (event) {
+    const handleToggle = (option) => {
+        switch (option) {
             case "wicket":
                 setIsWicket(!isWicket);
                 break;
             case "wide":
                 setIsWide(!isWide);
+                setIsNoBall(false);
+                setIsByes(false);
+                setIsLegByes(false);
                 break;
             case "noBall":
                 setIsNoBall(!isNoBall);
+                setIsWide(false);
                 break;
             case "byes":
                 setIsByes(!isByes);
+                setIsLegByes(false);
+                setIsWide(false);
                 break;
             case "legByes":
                 setIsLegByes(!isLegByes);
+                setIsByes(false);
+                setIsWide(false);
                 break;
             default:
                 break;
         }
-    }
+    };
 
     const onRunHandler = (takenRun) => {
         if (commentary.miniScore.balls != 0 && commentary.miniScore.isOverBreak) {
@@ -128,7 +137,18 @@ const HomeIndex = () => {
             return;
         }
 
-        scorerService.runAndEvents(match, takenRun);
+        scorerService.runAndEvents(match, takenRun, {
+            isWide: isWide,
+            isNoBall: isNoBall,
+            isByes: isByes,
+            isLegByes: isLegByes,
+        });
+
+        setIsWicket(false);
+        setIsWide(false);
+        setIsNoBall(false);
+        setIsByes(false);
+        setIsLegByes(false);
     }
 
     const onChangeHandler = (e) => {
@@ -161,23 +181,23 @@ const HomeIndex = () => {
                                                 <div className="scorer-wicket-and-extras">
                                                     <ul>
                                                         <li className={`wicket ${isWicket ? 'active' : ''}`}
-                                                            onClick={() => onToggle("wicket")}>
+                                                            onClick={() => handleToggle("wicket")}>
                                                             <span>Wicket</span>
                                                         </li>
                                                         <li className={`extra ${isWide ? 'active' : ''}`}
-                                                            onClick={() => onToggle("wide")}>
+                                                            onClick={() => handleToggle("wide")}>
                                                             <span>Wide</span>
                                                         </li>
                                                         <li className={`extra ${isNoBall ? 'active' : ''}`}
-                                                            onClick={() => onToggle("noBall")}>
+                                                            onClick={() => handleToggle("noBall")}>
                                                             <span>No Ball</span>
                                                         </li>
                                                         <li className={`extra ${isByes ? 'active' : ''}`}
-                                                            onClick={() => onToggle("byes")}>
+                                                            onClick={() => handleToggle("byes")}>
                                                             <span>Byes</span>
                                                         </li>
                                                         <li className={`extra ${isLegByes ? 'active' : ''}`}
-                                                            onClick={() => onToggle("legByes")}>
+                                                            onClick={() => handleToggle("legByes")}>
                                                             <span>Leg Byes</span>
                                                         </li>
                                                     </ul>
@@ -308,10 +328,14 @@ const HomeIndex = () => {
                                         <div className="score-card score-card-lg d-md-flex p-0">
                                             <div className="score-card-inner flex-grow-1 px-20 py-20">
                                                 <div className="score-card-header mb-15">
-                                                    {match.stage == STAGE.UPCOMING && <strong className="text-primary">Upcoming</strong>}
-                                                    {match.stage == STAGE.TOSS && <strong className="text-primary">Toss</strong>}
-                                                    {(match.stage == STAGE.IN_PROGRESS || (match.stage == STAGE.END && Object.keys(match.manOfTheMatch).length <= 0)) && <strong className="text-red">Live</strong>}
-                                                    {Object.keys(match.manOfTheMatch).length > 0 && <strong className="text-dark">Ended</strong>}
+                                                    {match.stage == STAGE.UPCOMING &&
+                                                        <strong className="text-primary">Upcoming</strong>}
+                                                    {match.stage == STAGE.TOSS &&
+                                                        <strong className="text-primary">Toss</strong>}
+                                                    {(match.stage == STAGE.IN_PROGRESS || (match.stage == STAGE.END && Object.keys(match.manOfTheMatch).length <= 0)) &&
+                                                        <strong className="text-red">Live</strong>}
+                                                    {Object.keys(match.manOfTheMatch).length > 0 &&
+                                                        <strong className="text-dark">Ended</strong>}
                                                     <span>{match.title}, {venue.ground}, {series.title}</span>
                                                 </div>
                                                 <div className="score-card-body">
@@ -342,7 +366,8 @@ const HomeIndex = () => {
                                                             <p className="text-danger">Innings Break.</p>}
                                                         {commentary.miniScore.innings == 2 && match.stage != STAGE.END &&
                                                             <p>
-                                                                <strong className="text-uppercase">{commentary.miniScore.matchScoreDetails.secondInnings.batTeamCode}</strong> need
+                                                                <strong
+                                                                    className="text-uppercase">{commentary.miniScore.matchScoreDetails.secondInnings.batTeamCode}</strong> need
                                                                 more {(commentary.miniScore.target - commentary.miniScore.scores)} runs
                                                                 from {(match.over * 6 - commentary.miniScore.balls)} balls.
                                                             </p>
@@ -359,7 +384,9 @@ const HomeIndex = () => {
                                                                 {match.matchResult.isMatchTie ?
                                                                     <>Match is tie</>
                                                                     :
-                                                                    <><strong className="text-uppercase">{match.matchResult.winningTeamName}</strong> won by {match.matchResult.winningMargin} {match.matchResult.isWinByRuns ? "run" : "wicket"}{match.matchResult.winningMargin > 1 ? "s" : ""}.</>
+                                                                    <><strong
+                                                                        className="text-uppercase">{match.matchResult.winningTeamName}</strong> won
+                                                                        by {match.matchResult.winningMargin} {match.matchResult.isWinByRuns ? "run" : "wicket"}{match.matchResult.winningMargin > 1 ? "s" : ""}.</>
                                                                 }
                                                             </p>
                                                         }
@@ -425,7 +452,8 @@ const HomeIndex = () => {
                                                 <div className="card-aside big text-left px-20 py-20">
                                                     <p>
                                                         Man of the
-                                                        Match<span>{match.manOfTheMatch.name}</span><span style={{fontWeight: "normal"}}>{match.manOfTheMatch.team}</span>
+                                                        Match<span>{match.manOfTheMatch.name}</span><span
+                                                        style={{fontWeight: "normal"}}>{match.manOfTheMatch.team}</span>
                                                     </p>
                                                 </div>
                                             }
@@ -535,7 +563,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -545,7 +573,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -555,7 +583,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -565,7 +593,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -575,7 +603,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -633,11 +661,17 @@ const HomeIndex = () => {
                                                                         }
                                                                         <li>
                                                                             <div>
-                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.overs - 0.4) : item.overs}</h5>
+                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? item.overs + 0.1 : (item.overs - 0.4)) : item.overs}</h5>
                                                                                 <span
-                                                                                    className={`${getEventBg(item.event)}`}>{item.runs}</span>
+                                                                                    className={`${getEventBg(item.event)}`}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                             </div>
-                                                                            <p>{item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item)}</p>
+                                                                            <p>
+                                                                                {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.milestone != null &&
+                                                                                <>
+                                                                                    a crucial <strong
+                                                                                    className="text-uppercase">{item.milestone}</strong> for {item.batsmanNickname}.
+                                                                                </>}
+                                                                            </p>
                                                                         </li>
                                                                     </div>
                                                                 )
@@ -687,11 +721,16 @@ const HomeIndex = () => {
                                                                         }
                                                                         <li>
                                                                             <div>
-                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.overs - 0.4) : item.overs}</h5>
+                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? item.overs + 0.1 : (item.overs - 0.4)) : item.overs}</h5>
                                                                                 <span
-                                                                                    className={`${getEventBg(item.event)}`}>{item.runs}</span>
+                                                                                    className={`${getEventBg(item.event)}`}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs-item.extraRuns}`) : item.runs}</span>
                                                                             </div>
-                                                                            <p>{item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item)}</p>
+                                                                            <p>
+                                                                                {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.milestone != null &&
+                                                                                <>
+                                                                                    a crucial <strong className="text-uppercase">{item.milestone}</strong> for {item.batsmanNickname}.
+                                                                                </>}
+                                                                            </p>
                                                                         </li>
                                                                     </div>
                                                                 )
