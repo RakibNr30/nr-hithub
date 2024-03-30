@@ -23,7 +23,7 @@ class Commentary {
             balls: data.miniScore?.balls || 0,
             totalBalls: data.miniScore?.totalBalls || 0,
             target: data.miniScore?.target || 0,
-            lastWicketText: data.miniScore?.lastWicketText || "",
+            lastWicket: data.miniScore?.lastWicket || {},
             isLastBallExtra: data.miniScore?.isLastBallExtra || null,
             lastOverBowlerId: data.miniScore?.lastOverBowlerId || null,
             isOverBreak: data.miniScore?.isOverBreak || false,

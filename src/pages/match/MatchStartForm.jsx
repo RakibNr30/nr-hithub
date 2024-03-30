@@ -170,6 +170,7 @@ const MatchStartForm = ({defaultMatch = {}, buttonLabel, setShowFormModal}) => {
             stage: STAGE.IN_PROGRESS,
             commentaryId: commentaryId,
             scorecardId: scorecardId,
+            hasFirstInnings: true,
             runningInnings: 1
         })
     }

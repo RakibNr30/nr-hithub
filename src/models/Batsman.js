@@ -19,7 +19,11 @@ class Batsman {
         this.isOut = data.isOut || false;
         this.outDetails = data.outDetails || "";
         this.bowlerId = data.bowlerId || null;
+        this.bowlerName = data.bowlerName || "";
+        this.bowlerNickname = data.bowlerNickname || "";
         this.fielderId = data.fielderId || null;
+        this.fielderName = data.fielderName || "";
+        this.fielderNickname = data.fielderNickname || "";
         this.wicketCode = data.wicketCode || "";
     }
 }

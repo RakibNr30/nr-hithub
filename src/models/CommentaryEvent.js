@@ -21,6 +21,7 @@ class CommentaryEvent {
         this.extraType = data.extraType || "";
         this.event = data.event || "";
         this.overSeparator = data.overSeparator || {};
+        this.wicketDetails = data.wicketDetails || {};
         this.timestamp = data.timestamp || moment().format();
     }
 }

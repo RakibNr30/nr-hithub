@@ -16,6 +16,8 @@ class Match {
         this.team2Players = data.team2Players || [];
         this.scorecardId = data.scorecardId || null;
         this.commentaryId = data.commentaryId || null;
+        this.hasFirstInnings = data.hasFirstInnings || false;
+        this.hasSecondInnings = data.hasSecondInnings || false;
         this.tossResult = {
             winnerId: data?.tossResult?.winnerId || null,
             winnerName: data?.tossResult?.winnerName || "",

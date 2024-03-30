@@ -85,7 +85,7 @@ const MatchSecondInningsStartForm = ({defaultMatch = {}, buttonLabel, setShowFor
                 overs: 0.0,
                 balls: 0,
                 totalBalls: 0,
-                lastWicketText: "",
+                lastWicket: {},
                 lastOverBowlerId: null,
                 isOverBreak: false,
                 isInningsBreak: false,
@@ -146,7 +146,8 @@ const MatchSecondInningsStartForm = ({defaultMatch = {}, buttonLabel, setShowFor
         matchService.update({
             ...match,
             batTeamId: match.tossResult.batFirstTeamId == match.team1Id ? match.team2Id : match.team1Id,
-            runningInnings: 2
+            runningInnings: 2,
+            hasSecondInnings: true,
         })
     }
 

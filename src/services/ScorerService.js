@@ -11,6 +11,7 @@ import {STAGE} from "../constants/match";
 import moment from "moment";
 import Batsman from "../models/Batsman";
 import Partnership from "../models/Partnarship";
+import wicketTypes from "../constants/wicketTypes";
 
 const ScorerService = () => {
     const matchService = MatchService();
@@ -24,10 +25,10 @@ const ScorerService = () => {
         return  useScorecardStore.getState().scorecards.find(scorecard => scorecard.id == match.scorecardId);
     }
 
-    const runAndEvents = (match = {}, takenRun = 0, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}) => {
+    const runAndEvents = (match = {}, takenRun = 0, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}, wicketDetails = {}) => {
         const commentary = getCommentary(match);
 
-        updateCommentary(match, commentary, takenRun, extras);
+        updateCommentary(match, commentary, takenRun, extras, wicketDetails);
         updateScorecard(match);
 
         switch (takenRun) {
@@ -80,8 +81,9 @@ const ScorerService = () => {
                     balls: 0,
                     totalBalls: 0,
                     target: 0,
-                    lastWicketText: "",
+                    lastWicket: {},
                     lastOverBowlerId: null,
+                    isLastBallExtra: false,
                     isOverBreak: false,
                     isInningsBreak: false,
                     batsmanStriker: new Batsman({}),
@@ -94,27 +96,40 @@ const ScorerService = () => {
     }
 
     /* update commentary */
-    const updateCommentary = (match = {}, commentary = {}, takenRun, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}) => {
+    const updateCommentary = (match = {}, commentary = {}, takenRun, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}, wicketDetails = {}) => {
 
         let ballCount = 1;
         let runCount = takenRun;
         let batterBallCount = 1;
         let batterRunCount = takenRun;
-        let hasExtra = false;
+        let bowlerRunCount = takenRun;
+        let hasExtraBall = false;
 
         if (extras.isWide) {
             ballCount = 0;
-            runCount += 1;
             batterBallCount = 0;
+            runCount += 1;
             batterRunCount = 0;
-            hasExtra = true;
+            bowlerRunCount += 1;
+            hasExtraBall = true;
+        }
+
+        if (extras.isByes || extras.isLegByes) {
+            batterBallCount = 1;
+            batterRunCount = 0;
+            bowlerRunCount = 0;
         }
 
         if (extras.isNoBall) {
             ballCount = 0;
             runCount += 1;
             batterBallCount = 1;
-            hasExtra = true;
+            bowlerRunCount += 1;
+            hasExtraBall = true;
+
+            if (extras.isByes || extras.isLegByes) {
+                batterRunCount = 0;
+            }
         }
 
         commentaryService.update({
@@ -125,7 +140,7 @@ const ScorerService = () => {
                 balls: commentary.miniScore.balls + ballCount,
                 scores: commentary.miniScore.scores + runCount,
                 overs: ballToOver(commentary.miniScore.balls + ballCount),
-                isLastBallExtra: hasExtra,
+                isLastBallExtra: hasExtraBall,
                 wickets: commentary.miniScore.wickets + 0,
                 batsmanStriker: {
                     ...commentary.miniScore.batsmanStriker,
@@ -141,12 +156,12 @@ const ScorerService = () => {
                 },
                 bowlerStriker: {
                     ...commentary.miniScore.bowlerStriker,
-                    runs: commentary.miniScore.bowlerStriker.runs + runCount,
+                    runs: commentary.miniScore.bowlerStriker.runs + bowlerRunCount,
                     totalBalls: commentary.miniScore.bowlerStriker.totalBalls + 1,
                     balls: commentary.miniScore.bowlerStriker.balls + ballCount,
-                    dots: commentary.miniScore.bowlerStriker.dots + (runCount == 0 ? 1 : 0),
-                    fours: commentary.miniScore.bowlerStriker.fours + (runCount == 4 ? 1 : 0),
-                    sixes: commentary.miniScore.bowlerStriker.sixes + (runCount == 6 ? 1 : 0),
+                    dots: commentary.miniScore.bowlerStriker.dots + (bowlerRunCount == 0 ? 1 : 0),
+                    fours: commentary.miniScore.bowlerStriker.fours + (bowlerRunCount == 4 ? 1 : 0),
+                    sixes: commentary.miniScore.bowlerStriker.sixes + (bowlerRunCount == 6 ? 1 : 0),
                     wideBalls: commentary.miniScore.bowlerStriker.wideBalls + (extras.isWide ? 1 : 0),
                     noBalls: commentary.miniScore.bowlerStriker.noBalls + (extras.isNoBall ? 1 : 0),
                     overs: ballToOver(commentary.miniScore.bowlerStriker.balls + ballCount)
@@ -166,6 +181,7 @@ const ScorerService = () => {
                         ...commentary.miniScore.matchScoreDetails.firstInnings,
                         score: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.score + runCount : commentary.miniScore.matchScoreDetails.firstInnings.score,
                         balls: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.balls + ballCount : commentary.miniScore.matchScoreDetails.firstInnings.balls,
+                        totalBalls: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.totalBalls + 1 : commentary.miniScore.matchScoreDetails.firstInnings.totalBalls,
                         wickets: commentary.miniScore.innings == 1 ? commentary.miniScore.matchScoreDetails.firstInnings.wickets + 0 : commentary.miniScore.matchScoreDetails.firstInnings.wickets,
                         overs: commentary.miniScore.innings == 1 ? ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls + ballCount) : ballToOver(commentary.miniScore.matchScoreDetails.firstInnings.balls),
                     },
@@ -173,6 +189,7 @@ const ScorerService = () => {
                         ...commentary.miniScore.matchScoreDetails.secondInnings,
                         score: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.score + runCount : commentary.miniScore.matchScoreDetails.secondInnings.score,
                         balls: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.balls + ballCount : commentary.miniScore.matchScoreDetails.secondInnings.balls,
+                        totalBalls: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.totalBalls + 1 : commentary.miniScore.matchScoreDetails.secondInnings.totalBalls,
                         wickets: commentary.miniScore.innings == 2 ? commentary.miniScore.matchScoreDetails.secondInnings.wickets + 0 : commentary.miniScore.matchScoreDetails.secondInnings.wickets,
                         overs: commentary.miniScore.innings == 2 ? ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls + ballCount) : ballToOver(commentary.miniScore.matchScoreDetails.secondInnings.balls),
                     }
@@ -182,10 +199,98 @@ const ScorerService = () => {
 
         let updatedCommentary = getCommentary(match);
 
+        let prevBatsmanStriker = updatedCommentary.miniScore.batsmanStriker;
+        let prevBatsmanNonStriker = updatedCommentary.miniScore.batsmanNonStriker;
+
+        if (Object.keys(wicketDetails).length > 0) {
+            let batsmanStriker = updatedCommentary.miniScore.batsmanStriker.id == wicketDetails.wicketBatsman.id
+                ? new Batsman({...wicketDetails.newBatsman})
+                : updatedCommentary.miniScore.batsmanStriker;
+
+            let batsmanNonStriker = updatedCommentary.miniScore.batsmanNonStriker.id == wicketDetails.wicketBatsman.id
+                ? new Batsman({...wicketDetails.newBatsman})
+                : updatedCommentary.miniScore.batsmanNonStriker;
+
+            if (batsmanStriker.id == batsmanNonStriker.id) {
+                throw new Error("Something went wrong!");
+            }
+
+            let bowlerWicketCount = 1;
+
+            if (wicketDetails.wicketType == wicketTypes.run) {
+                bowlerWicketCount = 0;
+            }
+
+            let lastWicket = wicketDetails.wicketBatsman.id == prevBatsmanStriker.id ? prevBatsmanStriker : prevBatsmanNonStriker;
+
+            lastWicket = {
+                ...lastWicket,
+                isOut: true,
+                bowlerId: wicketDetails?.bowler?.id,
+                bowlerName: wicketDetails?.bowler?.name,
+                bowlerNickname: wicketDetails?.bowler?.nickname,
+                fielderId: wicketDetails?.helperFielder?.id,
+                fielderName: wicketDetails?.helperFielder?.name,
+                fielderNickname: wicketDetails?.helperFielder?.nickname,
+                wicketCode: wicketDetails?.wicketType
+            }
+
+            commentaryService.update({
+                ...updatedCommentary,
+                miniScore: {
+                    ...updatedCommentary.miniScore,
+                    wickets: updatedCommentary.miniScore.wickets + 1,
+                    batsmanStriker: batsmanStriker,
+                    batsmanNonStriker: batsmanNonStriker,
+                    lastWicket: lastWicket,
+                    bowlerStriker: {
+                        ...updatedCommentary.miniScore.bowlerStriker,
+                        wickets: updatedCommentary.miniScore.bowlerStriker.wickets + bowlerWicketCount,
+                    },
+                    partnership: new Partnership({
+                        bat1Id: batsmanStriker.id,
+                        bat1Name: batsmanStriker.name,
+                        bat1Nickname: batsmanStriker.nickname,
+                        bat2Id: batsmanNonStriker.id,
+                        bat2Name: batsmanNonStriker.name,
+                        bat2Nickname: batsmanNonStriker.nickname,
+                    }),
+                    matchScoreDetails: {
+                        ...updatedCommentary.miniScore.matchScoreDetails,
+                        firstInnings: {
+                            ...updatedCommentary.miniScore.matchScoreDetails.firstInnings,
+                            wickets: updatedCommentary.miniScore.innings == 1 ? updatedCommentary.miniScore.matchScoreDetails.firstInnings.wickets + 1 : updatedCommentary.miniScore.matchScoreDetails.firstInnings.wickets,
+                        },
+                        secondInnings: {
+                            ...updatedCommentary.miniScore.matchScoreDetails.secondInnings,
+                            wickets: updatedCommentary.miniScore.innings == 2 ? updatedCommentary.miniScore.matchScoreDetails.secondInnings.wickets + 1 : updatedCommentary.miniScore.matchScoreDetails.secondInnings.wickets,
+                        }
+                    }
+                }
+            });
+
+            updatedCommentary = getCommentary(match);
+
+            if (updatedCommentary.miniScore.wickets >= 10) {
+                batsmanStriker = lastWicket.id == batsmanStriker.id ? batsmanNonStriker : batsmanStriker;
+                commentaryService.update({
+                    ...updatedCommentary,
+                    miniScore: {
+                        ...updatedCommentary.miniScore,
+                        batsmanStriker: batsmanStriker,
+                        batsmanNonStriker: {},
+                        partnership: {},
+                    }
+                });
+            }
+        }
+
+        updatedCommentary = getCommentary(match);
+
         commentaryService.update({
             ...updatedCommentary,
             commentaryList: [
-                createCommentaryEvent(updatedCommentary, takenRun, extras),
+                createCommentaryEvent(updatedCommentary, takenRun, extras, wicketDetails, prevBatsmanStriker, prevBatsmanNonStriker),
                 ...updatedCommentary.commentaryList
             ],
         })
@@ -193,7 +298,6 @@ const ScorerService = () => {
         updatedCommentary = getCommentary(match);
 
         if (!updatedCommentary.miniScore.isLastBallExtra && isLastBallOfOver(updatedCommentary)) {
-            console.log(updatedCommentary.miniScore.isLastBallExtra)
             const [lastOverRuns] = getOverFullSummary(updatedCommentary, updatedCommentary.miniScore.overs - 1);
             commentaryService.update({
                 ...updatedCommentary,
@@ -211,7 +315,7 @@ const ScorerService = () => {
 
         updatedCommentary = getCommentary(match);
 
-        if (isLastBallOfInnings(match, updatedCommentary)) {
+        if (isLastBallOfInnings(match, updatedCommentary) || isLastWicketOf1stInnings(match, updatedCommentary)) {
             commentaryService.update({
                 ...updatedCommentary,
                 postFirstInningsCommentaries: [
@@ -220,6 +324,7 @@ const ScorerService = () => {
                 ],
                 miniScore: {
                     ...updatedCommentary.miniScore,
+                    isLastBallExtra: false,
                     isOverBreak: false,
                     isInningsBreak: true,
                     target: updatedCommentary.miniScore.scores + 1
@@ -245,6 +350,7 @@ const ScorerService = () => {
             miniScore: {
                 ...commentary.miniScore,
                 isOverBreak: false,
+                isLastBallExtra: false,
                 bowlerStriker: existingBowlerIndex != -1
                     ? teamBowlers[existingBowlerIndex] :
                     new Bowler({...bowler, order: currentOrder + 1, canMaxOvers: parseInt(match.over/5)}),
@@ -274,7 +380,7 @@ const ScorerService = () => {
                         ...scorecard.firstInnings,
                         battingDetails: {
                             ...scorecard.firstInnings.battingDetails,
-                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, scorecard.firstInnings.battingDetails.teamBatsmen)
+                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, commentary.miniScore.batsmanNonStriker, scorecard.firstInnings.battingDetails.teamBatsmen)
                         },
                         bowlingDetails: {
                             ...scorecard.firstInnings.bowlingDetails,
@@ -290,7 +396,7 @@ const ScorerService = () => {
                         ...scorecard.secondInnings,
                         battingDetails: {
                             ...scorecard.secondInnings.battingDetails,
-                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, scorecard.secondInnings.battingDetails.teamBatsmen)
+                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, commentary.miniScore.batsmanNonStriker, scorecard.secondInnings.battingDetails.teamBatsmen)
                         },
                         bowlingDetails: {
                             ...scorecard.secondInnings.bowlingDetails,
@@ -304,16 +410,30 @@ const ScorerService = () => {
         }
     }
 
-    const updateOrAddBatsman = (match = {}, batsman, teamBatsmen) => {
-        const existingBatsmanIndex = teamBatsmen.findIndex(item => item.id === batsman.id);
-        if (existingBatsmanIndex != -1) {
-            teamBatsmen[existingBatsmanIndex] = batsman;
+    const updateOrAddBatsman = (match = {}, batStriker, batNonStriker, teamBatsmen) => {
+        const existingStrikerIndex = teamBatsmen.findIndex(item => item.id === batStriker.id);
+        if (existingStrikerIndex != -1) {
+            teamBatsmen[existingStrikerIndex] = batStriker;
         } else {
             const currentOrder = teamBatsmen.length;
             teamBatsmen = [
                 ...teamBatsmen,
                 {
-                    ...batsman,
+                    ...batStriker,
+                    order: currentOrder + 1
+                }
+            ]
+        }
+
+        const existingNonStrikerIndex = teamBatsmen.findIndex(item => item.id === batNonStriker.id);
+        if (existingNonStrikerIndex != -1) {
+            teamBatsmen[existingNonStrikerIndex] = batNonStriker;
+        } else {
+            const currentOrder = teamBatsmen.length;
+            teamBatsmen = [
+                ...teamBatsmen,
+                {
+                    ...batNonStriker,
                     order: currentOrder + 1
                 }
             ]
@@ -341,7 +461,7 @@ const ScorerService = () => {
         return teamBowlers;
     }
 
-    const createCommentaryEvent = (commentary, takenRun, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}) => {
+    const createCommentaryEvent = (commentary, takenRun, extras = {isWide: false, isNoBall: false, isByes: false, isLegByes: false}, wicketDetails = {}, prevBatsmanStriker = {}, prevBatsmanNonStriker = {}) => {
         let event = EVENT.NONE;
         switch (takenRun) {
             case 4:
@@ -364,12 +484,33 @@ const ScorerService = () => {
             extraType = EXTRAS.WIDE;
         }
 
+        if (extras.isByes) {
+            extraType = EXTRAS.BYES;
+        }
+
+        if (extras.isLegByes) {
+            extraType = EXTRAS.LEG_BYES;
+        }
+
         if (extras.isNoBall) {
             runCount += 1;
             extraRunCount += 1;
             extraType = EXTRAS.NO_BALL;
+
+            /*if (extras.isByes) {
+                extraType = EXTRAS.BYES;
+            }
+
+            if (extras.isLegByes) {
+                extraType = EXTRAS.LEG_BYES;
+            }*/
         }
 
+        if (Object.keys(wicketDetails).length > 0) {
+            event = EVENT.WICKET;
+        }
+
+        /* here some bugs for milestone */
         let milestone = null;
 
         if (commentary.miniScore.batsmanStriker.runs == 50) {
@@ -378,16 +519,22 @@ const ScorerService = () => {
         if (commentary.miniScore.batsmanStriker.runs == 100) {
             milestone = MILESTONE.CENTURY
         }
+        if (commentary.miniScore.batsmanStriker.runs == 200) {
+            milestone = MILESTONE.DOUBLE_CENTURY
+        }
+        if (commentary.miniScore.batsmanStriker.runs == 300) {
+            milestone = MILESTONE.TRIPLE_CENTURY
+        }
 
         let commentaryEvent = new CommentaryEvent({
             inningsNumber: commentary.miniScore.innings,
-            batsmanId: commentary.miniScore.batsmanStriker.id,
-            batsmanName: commentary.miniScore.batsmanStriker.name,
-            batsmanNickname: commentary.miniScore.batsmanStriker.nickname,
+            batsmanId: prevBatsmanStriker.id,
+            batsmanName: prevBatsmanStriker.name,
+            batsmanNickname: prevBatsmanStriker.nickname,
             bowlerId: commentary.miniScore.bowlerStriker.id,
             bowlerName: commentary.miniScore.bowlerStriker.name,
             bowlerNickname: commentary.miniScore.bowlerStriker.nickname,
-            text: `${commentary.miniScore.bowlerStriker.nickname} to ${commentary.miniScore.batsmanStriker.nickname}, ${runCount} run${runCount > 1 ? "s" : ""}.`,
+            text: ``,
             milestone: milestone,
             totalBalls: commentary.miniScore.totalBalls,
             balls: commentary.miniScore.balls,
@@ -396,10 +543,10 @@ const ScorerService = () => {
             extraRuns: extraRunCount,
             extraType: extraType,
             event: event,
+            wicketDetails: event != EVENT.WICKET ? {} : commentary.miniScore.lastWicket
         });
 
         if (!commentary.miniScore.isLastBallExtra && commentaryEvent.balls % 6 == 0) {
-
             commentaryEvent = {
                 ...commentaryEvent,
                 overSeparator: new OverSeparator({
@@ -408,16 +555,16 @@ const ScorerService = () => {
                     wickets: commentary.miniScore.wickets,
                     overSummary: "",
                     runs: 0,
-                    batStrikerId: commentary.miniScore.batsmanStriker.id,
-                    batStrikerName: commentary.miniScore.batsmanStriker.name,
-                    batStrikerNickname: commentary.miniScore.batsmanStriker.nickname,
-                    batStrikerRuns: commentary.miniScore.batsmanStriker.runs,
-                    batStrikerBalls: commentary.miniScore.batsmanStriker.balls,
-                    batNonStrikerId: commentary.miniScore.batsmanNonStriker.id,
-                    batNonStrikerName: commentary.miniScore.batsmanNonStriker.name,
-                    batNonStrikerNickname: commentary.miniScore.batsmanNonStriker.nickname,
-                    batNonStrikerRuns: commentary.miniScore.batsmanNonStriker.runs,
-                    batNonStrikerBalls: commentary.miniScore.batsmanNonStriker.balls,
+                    batStrikerId: prevBatsmanStriker.id,
+                    batStrikerName: prevBatsmanStriker.name,
+                    batStrikerNickname: prevBatsmanStriker.nickname,
+                    batStrikerRuns: prevBatsmanStriker.runs,
+                    batStrikerBalls: prevBatsmanStriker.balls,
+                    batNonStrikerId: prevBatsmanNonStriker.id,
+                    batNonStrikerName: prevBatsmanNonStriker.name,
+                    batNonStrikerNickname: prevBatsmanNonStriker.nickname,
+                    batNonStrikerRuns: prevBatsmanNonStriker.runs,
+                    batNonStrikerBalls: prevBatsmanNonStriker.balls,
                     bowlerId: commentary.miniScore.bowlerStriker.id,
                     bowlerName: commentary.miniScore.bowlerStriker.name,
                     bowlerNickname: commentary.miniScore.bowlerStriker.nickname,
@@ -446,7 +593,7 @@ const ScorerService = () => {
 
     const getOverFullSummary = (commentary, overNumber, currentCommentaryEvent) => {
         let thisOverCommentaryEvents = commentary.commentaryList.filter(item => {
-            const overAndBall = parseInt(item.overs) == item.overs ? (item.overs - 0.4) : item.overs;
+            const overAndBall = parseInt(item.overs) == item.overs ? (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? parseFloat(item.overs + 0.1).toFixed(1) : (item.overs - 0.4)) : (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? parseFloat(item.overs + 0.1).toFixed(1) : item.overs);
             return overNumber == parseInt(overAndBall) && item.inningsNumber == commentary.miniScore.innings;
         });
 
@@ -464,7 +611,7 @@ const ScorerService = () => {
         const thisOverSummary = thisOverCommentaryEvents.reduce((previous, current) => {
             let total = current.runs;
 
-            if (current.extraRuns > 0) {
+            if (current.extraType) {
                 total -= current.extraRuns;
                 total = `${current.extraType}${total}`;
             }
@@ -533,6 +680,8 @@ const ScorerService = () => {
         if (commentary.miniScore.target <= commentary.miniScore.scores) return true;
 
         if (commentary.miniScore.overs >= match.over) return true;
+
+        if (commentary.miniScore.wickets >= 10) return true;
     }
 
     const isLastBallOfOver = (commentary) => {
@@ -541,6 +690,10 @@ const ScorerService = () => {
 
     const isLastBallOfInnings = (match, commentary) => {
         return match.over <= commentary.miniScore.overs;
+    }
+
+    const isLastWicketOf1stInnings = (match, commentary) => {
+        return commentary.miniScore.wickets >= 10 && commentary.miniScore.innings == 1;
     }
 
     const ballToOver = (balls) => {

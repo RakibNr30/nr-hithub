@@ -6,6 +6,7 @@ import MatchCard from "./MatchCard";
 import Match from "../../models/Match";
 import MatchService from "../../services/MatchService";
 import useMatchStore from "../../stores/matchStore";
+import {STAGE} from "../../constants/match";
 
 const MatchIndex = () => {
 
@@ -40,9 +41,26 @@ const MatchIndex = () => {
                                 </ul>
                             </div>
 
-                            {matches.map((match, index) => {
-                                return <MatchCard match={match} key={index}/>
-                            })}
+                            {matches.length > 0 ?
+                                <>
+                                    {matches.map((match, index) => {
+                                        return <MatchCard match={match} key={index}/>
+                                    })}
+                                </>
+                                :
+                                <>
+                                    <div className="card card-shadow p-0">
+                                        <div className="score-card">
+                                            <div className="score-card-inner flex-grow-1 px-20 py-20">
+                                                <div className="score-card-header not-found">
+                                                    <img src="/images/logo.png" className="not-found" alt=""/>
+                                                    <span className="not-found">No matches available.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            }
 
                         </section>
                     </div>

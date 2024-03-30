@@ -1,5 +1,5 @@
 import AppLayout from "../../layouts/AppLayout";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import SeriesService from "../../services/SeriesService";
 import VenueService from "../../services/VenueService";
 import TeamService from "../../services/TeamService";
@@ -16,7 +16,9 @@ import Button from "react-bootstrap/Button";
 import ScorecardService from "../../services/ScorecardService";
 import DefaultModal from "../../components/common/DefaultModal";
 import MatchSecondInningsStartForm from "../match/MatchSecondInningsStartForm";
-import {EXTRAS} from "../../constants/commentary";
+import {EVENT, EXTRAS} from "../../constants/commentary";
+import ScorerWicketForm from "./ScorerWicketForm";
+import wicketTypes from "../../constants/wicketTypes";
 
 const HomeIndex = () => {
 
@@ -29,7 +31,9 @@ const HomeIndex = () => {
     const [bowlingStriker, setBowlingStriker] = useState({});
     const [manOfTheMatch, setManOfTheMatch] = useState({});
     const [showMatchSecondInningsStartModal, setShowMatchSecondInningsStartModal] = useState(false);
+    const [showWicketModal, setShowWicketModal] = useState(false);
 
+    const [takenRuns, setTakenRuns] = useState(0);
     const [isWicket, setIsWicket] = useState(false);
     const [isWide, setIsWide] = useState(false);
     const [isNoBall, setIsNoBall] = useState(false);
@@ -40,6 +44,10 @@ const HomeIndex = () => {
     const match = useMatchStore.getState().matches.find(match => match.id == id);
 
     if (!match) {
+        return <h1>NOT FOUND</h1>
+    }
+
+    if (match.stage == STAGE.UPCOMING || match.stage == STAGE.TOSS) {
         return <h1>NOT FOUND</h1>
     }
 
@@ -122,6 +130,8 @@ const HomeIndex = () => {
     };
 
     const onRunHandler = (takenRun) => {
+        setTakenRuns(takenRun);
+
         if (commentary.miniScore.balls != 0 && commentary.miniScore.isOverBreak) {
             alert("you should change bowler");
             return;
@@ -134,6 +144,16 @@ const HomeIndex = () => {
 
         if (match.stage == STAGE.END) {
             alert("Match ended.");
+            return;
+        }
+
+        if ((isLegByes || isByes) && takenRun == 0) {
+            alert("Must be greater than 0.");
+            return;
+        }
+
+        if (isWicket) {
+            setShowWicketModal(true)
             return;
         }
 
@@ -209,10 +229,10 @@ const HomeIndex = () => {
                                                 <div className="control">
                                                     <div className="card card-shadow mb-0 h-100">
                                                         <ul>
-                                                            <li>
+                                                            <li className="disabled">
                                                                 <span className="bg-primary">Undo</span>
                                                             </li>
-                                                            <li>
+                                                            <li className="disabled">
                                                                 <span className="bg-primary">Retire</span>
                                                             </li>
                                                             <li>
@@ -225,7 +245,7 @@ const HomeIndex = () => {
                                                 <div className="runs">
                                                     <div className="card card-shadow mb-0 h-100 first-second">
                                                         <ul className="first">
-                                                            <li onClick={() => onRunHandler(0)}>
+                                                            <li className={isByes || isLegByes ? "disabled" : ""} onClick={() => onRunHandler(0)}>
                                                                 <span>0</span>
                                                             </li>
                                                             <li onClick={() => onRunHandler(1)}>
@@ -461,8 +481,8 @@ const HomeIndex = () => {
                                     </div>
                                     <div className="card card-shadow">
                                         <ul className="nav nav-tabs mb-0">
-                                            <li className="active"><a href="#" className="active">Commentary</a></li>
-                                            <li><a href="#">Scorecard</a></li>
+                                            <li><Link to={`/match/${match.id}/live-score`} className="active">Commentary</Link></li>
+                                            <li><Link to={`/match/${match.id}/scorecard`}>Scorecard</Link></li>
                                             <li><a href="#">Partnership</a></li>
                                             <li><a href="#">Team</a></li>
                                         </ul>
@@ -497,18 +517,20 @@ const HomeIndex = () => {
                                                             <td>{commentary.miniScore.batsmanStriker.sixes}</td>
                                                             <td>{commentary.miniScore.batsmanStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat((commentary.miniScore.batsmanStriker.runs * 100) / commentary.miniScore.batsmanStriker.balls).toFixed(2)}</td>
                                                         </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <a href="#"><strong>{commentary.miniScore.batsmanNonStriker.nickname}</strong></a> ({commentary.miniScore.batsmanNonStriker.bat})
-                                                            </td>
-                                                            <td>
-                                                                <strong>{commentary.miniScore.batsmanNonStriker.runs}</strong>
-                                                            </td>
-                                                            <td>{commentary.miniScore.batsmanNonStriker.balls}</td>
-                                                            <td>{commentary.miniScore.batsmanNonStriker.fours}</td>
-                                                            <td>{commentary.miniScore.batsmanNonStriker.sixes}</td>
-                                                            <td>{commentary.miniScore.batsmanNonStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat((commentary.miniScore.batsmanNonStriker.runs * 100) / commentary.miniScore.batsmanNonStriker.balls).toFixed(2)}</td>
-                                                        </tr>
+                                                        {commentary.miniScore.wickets < 10 &&
+                                                            <tr>
+                                                                <td>
+                                                                    <a href="#"><strong>{commentary.miniScore.batsmanNonStriker.nickname}</strong></a> ({commentary.miniScore.batsmanNonStriker.bat})
+                                                                </td>
+                                                                <td>
+                                                                    <strong>{commentary.miniScore.batsmanNonStriker.runs}</strong>
+                                                                </td>
+                                                                <td>{commentary.miniScore.batsmanNonStriker.balls}</td>
+                                                                <td>{commentary.miniScore.batsmanNonStriker.fours}</td>
+                                                                <td>{commentary.miniScore.batsmanNonStriker.sixes}</td>
+                                                                <td>{commentary.miniScore.batsmanNonStriker.balls <= 0 ? parseFloat(0).toFixed(2) : parseFloat((commentary.miniScore.batsmanNonStriker.runs * 100) / commentary.miniScore.batsmanNonStriker.balls).toFixed(2)}</td>
+                                                            </tr>
+                                                        }
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -552,8 +574,8 @@ const HomeIndex = () => {
                                             {commentaryList.length > 0 &&
                                                 <div className="card card-shadow">
                                                     <div className="spell-sum-box">
-                                                        {commentary.miniScore.lastWicketText.length > 0 &&
-                                                            <h5>Last Bat: <span>Mushfiqur c Rahul b Siraj - 20r 10b 2x4 1x6) SR: 200.00</span>
+                                                        {Object.keys(commentary.miniScore.lastWicket).length > 0 &&
+                                                            <h5>Last Bat: <span>{commentary.miniScore.lastWicket.name} c Rahul b Siraj - {commentary.miniScore.lastWicket.runs}r {commentary.miniScore.lastWicket.balls}b {commentary.miniScore.lastWicket.fours}x4 {commentary.miniScore.lastWicket.sixes}x6) SR: {commentary.miniScore.lastWicket.balls == 0 ? "0.00" : parseFloat((commentary.miniScore.lastWicket.runs * 100) / commentary.miniScore.lastWicket.balls).toFixed(2)}</span>
                                                             </h5>
                                                         }
                                                         <div className="recent-spell">
@@ -563,7 +585,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -573,7 +595,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -583,7 +605,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -593,7 +615,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -603,7 +625,7 @@ const HomeIndex = () => {
                                                                     return (
                                                                         <li key={index}>
                                                                 <span
-                                                                    className={getEventBg(item.event)}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
+                                                                    className={getEventBg(item.event)}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                         </li>
                                                                     )
                                                                 })}
@@ -661,15 +683,21 @@ const HomeIndex = () => {
                                                                         }
                                                                         <li>
                                                                             <div>
-                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? item.overs + 0.1 : (item.overs - 0.4)) : item.overs}</h5>
+                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? parseFloat(item.overs + 0.1).toFixed(1) : (item.overs - 0.4)) : (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? parseFloat(item.overs + 0.1).toFixed(1) : item.overs)}
+                                                                                </h5>
                                                                                 <span
-                                                                                    className={`${getEventBg(item.event)}`}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
+                                                                                    className={`${getEventBg(item.event)}`}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                             </div>
                                                                             <p>
                                                                                 {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.milestone != null &&
                                                                                 <>
                                                                                     a crucial <strong
                                                                                     className="text-uppercase">{item.milestone}</strong> for {item.batsmanNickname}.
+                                                                                </>} {item.event == EVENT.WICKET &&
+                                                                                <>
+                                                                                    <strong>{wicketTypes.getLabel(item.wicketDetails?.wicketCode)}</strong> {item.wicketDetails?.name}! {(item.wicketDetails?.wicketCode == wicketTypes.catch || item.wicketDetails?.wicketCode == wicketTypes.run || item.wicketDetails?.wicketCode == wicketTypes.stumped) && <>
+                                                                                        by {item.wicketDetails?.fielderName}. <strong>{item.wicketDetails?.wicketCode == wicketTypes.run ? `${item.runs == 0 ? `No run completed.` : `${item.runs} run(s) completed.`}` : ""}</strong>
+                                                                                    </>} A huge wicket for bowling team. <strong>{item.wicketDetails?.name} {item.wicketDetails?.runs} ({item.wicketDetails?.balls}) [4s-{item.wicketDetails?.fours}, 6s-{item.wicketDetails?.sixes}]</strong>
                                                                                 </>}
                                                                             </p>
                                                                         </li>
@@ -721,14 +749,24 @@ const HomeIndex = () => {
                                                                         }
                                                                         <li>
                                                                             <div>
-                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? item.overs + 0.1 : (item.overs - 0.4)) : item.overs}</h5>
+                                                                                <h5>{parseInt(item.overs) == item.overs ? (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? parseFloat(item.overs + 0.1).toFixed(1) : (item.overs - 0.4)) : (item.extraType == EXTRAS.NO_BALL || item.extraType == EXTRAS.WIDE ? parseFloat(item.overs + 0.1).toFixed(1) : item.overs)}
+                                                                                </h5>
                                                                                 <span
-                                                                                    className={`${getEventBg(item.event)}`}>{item.extraRuns > 0 ? (`${item.extraType}${item.runs-item.extraRuns}`) : item.runs}</span>
+                                                                                    className={`${getEventBg(item.event)}`}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                             </div>
                                                                             <p>
                                                                                 {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.milestone != null &&
                                                                                 <>
-                                                                                    a crucial <strong className="text-uppercase">{item.milestone}</strong> for {item.batsmanNickname}.
+                                                                                    a crucial <strong
+                                                                                    className="text-uppercase">{item.milestone}</strong> for {item.batsmanNickname}.
+                                                                                </>} {item.event == EVENT.WICKET &&
+                                                                                <>
+                                                                                    <strong>{wicketTypes.getLabel(item.wicketDetails?.wicketCode)}</strong> {item.wicketDetails?.name}! {(item.wicketDetails?.wicketCode == wicketTypes.catch || item.wicketDetails?.wicketCode == wicketTypes.run || item.wicketDetails?.wicketCode == wicketTypes.stumped) && <>
+                                                                                    by {item.wicketDetails?.fielderName}. <strong>{item.wicketDetails?.wicketCode == wicketTypes.run ? `${item.runs == 0 ? `No run completed.` : `${item.runs} run(s) completed.`}` : ""}</strong>
+                                                                                </>} A huge wicket for bowling
+                                                                                    team. <strong>{item.wicketDetails?.name} {item.wicketDetails?.runs} ({item.wicketDetails?.balls})
+                                                                                    [4s-{item.wicketDetails?.fours},
+                                                                                    6s-{item.wicketDetails?.sixes}]</strong>
                                                                                 </>}
                                                                             </p>
                                                                         </li>
@@ -774,6 +812,28 @@ const HomeIndex = () => {
 
                     </DefaultModal>
                 }
+
+                <DefaultModal
+                    title="Wicket"
+                    show={showWicketModal}
+                    handleClose={() => {
+                        setShowWicketModal(false)
+                    }}>
+
+                    <ScorerWicketForm
+                        defaultMatch={match}
+                        takenRuns={takenRuns}
+                        extras={{
+                            isWide: isWide,
+                            isNoBall: isNoBall,
+                            isByes: isByes,
+                            isLegByes: isLegByes,
+                        }}
+                        buttonLabel="Done"
+                        setShowFormModal={setShowWicketModal}
+                    />
+
+                </DefaultModal>
             </>
         </AppLayout>
     )

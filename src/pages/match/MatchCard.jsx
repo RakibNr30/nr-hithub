@@ -9,6 +9,7 @@ import {useState} from "react";
 import DefaultModal from "../../components/common/DefaultModal";
 import MatchStartForm from "./MatchStartForm";
 import MatchTossForm from "./MatchTossForm";
+import {Link} from "react-router-dom";
 
 const MatchCard = ({match}) => {
 
@@ -153,9 +154,10 @@ const MatchCard = ({match}) => {
                                    onClick={() => setShowMatchStartModal(true)}>Start Match</a>
                             </>
                         }
-                        <a href={`/match/${match.id}/live-score`}
-                           className="hithub-btn btn-filled text-uppercase active">Live
-                            Match</a>
+                        {match.stage != STAGE.UPCOMING && match.stage != STAGE.TOSS &&
+                            <Link to={`/match/${match.id}/live-score`}
+                               className="hithub-btn btn-filled text-uppercase active">Live Match</Link>
+                        }
                     </div>
                 </div>
             </div>
