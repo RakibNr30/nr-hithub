@@ -34,7 +34,7 @@ const useScorecardStore = create(
             }),
         }),
         {
-            name: "scorecards",
+            name: "hithub_scorecards",
             storage: createJSONStorage(() => localStorage)
         }
     )

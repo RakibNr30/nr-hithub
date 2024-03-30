@@ -34,7 +34,7 @@ const useCommentaryStore = create(
             }),
         }),
         {
-            name: "commentaries",
+            name: "hithub_commentaries",
             storage: createJSONStorage(() => localStorage)
         }
     )

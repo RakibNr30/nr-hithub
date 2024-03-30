@@ -34,7 +34,7 @@ const useMatchStore = create(
             }),
         }),
         {
-            name: "matches",
+            name: "hithub_matches",
             storage: createJSONStorage(() => localStorage)
         }
     )
