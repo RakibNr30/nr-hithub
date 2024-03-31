@@ -50,7 +50,7 @@ const ScorerService = () => {
 
         updatedCommentary = getCommentary(match);
 
-        if (Object.keys(updatedCommentary.miniScore.batsmanStriker).length <= 0) {
+        if (Object.keys(updatedCommentary.miniScore.batsmanStriker).length <= 0 || !updatedCommentary.miniScore.batsmanStriker.name) {
             swapBatsman(match);
         }
 

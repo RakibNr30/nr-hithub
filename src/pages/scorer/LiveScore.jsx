@@ -20,7 +20,7 @@ import {EVENT, EXTRAS} from "../../constants/commentary";
 import ScorerWicketForm from "./ScorerWicketForm";
 import wicketTypes from "../../constants/wicketTypes";
 
-const HomeIndex = () => {
+const LiveScore = () => {
 
     const scorecardService = ScorecardService();
     const scorerService = ScorerService();
@@ -483,7 +483,7 @@ const HomeIndex = () => {
                                         <ul className="nav nav-tabs mb-0">
                                             <li><Link to={`/match/${match.id}/live-score`} className="active">Commentary</Link></li>
                                             <li><Link to={`/match/${match.id}/scorecard`}>Scorecard</Link></li>
-                                            <li><a href="#">Partnership</a></li>
+                                            <li><Link to={`/match/${match.id}/partnership`}>Partnership</Link></li>
                                             <li><a href="#">Team</a></li>
                                         </ul>
                                     </div>
@@ -839,4 +839,4 @@ const HomeIndex = () => {
     )
 }
 
-export default HomeIndex;
+export default LiveScore;

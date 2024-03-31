@@ -156,7 +156,7 @@ const MatchCard = ({match}) => {
                         }
                         {match.stage != STAGE.UPCOMING && match.stage != STAGE.TOSS &&
                             <Link to={`/match/${match.id}/live-score`}
-                               className="hithub-btn btn-filled text-uppercase active">Live Match</Link>
+                               className="hithub-btn btn-filled text-uppercase active">{match.stage == STAGE.END && Object.keys(match.manOfTheMatch).length > 0 ? "Result" : "Live Match"}</Link>
                         }
                     </div>
                 </div>

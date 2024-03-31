@@ -8,9 +8,8 @@ import useCommentaryStore from "../../stores/commentaryStore";
 import useMatchStore from "../../stores/matchStore";
 import ScorerService from "../../services/ScorerService";
 import useScorecardStore from "../../stores/scorecardStore";
-import wicketTypes from "../../constants/wicketTypes";
 
-const ScorecardIndex = () => {
+const ScorecardPartnership = () => {
 
     const scorerService = ScorerService();
     const seriesService = SeriesService();
@@ -38,53 +37,6 @@ const ScorecardIndex = () => {
 
     const firstInnings = scorecard.firstInnings;
     const secondInnings = scorecard.secondInnings;
-
-    const firstInningsSquad = match.team1Id == firstInnings.battingDetails.teamId ? match.team1Players : match.team2Players;
-    const secondInningsSquad = match.team1Id == secondInnings.battingDetails.teamId ? match.team1Players : match.team2Players;
-
-    const firstInningsBattedPlayers = firstInnings.battingDetails.teamBatsmen;
-    const secondInningsBattedPlayers = secondInnings.battingDetails.teamBatsmen;
-
-    let firstInningsDNP = firstInningsSquad
-        .filter(item => !firstInningsBattedPlayers.some(squad => squad.id == item.id));
-
-    firstInningsDNP = firstInningsDNP.reduce((acc, curr, index) => {
-            if (index === firstInningsDNP.length - 1) {
-                return acc + curr.name;
-            } else {
-                return acc + curr.name + ", ";
-            }
-        }, "");
-
-    let secondInningsDNP = secondInningsSquad
-        .filter(item => !secondInningsBattedPlayers.some(squad => squad.id == item.id));
-
-    secondInningsDNP = secondInningsDNP.reduce((acc, curr, index) => {
-        if (index === secondInningsDNP.length - 1) {
-            return acc + curr.name;
-        } else {
-            return acc + curr.name + ", ";
-        }
-    }, "");
-
-    const firstInningsWickets = firstInnings.wickets;
-    const secondInningsWickets = secondInnings.wickets;
-
-    const firstInningsFOW = firstInningsWickets.reduce((acc, curr, index) => {
-        if (index === firstInningsWickets.length - 1) {
-            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})`;
-        } else {
-            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})` + ", ";
-        }
-    }, "");
-
-    const secondInningsFOW = secondInningsWickets.reduce((acc, curr, index) => {
-        if (index === secondInningsWickets.length - 1) {
-            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})`;
-        } else {
-            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})` + ", ";
-        }
-    }, "");
 
     return (
         <AppLayout>
@@ -313,8 +265,8 @@ const ScorecardIndex = () => {
                                     <div className="card card-shadow">
                                         <ul className="nav nav-tabs mb-0">
                                             <li><Link to={`/match/${match.id}/live-score`}>Commentary</Link></li>
-                                            <li><Link to={`/match/${match.id}/scorecard`} className="active">Scorecard</Link></li>
-                                            <li><Link to={`/match/${match.id}/partnership`}>Partnership</Link></li>
+                                            <li><Link to={`/match/${match.id}/scorecard`}>Scorecard</Link></li>
+                                            <li><Link to={`/match/${match.id}/partnership`} className="active">Partnership</Link></li>
                                             <li><a href="#">Team</a></li>
                                         </ul>
                                     </div>
@@ -326,7 +278,7 @@ const ScorecardIndex = () => {
                                                     <h5 className="">{commentary.miniScore.matchScoreDetails.secondInnings.batTeamName} Innings</h5>
                                                     <div id="innings_1" className="collapse show">
                                                         <div className="acr-body">
-                                                            <div className="card card-shadow p-0">
+                                                            <div className="card card-shadow p-0 mb-0">
                                                                 <div className="table-responsive">
                                                                     <table
                                                                         className="widget-table table table-striped table-medium no-border">
@@ -334,94 +286,32 @@ const ScorecardIndex = () => {
                                                                         <tr>
                                                                             <th scope="col">Batsmen</th>
                                                                             <th scope="col"></th>
-                                                                            <th scope="col">r</th>
-                                                                            <th scope="col">b</th>
-                                                                            <th scope="col">4s</th>
-                                                                            <th scope="col">6s</th>
-                                                                            <th scope="col">sr</th>
+                                                                            <th scope="col">Total</th>
+                                                                            <th scope="col"></th>
+                                                                            <th scope="col">Batsmen</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                        {secondInnings?.battingDetails?.teamBatsmen?.length > 0 &&
+                                                                        {secondInnings?.partnerships.length > 0 &&
                                                                             <>
-                                                                                {secondInnings?.battingDetails?.teamBatsmen?.filter(item => Object.keys(item).length > 0 && item.name).map((item, index) => {
+                                                                                {secondInnings?.partnerships?.filter(item => Object.keys(item).length > 0 && item.id).map((item, index) => {
                                                                                     return (
                                                                                         <tr key={index}>
-                                                                                            <td><a href="#"><strong>{item.name}</strong></a></td>
                                                                                             <td>
-                                                                                                {item.wicketCode == wicketTypes.run ? `run out (${item.fielderName})` : ""}
-                                                                                                {item.wicketCode == wicketTypes.catch ? `c ${item.fielderName} b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.stumped ? `st ${item.fielderName} b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.hit ? `hit out b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.lbw ? `lbw b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.bowled ? `b ${item.bowlerName}` : ""}
-                                                                                                {item.isOut == false ? `not out` : ""}
+                                                                                                <a href="#"><strong>{item.bat1Name}</strong></a>
                                                                                             </td>
                                                                                             <td>
-                                                                                                <strong>{item.runs}</strong>
+                                                                                                {`${item.bat1Runs} (${item.bat1Balls})`}
                                                                                             </td>
-                                                                                            <td>{item.balls}</td>
-                                                                                            <td>{item.fours}</td>
-                                                                                            <td>{item.sixes}</td>
-                                                                                            <td>{item.balls == 0 ? "0.00" : parseFloat((item.runs * 100) / item.balls).toFixed(2)}</td>
-                                                                                        </tr>
-                                                                                    )
-                                                                                })}
-                                                                            </>
-                                                                        }
-
-                                                                        <tr>
-                                                                            <td><strong>Extras</strong></td>
-                                                                            <td>b 0, lb 0, w 0, nb 0, p 0</td>
-                                                                            <td className="text-left" colSpan="5"><strong>0</strong></td>
-                                                                        </tr>
-                                                                        <tr className="score-text-bold">
-                                                                            <td>Total Score</td>
-                                                                            <td>{commentary.miniScore.matchScoreDetails.secondInnings.overs} Overs</td>
-                                                                            <td className="text-left" colSpan="5">{commentary.miniScore.matchScoreDetails.secondInnings.score}/{commentary.miniScore.matchScoreDetails.secondInnings.wickets}
-                                                                            </td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    <div className="spell-sum-box px-30 py-20">
-                                                                        <h5>
-                                                                            Did not bat: <span>{secondInningsDNP}</span>
-                                                                        </h5>
-                                                                        <h5 className="d-sm-flex">
-                                                                            Fall of Wickets:<span className="ml-05">{secondInningsFOW}</span>
-                                                                        </h5>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="card card-shadow p-0 mb-0">
-                                                                <div className="table-responsive">
-                                                                    <table className="widget-table table table-striped table-medium no-border">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th scope="col">Bowlers</th>
-                                                                            <th scope="col">o</th>
-                                                                            <th scope="col">m</th>
-                                                                            <th scope="col">r</th>
-                                                                            <th scope="col">w</th>
-                                                                            <th scope="col">NB</th>
-                                                                            <th scope="col">WD</th>
-                                                                            <th scope="col">econ</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        {secondInnings?.bowlingDetails?.teamBowlers?.length > 0 &&
-                                                                            <>
-                                                                                {secondInnings?.bowlingDetails?.teamBowlers?.filter(item => item.name != "").map((item, index) => {
-                                                                                    return (
-                                                                                        <tr key={index}>
-                                                                                            <td><a href="#"><strong>{item.name}</strong></a> ({item.bowl})</td>
-                                                                                            <td><strong>{item.overs}</strong></td>
-                                                                                            <td>{item.maidens}</td>
-                                                                                            <td>{item.runs}</td>
-                                                                                            <td>{item.wickets}</td>
-                                                                                            <td>{item.noBalls}</td>
-                                                                                            <td>{item.wideBalls}</td>
-                                                                                            <td>{item.balls <= 0 ? "0.00" : parseFloat(item.runs / (item.balls / 6)).toFixed(2)}</td>
+                                                                                            <td>
+                                                                                                {`${item.runs} (${item.balls})`}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                {`${item.bat2Runs} (${item.bat2Balls})`}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <a href="#"><strong>{item.bat2Name}</strong></a>
+                                                                                            </td>
                                                                                         </tr>
                                                                                     )
                                                                                 })}
@@ -444,7 +334,7 @@ const ScorecardIndex = () => {
                                                     <div id="innings_2" className="collapse show"
                                                          data-parent="#accordion">
                                                         <div className="acr-body">
-                                                            <div className="card card-shadow p-0">
+                                                            <div className="card card-shadow p-0 mb-0">
                                                                 <div className="table-responsive">
                                                                     <table
                                                                         className="widget-table table table-striped table-medium no-border">
@@ -452,100 +342,32 @@ const ScorecardIndex = () => {
                                                                         <tr>
                                                                             <th scope="col">Batsmen</th>
                                                                             <th scope="col"></th>
-                                                                            <th scope="col">r</th>
-                                                                            <th scope="col">b</th>
-                                                                            <th scope="col">4s</th>
-                                                                            <th scope="col">6s</th>
-                                                                            <th scope="col">sr</th>
+                                                                            <th scope="col">Total</th>
+                                                                            <th scope="col"></th>
+                                                                            <th scope="col">Batsmen</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                        {firstInnings?.battingDetails?.teamBatsmen?.length > 0 &&
+                                                                        {firstInnings?.partnerships.length > 0 &&
                                                                             <>
-                                                                                {firstInnings?.battingDetails?.teamBatsmen?.filter(item => Object.keys(item).length > 0 && item.name).map((item, index) => {
+                                                                                {firstInnings?.partnerships?.filter(item => Object.keys(item).length > 0 && item.id).map((item, index) => {
                                                                                     return (
                                                                                         <tr key={index}>
-                                                                                            <td><a
-                                                                                                href="#"><strong>{item.name}</strong></a>
+                                                                                            <td>
+                                                                                                <a href="#"><strong>{item.bat1Name}</strong></a>
                                                                                             </td>
                                                                                             <td>
-                                                                                                {item.wicketCode == wicketTypes.run ? `run out (${item.fielderName})` : ""}
-                                                                                                {item.wicketCode == wicketTypes.catch ? `c ${item.fielderName} b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.stumped ? `st ${item.fielderName} b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.hit ? `hit out b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.lbw ? `lbw b ${item.bowlerName}` : ""}
-                                                                                                {item.wicketCode == wicketTypes.bowled ? `b ${item.bowlerName}` : ""}
-                                                                                                {item.isOut == false ? `not out` : ""}
+                                                                                                {`${item.bat1Runs} (${item.bat1Balls})`}
                                                                                             </td>
                                                                                             <td>
-                                                                                                <strong>{item.runs}</strong>
+                                                                                                {`${item.runs} (${item.balls})`}
                                                                                             </td>
-                                                                                            <td>{item.balls}</td>
-                                                                                            <td>{item.fours}</td>
-                                                                                            <td>{item.sixes}</td>
-                                                                                            <td>{item.balls == 0 ? "0.00" : parseFloat((item.runs * 100) / item.balls).toFixed(2)}</td>
-                                                                                        </tr>
-                                                                                    )
-                                                                                })}
-                                                                            </>
-                                                                        }
-
-                                                                        <tr>
-                                                                            <td><strong>Extras</strong></td>
-                                                                            <td>b 0, lb 0, w 0, nb 0, p 0</td>
-                                                                            <td className="text-left" colSpan="5">
-                                                                                <strong>0</strong></td>
-                                                                        </tr>
-                                                                        <tr className="score-text-bold">
-                                                                            <td>Total Score</td>
-                                                                            <td>{commentary.miniScore.matchScoreDetails.firstInnings.overs} Overs</td>
-                                                                            <td className="text-left"
-                                                                                colSpan="5">{commentary.miniScore.matchScoreDetails.firstInnings.score}/{commentary.miniScore.matchScoreDetails.firstInnings.wickets}
-                                                                            </td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    <div className="spell-sum-box px-30 py-20">
-                                                                        <h5>
-                                                                            Did not bat: <span>{firstInningsDNP}</span>
-                                                                        </h5>
-                                                                        <h5 className="d-sm-flex">
-                                                                            Fall of Wickets:<span
-                                                                            className="ml-05">{firstInningsFOW}</span>
-                                                                        </h5>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="card card-shadow p-0 mb-0">
-                                                            <div className="table-responsive">
-                                                                    <table
-                                                                        className="widget-table table table-striped table-medium no-border">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th scope="col">Bowlers</th>
-                                                                            <th scope="col">o</th>
-                                                                            <th scope="col">m</th>
-                                                                            <th scope="col">r</th>
-                                                                            <th scope="col">w</th>
-                                                                            <th scope="col">NB</th>
-                                                                            <th scope="col">WD</th>
-                                                                            <th scope="col">econ</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        {firstInnings?.bowlingDetails?.teamBowlers?.length > 0 &&
-                                                                            <>
-                                                                                {firstInnings?.bowlingDetails?.teamBowlers?.filter(item => item.name != "").map((item, index) => {
-                                                                                    return (
-                                                                                        <tr key={index}>
-                                                                                            <td><a href="#"><strong>{item.name}</strong></a> ({item.bowl})</td>
-                                                                                            <td><strong>{item.overs}</strong></td>
-                                                                                            <td>{item.maidens}</td>
-                                                                                            <td>{item.runs}</td>
-                                                                                            <td>{item.wickets}</td>
-                                                                                            <td>{item.noBalls}</td>
-                                                                                            <td>{item.wideBalls}</td>
-                                                                                            <td>{item.balls <= 0 ? "0.00" : parseFloat(item.runs / (item.balls / 6)).toFixed(2)}</td>
+                                                                                            <td>
+                                                                                            {`${item.bat2Runs} (${item.bat2Balls})`}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <a href="#"><strong>{item.bat2Name}</strong></a>
+                                                                                            </td>
                                                                                         </tr>
                                                                                     )
                                                                                 })}
@@ -571,4 +393,4 @@ const ScorecardIndex = () => {
     )
 }
 
-export default ScorecardIndex;
+export default ScorecardPartnership;
