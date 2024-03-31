@@ -12,6 +12,7 @@ import moment from "moment";
 import Batsman from "../models/Batsman";
 import Partnership from "../models/Partnarship";
 import wicketTypes from "../constants/wicketTypes";
+import Wicket from "../models/Wicket";
 
 const ScorerService = () => {
     const matchService = MatchService();
@@ -29,7 +30,7 @@ const ScorerService = () => {
         const commentary = getCommentary(match);
 
         updateCommentary(match, commentary, takenRun, extras, wicketDetails);
-        updateScorecard(match);
+        updateScorecard(match, wicketDetails);
 
         switch (takenRun) {
             case 1:
@@ -48,6 +49,10 @@ const ScorerService = () => {
         }
 
         updatedCommentary = getCommentary(match);
+
+        if (Object.keys(updatedCommentary.miniScore.batsmanStriker).length <= 0) {
+            swapBatsman(match);
+        }
 
         if (isMatchEnded(match, updatedCommentary)) {
             const matchResult = getMatchResult(updatedCommentary);
@@ -162,7 +167,7 @@ const ScorerService = () => {
                     dots: commentary.miniScore.bowlerStriker.dots + (bowlerRunCount == 0 ? 1 : 0),
                     fours: commentary.miniScore.bowlerStriker.fours + (bowlerRunCount == 4 ? 1 : 0),
                     sixes: commentary.miniScore.bowlerStriker.sixes + (bowlerRunCount == 6 ? 1 : 0),
-                    wideBalls: commentary.miniScore.bowlerStriker.wideBalls + (extras.isWide ? 1 : 0),
+                    wideBalls: commentary.miniScore.bowlerStriker.wideBalls + (extras.isWide ? bowlerRunCount : 0),
                     noBalls: commentary.miniScore.bowlerStriker.noBalls + (extras.isNoBall ? 1 : 0),
                     overs: ballToOver(commentary.miniScore.bowlerStriker.balls + ballCount)
                 },
@@ -204,11 +209,11 @@ const ScorerService = () => {
 
         if (Object.keys(wicketDetails).length > 0) {
             let batsmanStriker = updatedCommentary.miniScore.batsmanStriker.id == wicketDetails.wicketBatsman.id
-                ? new Batsman({...wicketDetails.newBatsman})
+                ? updatedCommentary.miniScore.wickets >= 9 ? {} : new Batsman({...wicketDetails.newBatsman})
                 : updatedCommentary.miniScore.batsmanStriker;
 
             let batsmanNonStriker = updatedCommentary.miniScore.batsmanNonStriker.id == wicketDetails.wicketBatsman.id
-                ? new Batsman({...wicketDetails.newBatsman})
+                ? updatedCommentary.miniScore.wickets >= 9 ? {} : new Batsman({...wicketDetails.newBatsman})
                 : updatedCommentary.miniScore.batsmanNonStriker;
 
             if (batsmanStriker.id == batsmanNonStriker.id) {
@@ -368,40 +373,100 @@ const ScorerService = () => {
     }
 
     /* update scorecard section */
-    const updateScorecard = (match = {}) => {
+    const updateScorecard = (match = {}, wicketDetails = {}) => {
         const commentary = getCommentary(match);
-        const scorecard = getScorecard(match);
+        let scorecard = getScorecard(match);
 
         switch (commentary.miniScore.innings) {
             case 1:
+                if (Object.keys(wicketDetails).length > 0) {
+                    scorecardService.update({
+                        ...scorecard,
+                        firstInnings: {
+                            ...scorecard.firstInnings,
+                            battingDetails: {
+                                ...scorecard.firstInnings.battingDetails,
+                                teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.lastWicket, scorecard.firstInnings.battingDetails.teamBatsmen)
+                            },
+                            wickets: updateOrAddWicket(match, new Wicket({
+                                batsmanId: commentary.miniScore.lastWicket.id,
+                                batsmanName: commentary.miniScore.lastWicket.name,
+                                batsmanNickname: commentary.miniScore.lastWicket.nickname,
+                                wicketNumber: commentary.miniScore.wickets,
+                                wicketOver: commentary.miniScore.overs,
+                                wicketRuns: commentary.miniScore.scores,
+                            }), scorecard.firstInnings.wickets)
+                        },
+                    })
+                }
+
+                scorecard = getScorecard(match);
+
                 scorecardService.update({
                     ...scorecard,
                     firstInnings: {
                         ...scorecard.firstInnings,
                         battingDetails: {
                             ...scorecard.firstInnings.battingDetails,
-                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, commentary.miniScore.batsmanNonStriker, scorecard.firstInnings.battingDetails.teamBatsmen)
+                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, scorecard.firstInnings.battingDetails.teamBatsmen)
                         },
                         bowlingDetails: {
                             ...scorecard.firstInnings.bowlingDetails,
                             teamBowlers: updateOrAddBowler(match, commentary.miniScore.bowlerStriker, scorecard.firstInnings.bowlingDetails.teamBowlers)
-                        }
+                        },
+                        scoreDetails: {
+                            ...scorecard.firstInnings.scoreDetails,
+                            overs: commentary.miniScore.overs,
+                            runs: commentary.miniScore.scores,
+                            wickets: commentary.miniScore.wickets,
+                        },
+                        partnerships: updateOrAddPartnership(match, commentary.miniScore.partnership, scorecard.firstInnings.partnerships),
                     }
                 })
                 break;
             case 2:
+                if (Object.keys(wicketDetails).length > 0) {
+                    scorecardService.update({
+                        ...scorecard,
+                        secondInnings: {
+                            ...scorecard.secondInnings,
+                            battingDetails: {
+                                ...scorecard.secondInnings.battingDetails,
+                                teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.lastWicket, scorecard.secondInnings.battingDetails.teamBatsmen)
+                            },
+                            wickets: updateOrAddWicket(match, new Wicket({
+                                batsmanId: commentary.miniScore.lastWicket.id,
+                                batsmanName: commentary.miniScore.lastWicket.name,
+                                batsmanNickname: commentary.miniScore.lastWicket.nickname,
+                                wicketNumber: commentary.miniScore.wickets,
+                                wicketOver: commentary.miniScore.overs,
+                                wicketRuns: commentary.miniScore.scores,
+                            }), scorecard.secondInnings.wickets)
+                        },
+                    })
+                }
+
+                scorecard = getScorecard(match);
+
                 scorecardService.update({
                     ...scorecard,
                     secondInnings: {
                         ...scorecard.secondInnings,
                         battingDetails: {
                             ...scorecard.secondInnings.battingDetails,
-                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, commentary.miniScore.batsmanNonStriker, scorecard.secondInnings.battingDetails.teamBatsmen)
+                            teamBatsmen: updateOrAddBatsman(match, commentary.miniScore.batsmanStriker, scorecard.secondInnings.battingDetails.teamBatsmen)
                         },
                         bowlingDetails: {
                             ...scorecard.secondInnings.bowlingDetails,
                             teamBowlers: updateOrAddBowler(match, commentary.miniScore.bowlerStriker, scorecard.secondInnings.bowlingDetails.teamBowlers)
-                        }
+                        },
+                        scoreDetails: {
+                            ...scorecard.secondInnings.scoreDetails,
+                            overs: commentary.miniScore.overs,
+                            runs: commentary.miniScore.scores,
+                            wickets: commentary.miniScore.wickets,
+                        },
+                        partnerships: updateOrAddPartnership(match, commentary.miniScore.partnership, scorecard.secondInnings.partnerships),
                     }
                 })
                 break;
@@ -410,7 +475,7 @@ const ScorerService = () => {
         }
     }
 
-    const updateOrAddBatsman = (match = {}, batStriker, batNonStriker, teamBatsmen) => {
+    const updateOrAddBatsman = (match = {}, batStriker, teamBatsmen) => {
         const existingStrikerIndex = teamBatsmen.findIndex(item => item.id === batStriker.id);
         if (existingStrikerIndex != -1) {
             teamBatsmen[existingStrikerIndex] = batStriker;
@@ -425,21 +490,35 @@ const ScorerService = () => {
             ]
         }
 
-        const existingNonStrikerIndex = teamBatsmen.findIndex(item => item.id === batNonStriker.id);
-        if (existingNonStrikerIndex != -1) {
-            teamBatsmen[existingNonStrikerIndex] = batNonStriker;
+        return teamBatsmen;
+    }
+
+    const updateOrAddPartnership = (match = {}, currentPartnership, partnerships) => {
+        const existingPartnershipIndex = partnerships.findIndex(item => item.id === currentPartnership.id);
+        if (existingPartnershipIndex != -1) {
+            partnerships[existingPartnershipIndex] = currentPartnership;
         } else {
-            const currentOrder = teamBatsmen.length;
-            teamBatsmen = [
-                ...teamBatsmen,
-                {
-                    ...batNonStriker,
-                    order: currentOrder + 1
-                }
+            partnerships = [
+                ...partnerships,
+                currentPartnership,
             ]
         }
 
-        return teamBatsmen;
+        return partnerships;
+    }
+
+    const updateOrAddWicket = (match = {}, currentWicket, wickets) => {
+        const existingWicketIndex = wickets.findIndex(item => item.id === currentWicket.id);
+        if (existingWicketIndex != -1) {
+            wickets[existingWicketIndex] = currentWicket;
+        } else {
+            wickets = [
+                ...wickets,
+                currentWicket,
+            ]
+        }
+
+        return wickets;
     }
 
     const updateOrAddBowler = (match = {}, bowler, teamBowlers) => {

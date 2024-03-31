@@ -70,6 +70,25 @@ const HomeIndex = () => {
         }
     }, "");
 
+    const firstInningsWickets = firstInnings.wickets;
+    const secondInningsWickets = secondInnings.wickets;
+
+    const firstInningsFOW = firstInningsWickets.reduce((acc, curr, index) => {
+        if (index === firstInningsWickets.length - 1) {
+            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})`;
+        } else {
+            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})` + ", ";
+        }
+    }, "");
+
+    const secondInningsFOW = secondInningsWickets.reduce((acc, curr, index) => {
+        if (index === secondInningsWickets.length - 1) {
+            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})`;
+        } else {
+            return acc + `${curr.wicketRuns}-${curr.wicketNumber} (${curr.batsmanName}, ${curr.wicketOver})` + ", ";
+        }
+    }, "");
+
     return (
         <AppLayout>
             <>
@@ -328,13 +347,18 @@ const HomeIndex = () => {
                                                                         <tbody>
                                                                         {secondInnings?.battingDetails?.teamBatsmen?.length > 0 &&
                                                                             <>
-                                                                                {secondInnings?.battingDetails?.teamBatsmen?.filter(item => item.id != null).map((item, index) => {
+                                                                                {secondInnings?.battingDetails?.teamBatsmen?.filter(item => item.name != "").map((item, index) => {
                                                                                     return (
                                                                                         <tr key={index}>
-                                                                                            <td>{item.name}</td>
+                                                                                            <td><a href="#"><strong>{item.name}</strong></a></td>
                                                                                             <td>
-                                                                                                {/*{item.wicketCode == wicketTypes.run ? `Run Out (${item.fielderName})` : ""}*/}
-                                                                                                {/*c Astle b Nuttall*/}
+                                                                                                {item.wicketCode == wicketTypes.run ? `run out (${item.fielderName})` : ""}
+                                                                                                {item.wicketCode == wicketTypes.catch ? `c ${item.fielderName} b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.stumped ? `st ${item.fielderName} b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.hit ? `hit out b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.lbw ? `lbw b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.bowled ? `b ${item.bowlerName}` : ""}
+                                                                                                {item.isOut == false ? `not out` : ""}
                                                                                             </td>
                                                                                             <td>
                                                                                                 <strong>{item.runs}</strong>
@@ -366,9 +390,9 @@ const HomeIndex = () => {
                                                                         <h5>
                                                                             Did not bat: <span>{secondInningsDNP}</span>
                                                                         </h5>
-                                                                        {/*<h5 className="d-sm-flex">
-                                                                            Fall of Wickets:<span className="ml-05">13-1 (Mr.x, 3.1), 31-2 (Mr.y, 8.4)</span>
-                                                                        </h5>*/}
+                                                                        <h5 className="d-sm-flex">
+                                                                            Fall of Wickets:<span className="ml-05">{secondInningsFOW}</span>
+                                                                        </h5>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -390,7 +414,7 @@ const HomeIndex = () => {
                                                                         <tbody>
                                                                         {secondInnings?.bowlingDetails?.teamBowlers?.length > 0 &&
                                                                             <>
-                                                                                {secondInnings?.bowlingDetails?.teamBowlers?.filter(item => item.id != null).map((item, index) => {
+                                                                                {secondInnings?.bowlingDetails?.teamBowlers?.filter(item => item.name != "").map((item, index) => {
                                                                                     return (
                                                                                         <tr key={index}>
                                                                                             <td><a href="#"><strong>{item.name}</strong></a> ({item.bowl})</td>
@@ -441,13 +465,20 @@ const HomeIndex = () => {
                                                                         <tbody>
                                                                         {firstInnings?.battingDetails?.teamBatsmen?.length > 0 &&
                                                                             <>
-                                                                                {firstInnings?.battingDetails?.teamBatsmen?.filter(item => item.id != null).map((item, index) => {
+                                                                                {firstInnings?.battingDetails?.teamBatsmen?.filter(item => item.name != "").map((item, index) => {
                                                                                     return (
                                                                                         <tr key={index}>
-                                                                                            <td>{item.name}</td>
+                                                                                            <td><a
+                                                                                                href="#"><strong>{item.name}</strong></a>
+                                                                                            </td>
                                                                                             <td>
-                                                                                                {/*{item.wicketCode == wicketTypes.run ? `Run Out (${item.fielderName})` : ""}*/}
-                                                                                                {/*c Astle b Nuttall*/}
+                                                                                                {item.wicketCode == wicketTypes.run ? `run out (${item.fielderName})` : ""}
+                                                                                                {item.wicketCode == wicketTypes.catch ? `c ${item.fielderName} b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.stumped ? `st ${item.fielderName} b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.hit ? `hit out b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.lbw ? `lbw b ${item.bowlerName}` : ""}
+                                                                                                {item.wicketCode == wicketTypes.bowled ? `b ${item.bowlerName}` : ""}
+                                                                                                {item.isOut == false ? `not out` : ""}
                                                                                             </td>
                                                                                             <td>
                                                                                                 <strong>{item.runs}</strong>
@@ -465,12 +496,14 @@ const HomeIndex = () => {
                                                                         <tr>
                                                                             <td><strong>Extras</strong></td>
                                                                             <td>b 0, lb 0, w 0, nb 0, p 0</td>
-                                                                            <td className="text-left" colSpan="5"><strong>0</strong></td>
+                                                                            <td className="text-left" colSpan="5">
+                                                                                <strong>0</strong></td>
                                                                         </tr>
                                                                         <tr className="score-text-bold">
                                                                             <td>Total Score</td>
                                                                             <td>{commentary.miniScore.matchScoreDetails.firstInnings.overs} Overs</td>
-                                                                            <td className="text-left" colSpan="5">{commentary.miniScore.matchScoreDetails.firstInnings.score}/{commentary.miniScore.matchScoreDetails.firstInnings.wickets}
+                                                                            <td className="text-left"
+                                                                                colSpan="5">{commentary.miniScore.matchScoreDetails.firstInnings.score}/{commentary.miniScore.matchScoreDetails.firstInnings.wickets}
                                                                             </td>
                                                                         </tr>
                                                                         </tbody>
@@ -479,14 +512,15 @@ const HomeIndex = () => {
                                                                         <h5>
                                                                             Did not bat: <span>{firstInningsDNP}</span>
                                                                         </h5>
-                                                                        {/*<h5 className="d-sm-flex">
-                                                                            Fall of Wickets:<span className="ml-05">13-1 (Mr.x, 3.1), 31-2 (Mr.y, 8.4)</span>
-                                                                        </h5>*/}
+                                                                        <h5 className="d-sm-flex">
+                                                                            Fall of Wickets:<span
+                                                                            className="ml-05">{firstInningsFOW}</span>
+                                                                        </h5>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div className="card card-shadow p-0 mb-0">
-                                                                <div className="table-responsive">
+                                                            <div className="table-responsive">
                                                                     <table
                                                                         className="widget-table table table-striped table-medium no-border">
                                                                         <thead>
@@ -504,7 +538,7 @@ const HomeIndex = () => {
                                                                         <tbody>
                                                                         {firstInnings?.bowlingDetails?.teamBowlers?.length > 0 &&
                                                                             <>
-                                                                                {firstInnings?.bowlingDetails?.teamBowlers?.filter(item => item.id != null).map((item, index) => {
+                                                                                {firstInnings?.bowlingDetails?.teamBowlers?.filter(item => item.name != "").map((item, index) => {
                                                                                     return (
                                                                                         <tr key={index}>
                                                                                             <td><a href="#"><strong>{item.name}</strong></a> ({item.bowl})</td>

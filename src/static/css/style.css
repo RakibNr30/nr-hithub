@@ -152,7 +152,7 @@ a:focus {
 }
 
 .logo-section .logo {
-    max-width: 60px;
+    max-width: 50px;
     display: block;
 }
 
@@ -163,8 +163,14 @@ a:focus {
 }
 
 @media screen and (max-width: 575px) {
-    .logo {
-        margin: 0 auto 10px;
+    .logo-section {
+        column-gap: 0.5rem;
+    }
+    .logo-section .logo {
+        max-width: 44px;
+    }
+    .logo-section .logo-text {
+        font-size: 24px;
     }
 }
 

@@ -113,7 +113,7 @@ const ScorerWicketForm = ({defaultMatch = {}, takenRuns = 0, extras = {}, button
             wicketBatsman: wicketBatsman,
             bowler: strikerBowler,
             helperFielder: helperFielder,
-            newBatsman: newBatsman,
+            newBatsman: {...newBatsman, order: updatedCommentary.miniScore.wickets + 3},
         });
     }
 

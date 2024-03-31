@@ -17,6 +17,9 @@ const MatchIndex = () => {
     const matches = useMatchStore.getState().matches;
 
     const handleAdd = (match) => {
+        if (!match.team1Id || !match.team2Id) {
+            return;
+        }
         matchService.save(match);
     }
 
