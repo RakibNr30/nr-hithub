@@ -2,6 +2,7 @@
 
 :root {
     --color-primary: #2647d6;
+    --color-info: #0dcaf0;
     --color-secondary: #dddee2;
     --color-danger: #ff0000;
     --color-light: #ffffff;
@@ -1020,7 +1021,43 @@ li.disabled {
     background-color: var(--color-orange);
     color: white;
 }
-
+.widget-scorer .scorer-wicket-and-extras ul li.speaker span {
+    background-color: transparent;
+    border: var(--color-info) solid 1px;
+    color: var(--color-info);
+}
+.widget-scorer .scorer-wicket-and-extras ul li.speaker:hover span {
+    letter-spacing: 1px;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.speaker.active span {
+    background-color: var(--color-info);
+    color: white;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.speaker.listening span {
+    background-color: var(--color-danger);
+    border: var(--color-danger) solid 1px;
+    color: white;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.primary span {
+    background-color: var(--color-primary);
+    border: var(--color-primary) solid 1px;
+    color: var(--color-light);
+}
+.widget-scorer .scorer-wicket-and-extras ul li.primary:hover span {
+    letter-spacing: 1px;
+}
+.widget-scorer .scorer-wicket-and-extras ul li.primary.active span {
+    background-color: var(--color-info);
+    color: white;
+}
+.widget-scorer .commands {
+    margin-top: 10px;
+}
+.widget-scorer .commands span {
+    display: block;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 14px;
+}
 /**********************************
 * Widget scorer buttons style start
 *********************************/

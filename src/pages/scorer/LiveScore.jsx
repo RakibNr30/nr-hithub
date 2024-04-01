@@ -19,6 +19,7 @@ import MatchSecondInningsStartForm from "../match/MatchSecondInningsStartForm";
 import {EVENT, EXTRAS} from "../../constants/commentary";
 import ScorerWicketForm from "./ScorerWicketForm";
 import wicketTypes from "../../constants/wicketTypes";
+import SpeechCommentary from "../../components/commentary/SpeechCommentary";
 
 const LiveScore = () => {
 
@@ -245,7 +246,8 @@ const LiveScore = () => {
                                                 <div className="runs">
                                                     <div className="card card-shadow mb-0 h-100 first-second">
                                                         <ul className="first">
-                                                            <li className={isByes || isLegByes ? "disabled" : ""} onClick={() => onRunHandler(0)}>
+                                                            <li className={isByes || isLegByes ? "disabled" : ""}
+                                                                onClick={() => onRunHandler(0)}>
                                                                 <span>0</span>
                                                             </li>
                                                             <li onClick={() => onRunHandler(1)}>
@@ -340,6 +342,11 @@ const LiveScore = () => {
                                             </div>
                                         </div>
                                     }
+
+                                    {commentary.miniScore.balls > 0 &&
+                                        <SpeechCommentary match={match} />
+                                    }
+
                                 </aside>
                             </div>
                             <div className="col-lg-8">
@@ -689,7 +696,7 @@ const LiveScore = () => {
                                                                                     className={`${getEventBg(item.event)}`}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                             </div>
                                                                             <p>
-                                                                                {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.milestone != null &&
+                                                                                {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.text.length > 0 ? item.text : ""} {item.milestone != null &&
                                                                                 <>
                                                                                     a crucial <strong
                                                                                     className="text-uppercase">{item.milestone}</strong> for {item.batsmanNickname}.
@@ -755,7 +762,7 @@ const LiveScore = () => {
                                                                                     className={`${getEventBg(item.event)}`}>{item.event == EVENT.WICKET ? "W" : ""}{item.extraType ? (`${item.extraType}${item.runs - item.extraRuns}`) : item.runs}</span>
                                                                             </div>
                                                                             <p>
-                                                                                {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.milestone != null &&
+                                                                                {item.bowlerNickname} to {item.batsmanNickname}, {getEventText(item, item.extraRuns > 0)} {item.text.length > 0 ? item.text : ""} {item.milestone != null &&
                                                                                 <>
                                                                                     a crucial <strong
                                                                                     className="text-uppercase">{item.milestone}</strong> for {item.batsmanNickname}.

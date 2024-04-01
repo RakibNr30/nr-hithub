@@ -20,7 +20,9 @@ const TextareaField = ({fieldName, fieldLabel = "", rows = 3, defaultValue, hand
                 placeholder={`Enter ${fieldLabel.toLowerCase()}`}
                 onChange={handler}
             />
-            <Form.Label>{fieldLabel}</Form.Label>
+            {fieldLabel.length > 0 &&
+                <Form.Label>{fieldLabel}</Form.Label>
+            }
         </Form.Floating>
     )
 }

@@ -554,35 +554,40 @@ const ScorerService = () => {
         }
 
         let runCount = takenRun;
+        let batterRunCount = takenRun;
         let extraRunCount = 0;
         let extraType = "";
 
         if (extras.isWide) {
             runCount += 1;
+            batterRunCount = 0;
             extraRunCount += 1;
             extraType = EXTRAS.WIDE;
         }
 
         if (extras.isByes) {
+            batterRunCount = 0;
             extraType = EXTRAS.BYES;
         }
 
         if (extras.isLegByes) {
+            batterRunCount = 0;
             extraType = EXTRAS.LEG_BYES;
         }
 
         if (extras.isNoBall) {
             runCount += 1;
             extraRunCount += 1;
+            batterRunCount = takenRun;
             extraType = EXTRAS.NO_BALL;
 
-            /*if (extras.isByes) {
-                extraType = EXTRAS.BYES;
+            if (extras.isByes) {
+                batterRunCount = 0;
             }
 
             if (extras.isLegByes) {
-                extraType = EXTRAS.LEG_BYES;
-            }*/
+                batterRunCount = 0;
+            }
         }
 
         if (Object.keys(wicketDetails).length > 0) {
@@ -592,16 +597,16 @@ const ScorerService = () => {
         /* here some bugs for milestone */
         let milestone = null;
 
-        if (commentary.miniScore.batsmanStriker.runs == 50) {
+        if (commentary.miniScore.batsmanStriker.runs >= 50 && commentary.miniScore.batsmanStriker.runs - batterRunCount < 50) {
             milestone = MILESTONE.FIFTY;
         }
-        if (commentary.miniScore.batsmanStriker.runs == 100) {
+        if (commentary.miniScore.batsmanStriker.runs >= 100 && commentary.miniScore.batsmanStriker.runs - batterRunCount < 100) {
             milestone = MILESTONE.CENTURY
         }
-        if (commentary.miniScore.batsmanStriker.runs == 200) {
+        if (commentary.miniScore.batsmanStriker.runs >= 200 && commentary.miniScore.batsmanStriker.runs - batterRunCount < 200) {
             milestone = MILESTONE.DOUBLE_CENTURY
         }
-        if (commentary.miniScore.batsmanStriker.runs == 300) {
+        if (commentary.miniScore.batsmanStriker.runs >= 300 && commentary.miniScore.batsmanStriker.runs - batterRunCount < 300) {
             milestone = MILESTONE.TRIPLE_CENTURY
         }
 
@@ -668,6 +673,21 @@ const ScorerService = () => {
         }
 
         return commentaryEvent;
+    }
+
+    const addTextToLastCommentary = (match, text) => {
+        const commentary = useCommentaryStore.getState().commentaries.find(commentary => commentary.id == match.commentaryId);
+
+        const commentaryList = commentary.commentaryList;
+
+        commentaryList[0].text = text;
+
+        if (commentary.miniScore.balls > 0) {
+            commentaryService.update({
+                ...commentary,
+                commentaryList: commentaryList
+            })
+        }
     }
 
     const getOverFullSummary = (commentary, overNumber, currentCommentaryEvent) => {
@@ -764,7 +784,7 @@ const ScorerService = () => {
     }
 
     const isLastBallOfOver = (commentary) => {
-       return commentary.miniScore.balls % 6 == 0;
+        return commentary.miniScore.balls % 6 == 0;
     }
 
     const isLastBallOfInnings = (match, commentary) => {
@@ -788,7 +808,8 @@ const ScorerService = () => {
         swapBatsman,
         changeBowlingStriker,
         makeManOfTheMatch,
-        calculateRR
+        calculateRR,
+        addTextToLastCommentary
     }
 }
 
